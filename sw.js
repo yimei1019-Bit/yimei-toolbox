@@ -3,7 +3,7 @@
  * 第一次開啟時把所有檔案存到裝置，之後沒有網路也能開啟。
  * VERSION 由 tools/build_offline.py 依檔案內容自動更新；版本變了會換新快取。
  */
-const VERSION = 'yimei-20261020e';
+const VERSION = 'yimei-20261020f';
 const CACHE = `selfcheck-offline-${VERSION}`;
 const FILES = [
   './',
@@ -12,6 +12,7 @@ const FILES = [
   'manifest.webmanifest',
   'css/style.css',
   'css/app.css',
+  'css/yimei.css',
   'js/app-shell.js',
   'js/pages/self-check.js',
   'js/pages/self-check-print.js',

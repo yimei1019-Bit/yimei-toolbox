@@ -6,39 +6,55 @@
   <title>Yimei 營造工具箱</title>
   <meta name="theme-color" content="#3e5878" />
   <link rel="manifest" href="manifest.webmanifest" />
-    <link rel="icon" href="icons/icon-192.png" />
+  <link rel="icon" href="icons/icon-192.png" />
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="Yimei 工具箱" />
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/app.css" />
+  <link rel="stylesheet" href="css/yimei.css" />
 </head>
 <body>
   <!-- Yimei 營造工具箱（離線版）：資料只存在這台裝置，不需網路與伺服器 -->
 
-  <!-- 封面：開啟 App 先看到這頁；工具入口＋最新更新 -->
+  <!-- 封面：開啟 App 先看到這頁；照片頁首＋問候、工具磚、更新時間軸 -->
   <section class="cv" id="cover" hidden>
-    <div class="cv-hero">
+    <header class="cv-hero">
+      <p class="cv-hello"><span id="cvGreet">你好</span>，Yimei ☀️</p>
       <h1 class="cv-name">Yimei 營造工具箱</h1>
       <p class="cv-tag">工地隨身工具・沒有網路也能用</p>
-    </div>
-    <div class="cv-tools">
-      <a class="cv-tool" href="#/self-check">
-        <img src="icons/icon-192.png" alt="" width="48" height="48" />
-        <span><b>自主檢查表</b><small>施工自主檢查・手寫簽名・PDF 列印</small></span>
-        <i aria-hidden="true">›</i>
-      </a>
-      <div class="cv-tool cv-soon" aria-disabled="true">
-        <span class="cv-soon-icon" aria-hidden="true">＋</span>
-        <span><b>更多工具開發中</b><small>敬請期待</small></span>
+      <p class="cv-date" id="cvDate"></p>
+    </header>
+    <div class="cv-body">
+      <h2 class="cv-h">我的工具</h2>
+      <div class="cv-tools">
+        <a class="cv-tool" href="#/self-check">
+          <span class="cv-tool-ic" aria-hidden="true">📋</span>
+          <b>自主檢查表</b>
+          <small>勾選・簽名・PDF</small>
+          <span class="cv-tool-go" aria-hidden="true">開始 →</span>
+        </a>
+        <div class="cv-tool cv-soon" aria-disabled="true">
+          <span class="cv-tool-ic" aria-hidden="true">🧰</span>
+          <b>更多工具</b>
+          <small>開發中，敬請期待</small>
+        </div>
       </div>
+      <section class="cv-news" id="cvNews" hidden>
+        <h2 class="cv-h">最新消息</h2>
+        <div id="cvNewsList"></div>
+        <button class="cv-more" id="cvNewsMore" hidden>查看全部更新</button>
+      </section>
+      <p class="cv-foot">🔒 資料只存在這台裝置 ・ 換手機前請先備份</p>
     </div>
-    <section class="cv-news" id="cvNews" hidden>
-      <h2>📢 最新更新</h2>
-      <div id="cvNewsList"></div>
-      <button class="cv-more" id="cvNewsMore" hidden>查看全部更新</button>
-    </section>
-    <p class="cv-foot">資料只存在這台裝置 ・ 換手機前請先備份</p>
+    <script>
+      (function () {
+        var d = new Date(), h = d.getHours();
+        document.getElementById('cvGreet').textContent = h < 11 ? '早安' : h < 14 ? '午安' : h < 18 ? '午後好' : '晚安';
+        var w = '日一二三四五六'.charAt(d.getDay());
+        document.getElementById('cvDate').textContent = d.getFullYear() + ' 年 ' + (d.getMonth() + 1) + ' 月 ' + d.getDate() + ' 日（' + w + '）';
+      })();
+    </script>
   </section>
 
   <header class="ol-bar" id="olBar" hidden>
