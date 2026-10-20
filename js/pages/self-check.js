@@ -702,6 +702,8 @@
         pvDlg.innerHTML = previewHTML();
         pvDlg.showModal();
         layoutPaper();
+        // 標楷體（網路字型）載入完成後字寬會變，重新排一次版
+        window.SelfCheckPrint.fontReady().then(() => { if (pvDlg.open) layoutPaper(); });
       }
       window.addEventListener('resize', () => { if (pvDlg.open) fitPaper(); });
       pvDlg.addEventListener('change', e => {

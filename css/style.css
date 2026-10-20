@@ -959,9 +959,11 @@ button { font: inherit; cursor: pointer; }
 }
 
 /* A4 檢查表版面（預覽、列印、PDF 共用；顏色固定黑白，不跟深色模式） */
-.pp-content { width: 190mm; color: #000; font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", sans-serif; font-size: 10.5pt; line-height: 1.45; }
-/* 越南文列印：拉丁字母用 Arial（含越南字母），中文字退回原字型 */
-.pp-lang-vi, .pp-vi { font-family: Arial, "Segoe UI", "Microsoft JhengHei", sans-serif; }
+/* 列印用標楷體：電腦有內建標楷體就用內建的；手機沒有，改用內附的全字庫正楷體（常用字精簡版，政府資料開放授權） */
+@font-face { font-family: "Yimei Kai"; src: url(../fonts/tw-kai-subset.woff2) format("woff2"); font-display: swap; }
+.pp-content { width: 190mm; color: #000; font-family: "DFKai-SB", "BiauKai", "標楷體", "Yimei Kai", "Microsoft JhengHei", serif; font-size: 10.5pt; line-height: 1.45; }
+/* 越南文列印：拉丁字母用 Arial（含越南字母），中文字退回標楷體 */
+.pp-lang-vi, .pp-vi { font-family: Arial, "Segoe UI", "DFKai-SB", "BiauKai", "標楷體", "Yimei Kai", sans-serif; }
 /* 越南文較長：字級、行高、儲存格留白略縮，讓多數表單維持一頁 */
 .pp-lang-vi { font-size: 9.5pt; line-height: 1.32; }
 .pp-lang-vi .pp-table th, .pp-lang-vi .pp-table td { padding: 3px 5px; }

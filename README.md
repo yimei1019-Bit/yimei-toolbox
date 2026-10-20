@@ -49,3 +49,8 @@ python tools/build_offline.py
 | `sw.js`、`manifest.webmanifest` | 離線快取、安裝到主畫面 |
 | `css/`、`js/pages/`、`js/vendor/`、`data/` | 由 build_offline.py 從主網站複製，**請勿直接修改** |
 | `icons/` | App 圖示（build_offline.py 自動產生） |
+
+## 字型
+列印／PDF 的檢查表使用標楷體：電腦有內建標楷體（Windows、Mac）就用內建的；手機沒有標楷體，
+改用 `fonts/tw-kai-subset.woff2`——取自國家發展委員會「全字庫正楷體」（TW-Kai），
+依[政府資料開放授權條款](https://data.gov.tw/license)使用，只保留常用字與檢查表用到的字以縮小檔案。

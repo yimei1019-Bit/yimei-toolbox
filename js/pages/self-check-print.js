@@ -167,12 +167,41 @@
   const PX_PER_MM = 96 / 25.4;
   const MAX_SHRINK = 0.15; // 超出 15% 以內才縮小（最小約 87%），超出更多就照常分頁
   // 版面須已放進畫面且未被縮放（預覽的 zoom 要先還原）；回傳縮放比例，1 = 未縮小
+  // 檢查項目每列高度一致：以最高的一列為準，但不超過 ROW_MAX_MM，也不會因此把原本一頁（含自動縮小）的表撐成兩頁；
+  // 比目標高的列（字很多）維持自己的高度
+  const ROW_MAX_MM = 20;
+  function equalizeRows(c) {
+    const rows = [...c.querySelectorAll('.pp-items .pp-item')];
+    rows.forEach(r => { r.style.height = ''; });
+    if (!rows.length) return;
+    const hs = rows.map(r => r.offsetHeight);
+    const other = c.offsetHeight - hs.reduce((a, b) => a + b, 0); // 表頭、簽名等其他部分
+    let target = Math.min(Math.max(...hs), ROW_MAX_MM * PX_PER_MM);
+    // 一頁放得下的每列平均高度（扣掉比目標還高、維持原高的列）
+    for (let k = 0; k < 3; k++) {
+      const tall = hs.filter(h => h >= target);
+      const rest = rows.length - tall.length;
+      if (!rest) break;
+      const budget = (PAGE_MM * (1 + MAX_SHRINK) * 0.99 * PX_PER_MM - other - tall.reduce((a, b) => a + b, 0)) / rest; // 可再搭配自動縮小（最多 15%）
+      if (budget >= target) break;
+      target = budget;
+    }
+    rows.forEach((r, i) => { if (hs[i] < target) r.style.height = `${target.toFixed(1)}px`; });
+  }
+
+  // 列印用標楷體（css/style.css 的 @font-face "Yimei Kai"）載入完成；不支援或載入失敗也照常繼續
+  function fontReady() {
+    if (!document.fonts || !document.fonts.load) return Promise.resolve();
+    return document.fonts.load('10.5pt "Yimei Kai"', '檢查').then(() => {}, () => {});
+  }
+
   function fitOnePage(scope) {
     const wrap = scope.querySelector('.pp-fit');
     const c = wrap && wrap.querySelector('.pp-content');
     if (!c) return 1;
     c.style.transform = c.style.transformOrigin = c.style.marginLeft = '';
     wrap.style.height = wrap.style.overflow = '';
+    equalizeRows(c);
     const h = c.offsetHeight / PX_PER_MM;
     if (h <= PAGE_MM || h > PAGE_MM * (1 + MAX_SHRINK)) return 1;
     const s = (PAGE_MM - 1) / h; // 留 1mm 餘裕
@@ -217,6 +246,7 @@
 
   async function downloadPdf(contentEl, filename) {
     const html2pdf = await loadHtml2pdf();
+    await fontReady();
     await html2pdf().set({
       margin: [10, 10, 12, 10],
       filename,
@@ -227,5 +257,5 @@
     }).from(contentEl).save();
   }
 
-  window.SelfCheckPrint = { paperHTML, fitOnePage, print, downloadPdf };
+  window.SelfCheckPrint = { paperHTML, fitOnePage, fontReady, print, downloadPdf };
 })();
