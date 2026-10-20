@@ -82,9 +82,12 @@
     dlg.showModal();
   });
 
-  /* ---------- 開始使用：先填自己的工地（取代暫用的「我的工地」，避免印出來工程名稱寫錯） ---------- */
+  /* ---------- 進入自主檢查表：先確認工地、公司名稱 ----------
+   * 第一次使用：填自己的工地（取代暫用的「我的工地」，避免印出來工程名稱寫錯）
+   * 之後每次從封面進來：帶入目前的工地與公司名稱，按一下「開始填表」就好，也可以換工地或新增工地 */
   const placeholder = () => O.projects().find(p => p.name === O.DEFAULT_PROJECT);
   function setupHTML(msg = '') {
+    if (!placeholder()) return confirmHTML(msg);
     const others = O.projects().length > 1;
     return `
       <form class="pj-box ol-setup" data-setup>
@@ -104,6 +107,39 @@
         ${others ? `<button class="ol-setup-skip" type="button" data-setup-del>不需要「${esc(O.DEFAULT_PROJECT)}」，直接刪除它</button>` : ''}
       </form>`;
   }
+  function confirmHTML(msg = '') {
+    const cur = O.current();
+    return `
+      <form class="pj-box ol-setup" data-setup>
+        <div class="pj-head">
+          <h3>今天在哪個工地？</h3>
+          <button class="sk-dlg-x" type="button" data-x aria-label="關閉">✕</button>
+        </div>
+        <p class="pj-hint">工地名稱會印在檢查表的「工程名稱」，公司名稱印在最上方。確認沒錯就按「開始填表」。</p>
+        <label class="pj-company">工地名稱
+          <select name="site">
+            ${O.projects().map(p => `<option value="${esc(p.id)}" ${p.id === cur ? 'selected' : ''}>${esc(p.name)}</option>`).join('')}
+            <option value="">＋ 新增工地…</option>
+          </select>
+        </label>
+        <label class="pj-company" data-newsite hidden>新工地名稱
+          <input name="name" placeholder="例如：○○大樓新建工程" maxlength="50" autocomplete="off" />
+        </label>
+        <label class="pj-company">公司名稱（可空白）
+          <input name="company" value="${esc(O.company())}" placeholder="例如：○○營造有限公司" maxlength="40" autocomplete="off" />
+        </label>
+        <div class="pj-msg" ${msg ? '' : 'hidden'}>${esc(msg)}</div>
+        <button class="sk-fill ol-setup-go" type="submit">開始填表</button>
+      </form>`;
+  }
+  // 選「＋ 新增工地…」才顯示新工地名稱欄位
+  dlg.addEventListener('change', e => {
+    if (!e.target.matches('[data-setup] select[name="site"]')) return;
+    const box = dlg.querySelector('[data-newsite]');
+    box.hidden = !!e.target.value;
+    box.querySelector('input').required = !e.target.value;
+    if (!e.target.value) box.querySelector('input').focus();
+  });
   function openSetup() {
     dlg.innerHTML = setupHTML();
     dlg.dataset.mode = 'setup';
@@ -228,9 +264,11 @@
     if (e.target.matches('[data-setup]')) {
       const name = e.target.name.value.trim();
       const co = e.target.company.value.trim();
+      const site = e.target.site; // 確認模式才有工地選單
       finishSetup(async () => {
         const p = placeholder();
-        await O.setCurrent(p ? (await O.renameProject(p.id, name), p.id) : (await O.addProject(name)).id);
+        if (site && site.value) await O.setCurrent(site.value);
+        else await O.setCurrent(p ? (await O.renameProject(p.id, name), p.id) : (await O.addProject(name)).id);
         if (co !== O.company()) await O.setCompany(co);
       });
       return;
@@ -481,6 +519,7 @@
     bar.hidden = !tool;
     content.hidden = !tool;
     bar.classList.toggle('ol-bar-page', !!tool && tool !== 'self-check'); // 帳號管理不需要工地選單
+    const entering = tool === 'self-check' && shown !== 'self-check';
     if (tool && tool !== shown) {
       titleEl.textContent = PAGE_TITLE[tool] || '';
       if (tool === 'self-check') showPage();
@@ -492,7 +531,7 @@
     }
     shown = tool;
     checkRemind();
-    if (tool === 'self-check' && placeholder() && !dlg.open) openSetup();
+    if (tool === 'self-check' && (entering || placeholder()) && !dlg.open) openSetup();
     if (!tool) document.title = 'Yimei 營造工具箱';
     window.scrollTo(0, 0);
   }

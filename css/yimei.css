@@ -165,3 +165,7 @@ body { background: linear-gradient(180deg, #e9eef5 0, #f4f6fa 320px) no-repeat, 
   .sk-cards { grid-template-columns: 1fr; gap: 10px; }
   .sk-new-btns { width: 100%; margin-left: 0; }
 }
+
+/* 進入時確認工地：選單與輸入框同樣大小 */
+.ol-setup select { padding: 10px 12px; font: inherit; font-size: 16px; color: var(--y-ink); background: #fff; border: 1px solid #d9dde4; border-radius: 10px; }
+.ol-setup .ol-setup-go { background: var(--y-blue); }
