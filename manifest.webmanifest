@@ -1,0 +1,15 @@
+{
+  "name": "Yimei 營造工具箱",
+  "short_name": "Yimei 工具箱",
+  "description": "工地隨身工具：自主檢查表離線填寫、簽名、產生 PDF",
+  "lang": "zh-Hant",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f3f5f8",
+  "theme_color": "#3e5878",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

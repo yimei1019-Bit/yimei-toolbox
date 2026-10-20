@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yimei 營造工具箱</title>
+  <meta name="theme-color" content="#3e5878" />
+  <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Yimei 工具箱" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+  <!-- Yimei 營造工具箱（離線版）：資料只存在這台裝置，不需網路與伺服器 -->
+
+  <!-- 封面：開啟 App 先看到這頁；工具入口＋最新更新 -->
+  <section class="cv" id="cover" hidden>
+    <div class="cv-hero">
+      <h1 class="cv-name">Yimei 營造工具箱</h1>
+      <p class="cv-tag">工地隨身工具・沒有網路也能用</p>
+    </div>
+    <div class="cv-tools">
+      <a class="cv-tool" href="#/self-check">
+        <img src="icons/icon-192.png" alt="" width="48" height="48" />
+        <span><b>自主檢查表</b><small>施工自主檢查・手寫簽名・PDF 列印</small></span>
+        <i aria-hidden="true">›</i>
+      </a>
+      <div class="cv-tool cv-soon" aria-disabled="true">
+        <span class="cv-soon-icon" aria-hidden="true">＋</span>
+        <span><b>更多工具開發中</b><small>敬請期待</small></span>
+      </div>
+    </div>
+    <section class="cv-news" id="cvNews" hidden>
+      <h2>📢 最新更新</h2>
+      <div id="cvNewsList"></div>
+      <button class="cv-more" id="cvNewsMore" hidden>查看全部更新</button>
+    </section>
+    <p class="cv-foot">資料只存在這台裝置 ・ 換手機前請先備份</p>
+  </section>
+
+  <header class="ol-bar" id="olBar" hidden>
+    <a class="ol-brand" href="#/" title="回到封面">
+      <img class="ol-logo" src="icons/brand.png" alt="" width="34" height="34" />
+      <div>
+        <div class="ol-title">自主檢查表</div>
+        <div class="ol-sub">Yimei 營造工具箱</div>
+      </div>
+    </a>
+    <label class="ol-project">
+      <span>工地：</span>
+      <select id="olProject" aria-label="目前工地"></select>
+    </label>
+    <button class="ol-btn" id="olManage" title="公司名稱；新增、改名、刪除工地">✎ 工地</button>
+    <button class="ol-btn" id="olBackup" title="匯出或匯入備份">💾 備份</button>
+    <span class="ol-status" id="olStatus" hidden></span>
+  </header>
+  <div class="ol-remind" id="olRemind" hidden>
+    <span id="olRemindText"></span>
+    <button class="ol-btn" data-remind="backup">💾 立即備份</button>
+    <button class="ol-remind-later" data-remind="later">稍後</button>
+  </div>
+
+  <main class="ol-content" id="content" hidden><div class="sk-empty">載入中…</div></main>
+
+  <dialog class="sk-dialog pj-dialog" id="olDialog"></dialog>
+  <dialog class="sk-dialog tp-dialog" id="olTpl"></dialog>
+  <input type="file" id="olImportFile" accept=".json,application/json" hidden />
+
+  <script>
+    // 共用的自主檢查表畫面（js/pages/self-check.js）用 registerPage 註冊
+    window.PAGES = {};
+    function registerPage(id, def) { window.PAGES[id] = def; }
+  </script>
+  <script src="offline-store.js"></script>
+  <script src="js/pages/self-check-print.js"></script>
+  <script src="js/pages/self-check.js"></script>
+  <script src="js/app-shell.js"></script>
+</body>
+</html>

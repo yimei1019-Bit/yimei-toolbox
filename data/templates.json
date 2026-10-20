@@ -1,0 +1,5087 @@
+{
+ "company": "",
+ "categories": [
+  "假設及基礎工程",
+  "模板工程",
+  "鋼筋工程",
+  "混凝土工程",
+  "裝修工程",
+  "門窗及外牆工程",
+  "防水工程",
+  "金屬工程",
+  "機電設備工程",
+  "景觀工程"
+ ],
+ "templates": {
+  "10": {
+   "category": "鋼筋工程",
+   "title": "板鋼筋工程施工自主檢查表",
+   "sub": "板鋼筋工程",
+   "items": [
+    [
+     "鋼筋規格",
+     "#4、#5、#6"
+    ],
+    [
+     "錨定長度",
+     "#4=15cm、#5=19cm、#6=23cm"
+    ],
+    [
+     "搭接長度",
+     "#4=38cm、#5=47cm、#6=57cm"
+    ],
+    [
+     "排紮方式",
+     "雙層雙向@10、20cm"
+    ],
+    [
+     "高低板差(依設計圖面)",
+     ""
+    ],
+    [
+     "保護層墊塊間距",
+     "上、下層皆@60cm"
+    ],
+    [
+     "保護層是否合乎規定",
+     "2cm，與土壤及水接觸 7.5cm"
+    ],
+    [
+     "開口補強筋",
+     "開口≦30cm，如有截斷，補截斷支數鋼筋，長度突出開口邊一倍伸展長度\n30cm≦開口≦80cm，垂直與水平截斷幾支補幾支，長度為開口短邊+長邊長度，45°斜向各1支同號數長≧兩倍伸展長度"
+    ],
+    [
+     "角隅補強",
+     "長度及範圍1/5L，一半原間距"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công cốt thép sàn",
+    "sub": "Công tác cốt thép sàn",
+    "items": [
+     [
+      "Quy cách cốt thép",
+      "#4, #5, #6"
+     ],
+     [
+      "Chiều dài neo",
+      "#4=15cm, #5=19cm, #6=23cm"
+     ],
+     [
+      "Chiều dài nối chồng",
+      "#4=38cm, #5=47cm, #6=57cm"
+     ],
+     [
+      "Cách bố trí",
+      "2 lớp 2 phương @10, 20cm"
+     ],
+     [
+      "Chênh lệch cao độ sàn (theo bản vẽ thiết kế)",
+      ""
+     ],
+     [
+      "Khoảng cách con kê lớp bảo vệ",
+      "Lớp trên, lớp dưới đều @60cm"
+     ],
+     [
+      "Lớp bê tông bảo vệ có đúng quy định không",
+      "2cm, tiếp xúc với đất và nước 7,5cm"
+     ],
+     [
+      "Thép gia cường lỗ mở",
+      "Lỗ mở ≦ 30cm: nếu có thanh bị cắt thì bổ sung đúng số thanh bị cắt, nhô ra khỏi mép lỗ mở 1 lần chiều dài phát triển\n30cm ≦ lỗ mở ≦ 80cm: cắt bao nhiêu thanh theo phương đứng và ngang thì bổ sung bấy nhiêu, chiều dài bằng cạnh ngắn + cạnh dài lỗ mở; theo phương chéo 45° mỗi phía 1 thanh cùng số hiệu dài ≧ 2 lần chiều dài phát triển"
+     ],
+     [
+      "Gia cường góc",
+      "Chiều dài và phạm vi 1/5L, khoảng cách bằng một nửa khoảng cách ban đầu"
+     ]
+    ]
+   }
+  },
+  "11": {
+   "category": "混凝土工程",
+   "title": "混凝土工程施工自主檢查表-1",
+   "sub": "混凝土工程",
+   "items": [
+    [
+     "鋼筋、模板工程",
+     "查驗完成"
+    ],
+    [
+     "機水電工程",
+     "查驗完成"
+    ],
+    [
+     "澆置高程",
+     "標高器施作完成"
+    ],
+    [
+     "施工高低差",
+     "模板角材施作完成"
+    ],
+    [
+     "清潔口封閉",
+     "封閉完成"
+    ],
+    [
+     "模板內部",
+     "清潔無雜物"
+    ],
+    [
+     "模板振動器",
+     "振動器1~2組"
+    ],
+    [
+     "照明燈具",
+     "照度需充足"
+    ],
+    [
+     "混凝土試體製作人員",
+     "到場準備"
+    ],
+    [
+     "交管人員",
+     "1人到場"
+    ],
+    [
+     "顧模人員",
+     "到場準備"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công bê tông -1",
+    "sub": "Công tác bê tông",
+    "items": [
+     [
+      "Công tác cốt thép, cốp pha",
+      "Đã nghiệm thu xong"
+     ],
+     [
+      "Công tác cơ điện, cấp thoát nước",
+      "Đã nghiệm thu xong"
+     ],
+     [
+      "Cao độ đổ bê tông",
+      "Đã làm xong mốc cao độ"
+     ],
+     [
+      "Chênh lệch cao độ thi công",
+      "Đã làm xong thanh gỗ cốp pha"
+     ],
+     [
+      "Bịt cửa vệ sinh",
+      "Đã bịt xong"
+     ],
+     [
+      "Bên trong cốp pha",
+      "Sạch sẽ, không có vật lạ"
+     ],
+     [
+      "Máy đầm cốp pha",
+      "1~2 bộ máy đầm"
+     ],
+     [
+      "Đèn chiếu sáng",
+      "Độ sáng phải đầy đủ"
+     ],
+     [
+      "Nhân viên lấy mẫu thử bê tông",
+      "Có mặt, đã chuẩn bị"
+     ],
+     [
+      "Nhân viên điều tiết giao thông",
+      "1 người có mặt"
+     ],
+     [
+      "Người trực cốp pha",
+      "Có mặt, đã chuẩn bị"
+     ]
+    ]
+   }
+  },
+  "12": {
+   "category": "混凝土工程",
+   "title": "混凝土工程施工自主檢查表-2",
+   "sub": "混凝土工程",
+   "items": [
+    [
+     "混凝土試體取樣",
+     "@100M3取一組3顆"
+    ],
+    [
+     "坍度",
+     "140、210、280kgf/cm2"
+    ],
+    [
+     "氯離子含量檢測",
+     "小於0.15kg/cm²"
+    ],
+    [
+     "混凝土拌合至澆置時間",
+     "1.氣溫≧25°C 90分鐘以內\n2.氣溫≦25°C 120分鐘以內"
+    ],
+    [
+     "輸送管線不影響模板、鋼筋",
+     "隔墊物、輸送臂直接澆置"
+    ],
+    [
+     "澆置中斷時間",
+     "45分鐘內"
+    ],
+    [
+     "爆模、漏漿情形",
+     "是否爆模、漏漿"
+    ],
+    [
+     "搗實間距、頻率",
+     "間距不大於50cm，每5〜10秒"
+    ],
+    [
+     "澆置管距澆置面高度",
+     "不得大於60cm"
+    ],
+    [
+     "澆置過程中不得加水",
+     "控制水源"
+    ],
+    [
+     "澆置後收尾處理",
+     "平整"
+    ],
+    [
+     "混凝土養治",
+     "灑水、蓋麻布"
+    ],
+    [
+     "完成面有蜂窩",
+     "1.以無收縮水泥修補\n2.蜂窩過大需重新封模，澆置混凝土"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công bê tông -2",
+    "sub": "Công tác bê tông",
+    "items": [
+     [
+      "Lấy mẫu thử bê tông",
+      "Mỗi 100M3 lấy 1 tổ 3 viên"
+     ],
+     [
+      "Độ sụt",
+      "140, 210, 280kgf/cm2"
+     ],
+     [
+      "Kiểm tra hàm lượng ion clorua",
+      "Nhỏ hơn 0,15kg/cm²"
+     ],
+     [
+      "Thời gian từ khi trộn đến khi đổ bê tông",
+      "1. Nhiệt độ ≧ 25°C: trong vòng 90 phút\n2. Nhiệt độ ≦ 25°C: trong vòng 120 phút"
+     ],
+     [
+      "Đường ống bơm không ảnh hưởng đến cốp pha, cốt thép",
+      "Có vật kê lót, hoặc đổ trực tiếp bằng cần bơm"
+     ],
+     [
+      "Thời gian gián đoạn khi đổ",
+      "Trong vòng 45 phút"
+     ],
+     [
+      "Tình trạng bung cốp pha, rò rỉ vữa",
+      "Có bung cốp pha, rò rỉ vữa không"
+     ],
+     [
+      "Khoảng cách, tần suất đầm",
+      "Khoảng cách không quá 50cm, mỗi điểm 5〜10 giây"
+     ],
+     [
+      "Chiều cao từ ống đổ đến mặt bê tông",
+      "Không được lớn hơn 60cm"
+     ],
+     [
+      "Không được thêm nước trong quá trình đổ",
+      "Kiểm soát nguồn nước"
+     ],
+     [
+      "Hoàn thiện bề mặt sau khi đổ",
+      "Phẳng"
+     ],
+     [
+      "Bảo dưỡng bê tông",
+      "Tưới nước, phủ bao bố"
+     ],
+     [
+      "Bề mặt hoàn thiện bị rỗ tổ ong",
+      "1. Sửa bằng vữa xi măng không co ngót\n2. Rỗ tổ ong quá lớn phải ghép lại cốp pha, đổ lại bê tông"
+     ]
+    ]
+   }
+  },
+  "13": {
+   "category": "門窗及外牆工程",
+   "title": "造型鋁格柵工程施工自主檢查表",
+   "sub": "造型鋁格柵工程",
+   "items": [
+    [
+     "地面雜物整理、準備支撐架",
+     "不得損傷"
+    ],
+    [
+     "依據施工圖座標放樣安裝基礎螺栓定位",
+     "相鄰兩基礎面高程差3mm以下。"
+    ],
+    [
+     "剪力釘",
+     "3-19ψ*100、1排 @300mm"
+    ],
+    [
+     "豎線格柵間距",
+     "垂直@1500mm"
+    ],
+    [
+     "膜厚",
+     "30μ±3μ"
+    ],
+    [
+     "製品安裝",
+     "牢固安全"
+    ],
+    [
+     "完成面清理",
+     "完成後應立即將其表面清理乾淨補漆。"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công lam nhôm trang trí",
+    "sub": "Công tác lam nhôm trang trí",
+    "items": [
+     [
+      "Dọn dẹp vật lạ trên mặt đất, chuẩn bị giá đỡ",
+      "Không được làm hư hại"
+     ],
+     [
+      "Định vị bu lông móng theo tọa độ bản vẽ thi công",
+      "Chênh lệch cao độ giữa 2 mặt móng liền kề từ 3mm trở xuống."
+     ],
+     [
+      "Đinh chống cắt",
+      "3-19ψ*100, 1 hàng @300mm"
+     ],
+     [
+      "Khoảng cách lam đứng",
+      "Đứng @1500mm"
+     ],
+     [
+      "Chiều dày lớp phủ",
+      "30μ±3μ"
+     ],
+     [
+      "Lắp đặt sản phẩm",
+      "Chắc chắn, an toàn"
+     ],
+     [
+      "Vệ sinh bề mặt hoàn thiện",
+      "Sau khi hoàn thành phải lập tức vệ sinh sạch bề mặt và sơn dặm."
+     ]
+    ]
+   }
+  },
+  "14": {
+   "category": "假設及基礎工程",
+   "title": "施工架搭設工程施工自主檢查表",
+   "sub": "施工架搭設工程",
+   "items": [
+    [
+     "施工架內外側是否設置交叉拉桿及下拉桿",
+     "設置交叉拉桿及下拉桿"
+    ],
+    [
+     "工作台是否鋪滿密接之板料",
+     "鋪滿密接之板料"
+    ],
+    [
+     "施工架與構造物間之開口超過20公分是否設置安全網或補助板料",
+     "設置安全網、補助板料"
+    ],
+    [
+     "是否設置安全上下設備",
+     "30m內須設置1支安全上下設備"
+    ],
+    [
+     "板料是否設金屬扣鎖及防脫落鉤或以鐵絲固定",
+     "設金屬扣鎖或以鐵絲固定"
+    ],
+    [
+     "施工架兩端立架及轉角處是否設置護欄",
+     "設置護欄"
+    ],
+    [
+     "是否設置安全母索",
+     "有設置安全母索"
+    ],
+    [
+     "壁拉桿",
+     "垂直：@5.5m\n水平：@7.5m"
+    ],
+    [
+     "施工架之材料不得有顯著之損壞、變形或腐蝕",
+     "不得有顯著之損壞、變形或腐蝕"
+    ],
+    [
+     "施工架上載重限制是否於明顯易見處明確標示",
+     "明確標示"
+    ],
+    [
+     "基礎地面是否平整、夯實緊密且架是否設置可調型基腳座鈑",
+     "平整、夯實緊密、設置可調型基腳座鈑"
+    ],
+    [
+     "施工架構件之連接部份是否以插銷(腳柱接頭)等金屬附屬配件確實連接固定",
+     "確實連接固定"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công lắp dựng giàn giáo",
+    "sub": "Công tác lắp dựng giàn giáo",
+    "items": [
+     [
+      "Mặt trong và mặt ngoài giàn giáo có lắp thanh giằng chéo và thanh giằng dưới không",
+      "Có lắp thanh giằng chéo và thanh giằng dưới"
+     ],
+     [
+      "Sàn thao tác có lát kín bằng ván liền khít không",
+      "Lát kín bằng ván liền khít"
+     ],
+     [
+      "Khe hở giữa giàn giáo và công trình vượt quá 20cm có lắp lưới an toàn hoặc ván phụ không",
+      "Có lắp lưới an toàn, ván phụ"
+     ],
+     [
+      "Có lắp thiết bị lên xuống an toàn không",
+      "Trong phạm vi 30m phải có 1 lối lên xuống an toàn"
+     ],
+     [
+      "Ván sàn có khóa kim loại và móc chống tuột hoặc buộc dây thép không",
+      "Có khóa kim loại hoặc buộc bằng dây thép"
+     ],
+     [
+      "Hai đầu khung giàn và các góc có lắp lan can bảo vệ không",
+      "Có lắp lan can bảo vệ"
+     ],
+     [
+      "Có lắp dây cứu sinh chính không",
+      "Có lắp dây cứu sinh chính"
+     ],
+     [
+      "Thanh neo tường",
+      "Đứng: @5,5m\nNgang: @7,5m"
+     ],
+     [
+      "Vật liệu giàn giáo không được hư hỏng, biến dạng hoặc ăn mòn rõ rệt",
+      "Không được hư hỏng, biến dạng hoặc ăn mòn rõ rệt"
+     ],
+     [
+      "Giới hạn tải trọng trên giàn giáo có ghi rõ ở nơi dễ thấy không",
+      "Ghi rõ ràng"
+     ],
+     [
+      "Nền móng có phẳng, đầm chặt và chân giàn có đế điều chỉnh không",
+      "Phẳng, đầm chặt, có đế chân điều chỉnh"
+     ],
+     [
+      "Các mối nối cấu kiện giàn giáo có liên kết chắc chắn bằng chốt (khớp nối chân) và phụ kiện kim loại không",
+      "Liên kết cố định chắc chắn"
+     ]
+    ]
+   }
+  },
+  "15": {
+   "category": "裝修工程",
+   "title": "暗架矽酸鈣天花板工程施工自主檢查表",
+   "sub": "暗架矽酸鈣天花板工程",
+   "items": [
+    [
+     "材料外觀",
+     "表面平整，水平容許誤差±5mm/1m"
+    ],
+    [
+     "材料外觀",
+     "色澤一致"
+    ],
+    [
+     "材料外觀",
+     "無污穢及破損"
+    ],
+    [
+     "材料規格",
+     "依設計圖說"
+    ],
+    [
+     "材料規格",
+     "防火等級：CNS 14705 測試應屬耐燃之一級材料。"
+    ],
+    [
+     "材料規格",
+     "噪音遞減係數（NRC）：0.3，CNS 9056"
+    ],
+    [
+     "吊架裝設",
+     "吊架固定穩固無側移"
+    ],
+    [
+     "吊架裝設",
+     "無變形陷落現象"
+    ],
+    [
+     "吊架裝設",
+     "感應器、出風口固定良好無歪斜鬆動"
+    ],
+    [
+     "接縫處理",
+     "與柱、牆交接處無明顯縫隙，收邊處理良好"
+    ],
+    [
+     "接縫處理",
+     "板面與吊架緊貼無明顯縫隙"
+    ],
+    [
+     "接縫處理",
+     "燈具接縫處處理良好"
+    ],
+    [
+     "完成面",
+     "懸吊系統任何構件之撓度，不得大於跨度之1/360"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công trần tấm canxi silicat khung chìm",
+    "sub": "Công tác trần tấm canxi silicat khung chìm",
+    "items": [
+     [
+      "Ngoại quan vật liệu",
+      "Bề mặt phẳng, sai số ngang cho phép ±5mm/1m"
+     ],
+     [
+      "Ngoại quan vật liệu",
+      "Màu sắc đồng nhất"
+     ],
+     [
+      "Ngoại quan vật liệu",
+      "Không bẩn, không hư hỏng"
+     ],
+     [
+      "Quy cách vật liệu",
+      "Theo bản vẽ thiết kế"
+     ],
+     [
+      "Quy cách vật liệu",
+      "Cấp chống cháy: thử nghiệm theo CNS 14705 phải là vật liệu chống cháy cấp 1."
+     ],
+     [
+      "Quy cách vật liệu",
+      "Hệ số giảm ồn (NRC): 0,3, CNS 9056"
+     ],
+     [
+      "Lắp đặt ty treo",
+      "Ty treo cố định chắc chắn, không xê dịch ngang"
+     ],
+     [
+      "Lắp đặt ty treo",
+      "Không bị biến dạng, võng sụt"
+     ],
+     [
+      "Lắp đặt ty treo",
+      "Đầu báo, miệng gió cố định tốt, không lệch, không lỏng"
+     ],
+     [
+      "Xử lý mối nối",
+      "Chỗ tiếp giáp với cột, tường không có khe hở rõ rệt, xử lý viền tốt"
+     ],
+     [
+      "Xử lý mối nối",
+      "Tấm trần áp sát khung treo, không có khe hở rõ rệt"
+     ],
+     [
+      "Xử lý mối nối",
+      "Mối nối tại đèn được xử lý tốt"
+     ],
+     [
+      "Bề mặt hoàn thiện",
+      "Độ võng của bất kỳ cấu kiện nào trong hệ treo không được lớn hơn 1/360 nhịp"
+     ]
+    ]
+   }
+  },
+  "16": {
+   "category": "裝修工程",
+   "title": "輕隔間工程施工自主檢查表-1",
+   "sub": "輕隔間工程",
+   "items": [
+    [
+     "材料外觀",
+     "無破損變形"
+    ],
+    [
+     "材料規格",
+     "厚度12.5mm±5%"
+    ],
+    [
+     "材料規格",
+     "符合耐燃一級標準並通過綠建材標章"
+    ],
+    [
+     "材料規格",
+     "防火時效一小時證明"
+    ],
+    [
+     "C型立柱間距",
+     "@406mm"
+    ],
+    [
+     "加強橫撑間距",
+     "@1200mm"
+    ],
+    [
+     "隔間牆管線開孔補強",
+     "補強上槽鐵及立柱"
+    ],
+    [
+     "吊櫃、衛生器具補強鐵片",
+     "鋼板10cm×1.2mm"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công vách ngăn nhẹ -1",
+    "sub": "Công tác vách ngăn nhẹ",
+    "items": [
+     [
+      "Ngoại quan vật liệu",
+      "Không hư hỏng, không biến dạng"
+     ],
+     [
+      "Quy cách vật liệu",
+      "Chiều dày 12,5mm ±5%"
+     ],
+     [
+      "Quy cách vật liệu",
+      "Đạt tiêu chuẩn chống cháy cấp 1 và có nhãn vật liệu xây dựng xanh"
+     ],
+     [
+      "Quy cách vật liệu",
+      "Có chứng nhận chịu lửa 1 giờ"
+     ],
+     [
+      "Khoảng cách thanh đứng chữ C",
+      "@406mm"
+     ],
+     [
+      "Khoảng cách thanh giằng ngang gia cường",
+      "@1200mm"
+     ],
+     [
+      "Gia cường lỗ mở đường ống trên vách ngăn",
+      "Gia cường bằng thanh U trên và thanh đứng"
+     ],
+     [
+      "Bản thép gia cường cho tủ treo, thiết bị vệ sinh",
+      "Thép tấm 10cm × 1,2mm"
+     ]
+    ]
+   }
+  },
+  "17": {
+   "category": "裝修工程",
+   "title": "輕隔間工程施工自主檢查表-2",
+   "sub": "輕隔間工程",
+   "items": [
+    [
+     "批土施工",
+     "板面螺絲間距垂直@30cm，水平@40.6cm"
+    ],
+    [
+     "批土施工",
+     "第一道以彈性補土打底，再貼上玻纖帶以刮刀貼平，在於上方塗抹彈性補土"
+    ],
+    [
+     "批土施工",
+     "第一道彈性補土完全乾後，批第二道"
+    ],
+    [
+     "批土施工",
+     "第二道彈性補土完全乾後，批第三道石膏土"
+    ],
+    [
+     "批土施工",
+     "螺絲釘孔及灌漿孔也同樣批土"
+    ],
+    [
+     "接縫處理",
+     "板縫間隙3～5mm"
+    ],
+    [
+     "接縫處理",
+     "牆面陽角使用金屬護角，並批土"
+    ],
+    [
+     "完成面",
+     "須平整無污染"
+    ],
+    [
+     "完成面",
+     "垂直度偏差需小於1cm"
+    ],
+    [
+     "完成面",
+     "板面凹凸：60cm內不得大於3mm"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công vách ngăn nhẹ -2",
+    "sub": "Công tác vách ngăn nhẹ",
+    "items": [
+     [
+      "Thi công trét bả",
+      "Khoảng cách vít trên mặt tấm: đứng @30cm, ngang @40,6cm"
+     ],
+     [
+      "Thi công trét bả",
+      "Lớp thứ nhất lót bằng bột bả đàn hồi, dán băng lưới sợi thủy tinh rồi miết phẳng bằng bay, sau đó phủ bột bả đàn hồi lên trên"
+     ],
+     [
+      "Thi công trét bả",
+      "Sau khi lớp bả đàn hồi thứ nhất khô hoàn toàn, bả lớp thứ hai"
+     ],
+     [
+      "Thi công trét bả",
+      "Sau khi lớp bả đàn hồi thứ hai khô hoàn toàn, bả lớp thứ ba bằng bột thạch cao"
+     ],
+     [
+      "Thi công trét bả",
+      "Lỗ vít và lỗ bơm vữa cũng phải trét bả tương tự"
+     ],
+     [
+      "Xử lý mối nối",
+      "Khe hở giữa các tấm 3～5mm"
+     ],
+     [
+      "Xử lý mối nối",
+      "Góc lồi của tường dùng nẹp góc kim loại và trét bả"
+     ],
+     [
+      "Bề mặt hoàn thiện",
+      "Phải phẳng, không bị bẩn"
+     ],
+     [
+      "Bề mặt hoàn thiện",
+      "Sai lệch độ thẳng đứng phải nhỏ hơn 1cm"
+     ],
+     [
+      "Bề mặt hoàn thiện",
+      "Độ lồi lõm mặt tấm: trong 60cm không được lớn hơn 3mm"
+     ]
+    ]
+   }
+  },
+  "18": {
+   "category": "門窗及外牆工程",
+   "title": "清玻璃工程施工自主檢查表",
+   "sub": "清玻璃工程",
+   "items": [
+    [
+     "材料外觀",
+     "尺寸依設計圖說"
+    ],
+    [
+     "材料外觀",
+     "不可有明顯氣泡"
+    ],
+    [
+     "材料規格",
+     "厚度：詳設計圖說"
+    ],
+    [
+     "材料規格",
+     "顏色：依設計圖說"
+    ],
+    [
+     "材料規格",
+     "玻璃組合：單片或膠合"
+    ],
+    [
+     "材料規格",
+     "可視透光度：89％～91％"
+    ],
+    [
+     "安裝",
+     "將聚氯丁合成橡膠墊塊置於玻璃片底部1/4長度位置"
+    ],
+    [
+     "安裝",
+     "墊塊使玻璃與框架距離至少1.5mm以上"
+    ],
+    [
+     "安裝",
+     "須在氣溫高於5，且安裝前24小時內預測不下雨天氣完工"
+    ],
+    [
+     "完成面",
+     "玻璃板如有明顯損耗斑點、扭曲、波紋時，應將換新"
+    ],
+    [
+     "完成面",
+     "驗收前須徹底清除污漬、油漆、粉刷或其他有礙觀瞻之物，並擦拭乾淨"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công kính trong",
+    "sub": "Công tác kính trong",
+    "items": [
+     [
+      "Ngoại quan vật liệu",
+      "Kích thước theo bản vẽ thiết kế"
+     ],
+     [
+      "Ngoại quan vật liệu",
+      "Không được có bọt khí rõ rệt"
+     ],
+     [
+      "Quy cách vật liệu",
+      "Chiều dày: xem bản vẽ thiết kế"
+     ],
+     [
+      "Quy cách vật liệu",
+      "Màu sắc: theo bản vẽ thiết kế"
+     ],
+     [
+      "Quy cách vật liệu",
+      "Cấu tạo kính: kính đơn hoặc kính dán"
+     ],
+     [
+      "Quy cách vật liệu",
+      "Độ truyền sáng khả kiến: 89％～91％"
+     ],
+     [
+      "Lắp đặt",
+      "Đặt miếng đệm cao su tổng hợp polychloroprene tại vị trí 1/4 chiều dài đáy tấm kính"
+     ],
+     [
+      "Lắp đặt",
+      "Miếng đệm giữ cho kính cách khung ít nhất 1,5mm trở lên"
+     ],
+     [
+      "Lắp đặt",
+      "Phải hoàn thành khi nhiệt độ trên 5 độ và dự báo không mưa trong 24 giờ trước khi lắp đặt"
+     ],
+     [
+      "Bề mặt hoàn thiện",
+      "Tấm kính nếu có vết hư hao, cong vênh, gợn sóng rõ rệt phải thay mới"
+     ],
+     [
+      "Bề mặt hoàn thiện",
+      "Trước khi nghiệm thu phải làm sạch hoàn toàn vết bẩn, sơn, vữa trát hoặc các vật gây mất mỹ quan khác, và lau sạch"
+     ]
+    ]
+   }
+  },
+  "19": {
+   "category": "裝修工程",
+   "title": "抿石子工程施工自主檢查表",
+   "sub": "抿石子工程",
+   "items": [
+    [
+     "材料外觀",
+     "已進行選樣選色，並依選定之顏色施作"
+    ],
+    [
+     "分割縫規劃",
+     "依核定之施工圖放樣"
+    ],
+    [
+     "表面清潔",
+     "施工前有先潤濕，清潔雜物及粉塵"
+    ],
+    [
+     "色澤",
+     "色澤一致，無明顯色差"
+    ],
+    [
+     "露石均勻",
+     "無過禿或過密區域"
+    ],
+    [
+     "空鼓檢查",
+     "無空鼓現象"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công trát đá rửa",
+    "sub": "Công tác trát đá rửa",
+    "items": [
+     [
+      "Ngoại quan vật liệu",
+      "Đã chọn mẫu, chọn màu và thi công theo màu đã chọn"
+     ],
+     [
+      "Bố trí đường ron phân chia",
+      "Định vị theo bản vẽ thi công đã duyệt"
+     ],
+     [
+      "Vệ sinh bề mặt",
+      "Trước khi thi công đã làm ẩm, làm sạch vật lạ và bụi"
+     ],
+     [
+      "Màu sắc",
+      "Màu sắc đồng nhất, không chênh lệch màu rõ rệt"
+     ],
+     [
+      "Độ lộ đá đều",
+      "Không có vùng quá thưa hoặc quá dày"
+     ],
+     [
+      "Kiểm tra bộp rỗng",
+      "Không có hiện tượng bộp rỗng"
+     ]
+    ]
+   }
+  },
+  "20": {
+   "category": "裝修工程",
+   "title": "磁磚工程施工自主檢查表",
+   "sub": "磁磚工程",
+   "items": [
+    [
+     "施工圖製作",
+     "已審核完成"
+    ],
+    [
+     "材料外觀",
+     "同一批號無明顯之色差"
+    ],
+    [
+     "材料規格",
+     "尺寸與設計相符"
+    ],
+    [
+     "鋪貼",
+     "外牆打底水泥砂漿及填縫建議使用防水劑或1：2防水砂漿打底"
+    ],
+    [
+     "鋪貼",
+     "平整、正直"
+    ],
+    [
+     "鋪貼",
+     "裁切面磚不足1塊者建議不小於半塊"
+    ],
+    [
+     "鋪貼",
+     "面磚裁切之切口平順整齊"
+    ],
+    [
+     "嵌縫處理",
+     "寬度不得小於3mm或大於12mm"
+    ],
+    [
+     "嵌縫處理",
+     "瓷磚面應清洗"
+    ],
+    [
+     "完成面",
+     "填縫在48小時內應禁止踩踏"
+    ],
+    [
+     "完成面",
+     "應保持乾淨，避免裂紋、缺口、破損、空隙或其他缺點"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công ốp lát gạch",
+    "sub": "Công tác ốp lát gạch",
+    "items": [
+     [
+      "Lập bản vẽ thi công",
+      "Đã duyệt xong"
+     ],
+     [
+      "Ngoại quan vật liệu",
+      "Cùng số lô không có chênh lệch màu rõ rệt"
+     ],
+     [
+      "Quy cách vật liệu",
+      "Kích thước phù hợp với thiết kế"
+     ],
+     [
+      "Ốp lát",
+      "Vữa xi măng lót và chít mạch tường ngoài nên dùng phụ gia chống thấm, hoặc lót bằng vữa chống thấm 1:2"
+     ],
+     [
+      "Ốp lát",
+      "Phẳng, ngay thẳng"
+     ],
+     [
+      "Ốp lát",
+      "Viên gạch cắt không đủ 1 viên thì nên không nhỏ hơn nửa viên"
+     ],
+     [
+      "Ốp lát",
+      "Vết cắt gạch phẳng, gọn"
+     ],
+     [
+      "Xử lý chít mạch",
+      "Chiều rộng không được nhỏ hơn 3mm hoặc lớn hơn 12mm"
+     ],
+     [
+      "Xử lý chít mạch",
+      "Phải rửa sạch mặt gạch"
+     ],
+     [
+      "Bề mặt hoàn thiện",
+      "Cấm giẫm lên trong vòng 48 giờ sau khi chít mạch"
+     ],
+     [
+      "Bề mặt hoàn thiện",
+      "Phải giữ sạch, tránh nứt, mẻ, vỡ, rỗng hoặc các khuyết tật khác"
+     ]
+    ]
+   }
+  },
+  "21": {
+   "category": "裝修工程",
+   "title": "高壓磚工程施工自主檢查表",
+   "sub": "高壓磚工程",
+   "items": [
+    [
+     "施工圖製作",
+     "施工圖已審核完成"
+    ],
+    [
+     "材料外觀",
+     "是否破損"
+    ],
+    [
+     "材料尺寸",
+     "尺寸依設計圖說"
+    ],
+    [
+     "底層",
+     "土壤夯實度達85%以上"
+    ],
+    [
+     "鋪設",
+     "切割單元不得缺角破損"
+    ],
+    [
+     "鋪設",
+     "襯墊砂鋪設前厚度約3cm"
+    ],
+    [
+     "接縫處理",
+     "應將多餘之填縫砂清除"
+    ],
+    [
+     "平整度",
+     "3m長度小於5mm"
+    ],
+    [
+     "完成面",
+     "應立即清理鋪面表面"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công gạch block lát nền",
+    "sub": "Công tác gạch block lát nền",
+    "items": [
+     [
+      "Lập bản vẽ thi công",
+      "Bản vẽ thi công đã được duyệt xong"
+     ],
+     [
+      "Ngoại quan vật liệu",
+      "Có bị hư hỏng không"
+     ],
+     [
+      "Kích thước vật liệu",
+      "Kích thước theo bản vẽ thiết kế"
+     ],
+     [
+      "Lớp nền",
+      "Độ đầm chặt đất đạt 85% trở lên"
+     ],
+     [
+      "Lát gạch",
+      "Viên gạch cắt không được sứt góc, hư hỏng"
+     ],
+     [
+      "Lát gạch",
+      "Chiều dày lớp cát lót trước khi lát khoảng 3cm"
+     ],
+     [
+      "Xử lý mạch",
+      "Phải dọn sạch cát chèn mạch thừa"
+     ],
+     [
+      "Độ phẳng",
+      "Trên chiều dài 3m nhỏ hơn 5mm"
+     ],
+     [
+      "Bề mặt hoàn thiện",
+      "Phải lập tức vệ sinh bề mặt lát"
+     ]
+    ]
+   }
+  },
+  "22": {
+   "category": "裝修工程",
+   "title": "PVC踢腳板工程施工自主檢查表",
+   "sub": "PVC踢腳板工程",
+   "items": [
+    [
+     "材料外觀",
+     "是否破損"
+    ],
+    [
+     "材料高度",
+     "10cm±0.5cm(以選材為基準)"
+    ],
+    [
+     "材料厚度",
+     "厚度4±1mm(以選材為基準)"
+    ],
+    [
+     "材料特性",
+     "防火性：不自燃，不助燃"
+    ],
+    [
+     "安裝",
+     "內角、外角轉角部分，不可切斷，需一體連成型"
+    ],
+    [
+     "安裝",
+     "每隔約20cm，以無頭鋼釘固定"
+    ],
+    [
+     "安裝",
+     "不得產生鬆動及凹洞現象"
+    ],
+    [
+     "接縫處理",
+     "不可有明顯縫隙"
+    ],
+    [
+     "接縫處理",
+     "不可鬆動"
+    ],
+    [
+     "完成面",
+     "完工後須清潔乾淨"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công len chân tường PVC",
+    "sub": "Công tác len chân tường PVC",
+    "items": [
+     [
+      "Ngoại quan vật liệu",
+      "Có bị hư hỏng không"
+     ],
+     [
+      "Chiều cao vật liệu",
+      "10cm ±0,5cm (theo vật liệu đã chọn)"
+     ],
+     [
+      "Chiều dày vật liệu",
+      "Chiều dày 4±1mm (theo vật liệu đã chọn)"
+     ],
+     [
+      "Đặc tính vật liệu",
+      "Chống cháy: không tự cháy, không duy trì cháy"
+     ],
+     [
+      "Lắp đặt",
+      "Phần góc trong, góc ngoài không được cắt rời, phải liền một khối"
+     ],
+     [
+      "Lắp đặt",
+      "Khoảng mỗi 20cm cố định bằng đinh thép không mũ"
+     ],
+     [
+      "Lắp đặt",
+      "Không được lỏng lẻo hoặc lõm"
+     ],
+     [
+      "Xử lý mối nối",
+      "Không được có khe hở rõ rệt"
+     ],
+     [
+      "Xử lý mối nối",
+      "Không được lỏng lẻo"
+     ],
+     [
+      "Bề mặt hoàn thiện",
+      "Sau khi hoàn thành phải vệ sinh sạch sẽ"
+     ]
+    ]
+   }
+  },
+  "23": {
+   "category": "假設及基礎工程",
+   "title": "鋼軌樁工程施工自主檢查表",
+   "sub": "鋼軌樁工程",
+   "items": [
+    [
+     "基地高程基準",
+     "工區內找的到基準線"
+    ],
+    [
+     "材料堆置區及重機械行進路線",
+     "不妨礙其他工項進行"
+    ],
+    [
+     "鋼軌樁材料進場（規格）",
+     "依施工圖規格：____ mm（高×寬，各工地自行填寫）"
+    ],
+    [
+     "鋼軌樁材料長度",
+     "L=12M"
+    ],
+    [
+     "鋼軌樁點位放樣（平面X、Y向依施工圖核對）",
+     "誤差≦10cm"
+    ],
+    [
+     "鋼軌豎立",
+     "@40CM，誤差≦10cm"
+    ],
+    [
+     "垂直度",
+     "因地質不同而異向基地外傾斜\n不得傾斜入結構體內"
+    ],
+    [
+     "現場樁頂高程齊平",
+     "誤差50mm以內(可順利拔樁為原則)"
+    ],
+    [
+     "鋼軌樁打設完成",
+     "符合圖說"
+    ],
+    [
+     "露明部分",
+     "平整無變形"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công cọc ray thép",
+    "sub": "Công tác cọc ray thép",
+    "items": [
+     [
+      "Mốc cao độ chuẩn của công trường",
+      "Tìm được đường chuẩn trong khu vực thi công"
+     ],
+     [
+      "Khu vực tập kết vật liệu và tuyến di chuyển của máy móc hạng nặng",
+      "Không cản trở các hạng mục khác"
+     ],
+     [
+      "Vật liệu cọc ray thép nhập công trường (quy cách)",
+      "Theo quy cách bản vẽ thi công: ____ mm (cao×rộng, mỗi công trường tự điền)"
+     ],
+     [
+      "Chiều dài vật liệu cọc ray thép",
+      "L=12M"
+     ],
+     [
+      "Định vị điểm cọc ray thép (đối chiếu phương X, Y trên mặt bằng với bản vẽ thi công)",
+      "Sai số ≦ 10cm"
+     ],
+     [
+      "Dựng ray thép",
+      "@40CM, sai số ≦ 10cm"
+     ],
+     [
+      "Độ thẳng đứng",
+      "Thay đổi tùy địa chất, nghiêng ra phía ngoài khu đất\nKhông được nghiêng vào trong kết cấu"
+     ],
+     [
+      "Cao độ đầu cọc tại hiện trường bằng nhau",
+      "Sai số trong phạm vi 50mm (nguyên tắc là nhổ cọc thuận lợi)"
+     ],
+     [
+      "Hoàn thành đóng cọc ray thép",
+      "Đúng bản vẽ"
+     ],
+     [
+      "Phần lộ ra ngoài",
+      "Phẳng, không biến dạng"
+     ]
+    ]
+   }
+  },
+  "24": {
+   "category": "裝修工程",
+   "title": "水泥粉刷施工自主檢查表",
+   "sub": "水泥粉刷",
+   "items": [
+    [
+     "吊線時重錘是否自然落下，不被風吹動",
+     "自然落下，不被風吹動"
+    ],
+    [
+     "線溝應清除完整，吊線處是否有阻礙物",
+     "牆面須清除乾淨"
+    ],
+    [
+     "牆面打石處應噴漆",
+     "以任一顏色表示"
+    ],
+    [
+     "牆面貼灰誌",
+     "每隔150cm作一灰誌"
+    ],
+    [
+     "砂漿拌合配比",
+     "一般粉刷1:3\n防水粉刷1:2"
+    ],
+    [
+     "粉刷底層打底",
+     "使用黏著劑"
+    ],
+    [
+     "粉刷面應平整且無裂縫",
+     "以尺貼牆面150cm不得大於3mm"
+    ],
+    [
+     "面層粉光底層品質",
+     "底層須無鼓脹龜裂現象"
+    ],
+    [
+     "門窗邊角線及牆之內外線",
+     "內外線須平直"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công trát vữa xi măng",
+    "sub": "Trát vữa xi măng",
+    "items": [
+     [
+      "Quả dọi khi thả dây có rơi tự nhiên, không bị gió thổi lệch không",
+      "Rơi tự nhiên, không bị gió thổi lệch"
+     ],
+     [
+      "Rãnh dây phải được dọn sạch, chỗ thả dây có vật cản không",
+      "Mặt tường phải được dọn sạch"
+     ],
+     [
+      "Chỗ đục tường phải phun sơn đánh dấu",
+      "Dùng màu bất kỳ để đánh dấu"
+     ],
+     [
+      "Gắn mốc trát trên tường",
+      "Cứ mỗi 150cm làm 1 mốc trát"
+     ],
+     [
+      "Tỷ lệ trộn vữa",
+      "Trát thông thường 1:3\nTrát chống thấm 1:2"
+     ],
+     [
+      "Lớp lót trát",
+      "Sử dụng chất kết dính"
+     ],
+     [
+      "Mặt trát phải phẳng và không nứt",
+      "Áp thước vào tường 150cm, khe hở không lớn hơn 3mm"
+     ],
+     [
+      "Chất lượng lớp lót trước khi xoa mặt",
+      "Lớp lót không bị phồng rộp, nứt chân chim"
+     ],
+     [
+      "Đường cạnh góc cửa đi, cửa sổ và đường góc trong ngoài của tường",
+      "Đường góc trong ngoài phải thẳng"
+     ]
+    ]
+   }
+  },
+  "25": {
+   "category": "裝修工程",
+   "title": "油漆工程施工自主檢查表",
+   "sub": "油漆工程",
+   "items": [
+    [
+     "底面清潔",
+     "裂縫、釘孔等缺口，應用彈性材批土填補磨平"
+    ],
+    [
+     "底面清潔",
+     "表面殘餘泥渣、灰塵、污物等需以鐵片輕刮去除"
+    ],
+    [
+     "底面清潔",
+     "五金、電器裝備及其他物品，於塗裝前應妥善保護以免污染"
+    ],
+    [
+     "底面清潔",
+     "材料應為選定廠商原裝固封貨品"
+    ],
+    [
+     "材料規格",
+     "油漆廠牌與合約相符，顏色與選色會議決定之色樣相符"
+    ],
+    [
+     "牆面含水率",
+     "不得高於10%"
+    ],
+    [
+     "空氣相對濕度",
+     "不得高於80%"
+    ],
+    [
+     "表面溫度",
+     "不得高於40℃"
+    ],
+    [
+     "油漆總乾膜厚度",
+     "膜厚= ≧100um"
+    ],
+    [
+     "塗刷品質",
+     "均勻平滑"
+    ],
+    [
+     "塗刷品質",
+     "無氣泡"
+    ],
+    [
+     "塗刷品質",
+     "無流痕"
+    ],
+    [
+     "塗刷品質",
+     "無高低不平等現象"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công sơn",
+    "sub": "Công tác sơn",
+    "items": [
+     [
+      "Vệ sinh bề mặt nền",
+      "Các khuyết tật như vết nứt, lỗ đinh phải trét bả bằng vật liệu đàn hồi và chà phẳng"
+     ],
+     [
+      "Vệ sinh bề mặt nền",
+      "Cặn vữa, bụi, vết bẩn còn sót trên bề mặt phải cạo nhẹ bằng bay thép để loại bỏ"
+     ],
+     [
+      "Vệ sinh bề mặt nền",
+      "Phụ kiện kim loại, thiết bị điện và các vật khác phải được che chắn cẩn thận trước khi sơn để tránh bị bẩn"
+     ],
+     [
+      "Vệ sinh bề mặt nền",
+      "Vật liệu phải là hàng nguyên đai nguyên kiện của nhà sản xuất đã chọn"
+     ],
+     [
+      "Quy cách vật liệu",
+      "Nhãn hiệu sơn đúng hợp đồng, màu sắc đúng mẫu màu đã quyết định tại cuộc họp chọn màu"
+     ],
+     [
+      "Độ ẩm mặt tường",
+      "Không được cao hơn 10%"
+     ],
+     [
+      "Độ ẩm tương đối của không khí",
+      "Không được cao hơn 80%"
+     ],
+     [
+      "Nhiệt độ bề mặt",
+      "Không được cao hơn 40℃"
+     ],
+     [
+      "Tổng chiều dày màng sơn khô",
+      "Chiều dày màng = ≧100um"
+     ],
+     [
+      "Chất lượng sơn",
+      "Đều, láng mịn"
+     ],
+     [
+      "Chất lượng sơn",
+      "Không có bọt khí"
+     ],
+     [
+      "Chất lượng sơn",
+      "Không có vết chảy"
+     ],
+     [
+      "Chất lượng sơn",
+      "Không lồi lõm không đều"
+     ]
+    ]
+   }
+  },
+  "26": {
+   "category": "門窗及外牆工程",
+   "title": "門扇及門樘工程施工自主檢查表",
+   "sub": "門扇及門樘工程",
+   "items": [
+    [
+     "開口尺寸",
+     "以核對建築與結構圖，確認開口尺寸與門窗表相符"
+    ],
+    [
+     "門框扇尺寸",
+     "與門窗表相符"
+    ],
+    [
+     "清潔",
+     "若沾上灰漿，應在未乾前拭除"
+    ],
+    [
+     "門樘安裝",
+     "垂直方整、排列整齊"
+    ],
+    [
+     "鋼門框四周填塞水泥砂漿",
+     "不可過份用力擠壓，避免門框變形"
+    ],
+    [
+     "四周淺溝打設矽利康",
+     "平整無破損"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công cánh cửa và khung cửa",
+    "sub": "Công tác cánh cửa và khung cửa",
+    "items": [
+     [
+      "Kích thước lỗ mở",
+      "Đối chiếu bản vẽ kiến trúc và kết cấu, xác nhận kích thước lỗ mở phù hợp với bảng thống kê cửa"
+     ],
+     [
+      "Kích thước khung và cánh cửa",
+      "Phù hợp với bảng thống kê cửa"
+     ],
+     [
+      "Vệ sinh",
+      "Nếu dính vữa phải lau sạch trước khi khô"
+     ],
+     [
+      "Lắp đặt khung cửa",
+      "Thẳng đứng, vuông vắn, xếp hàng ngay ngắn"
+     ],
+     [
+      "Chèn vữa xi măng xung quanh khung cửa thép",
+      "Không được ép quá mạnh, tránh làm biến dạng khung cửa"
+     ],
+     [
+      "Bơm silicone rãnh nông xung quanh",
+      "Phẳng, không hư hỏng"
+     ]
+    ]
+   }
+  },
+  "27": {
+   "category": "門窗及外牆工程",
+   "title": "帷幕牆工程施工自主檢查表",
+   "sub": "帷幕牆工程",
+   "items": [
+    [
+     "鋁料",
+     "鋁骨料"
+    ],
+    [
+     "鋁料",
+     "材料尺寸"
+    ],
+    [
+     "預埋鐵件or固定件",
+     "預埋鐵件型式"
+    ],
+    [
+     "預埋鐵件or固定件",
+     "施作位置"
+    ],
+    [
+     "安裝鋁板帷幕",
+     "鋁直料垂直度"
+    ],
+    [
+     "安裝鋁板帷幕",
+     "橫料水平度"
+    ],
+    [
+     "安裝鋁板帷幕",
+     "固定螺絲"
+    ],
+    [
+     "安裝玻璃",
+     "玻璃完整性"
+    ],
+    [
+     "安裝玻璃",
+     "矽利康"
+    ],
+    [
+     "拆除清洗",
+     "剔除保護膜"
+    ],
+    [
+     "拆除清洗",
+     "清洗"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công vách kính mặt dựng",
+    "sub": "Công tác vách kính mặt dựng",
+    "items": [
+     [
+      "Vật liệu nhôm",
+      "Khung xương nhôm"
+     ],
+     [
+      "Vật liệu nhôm",
+      "Kích thước vật liệu"
+     ],
+     [
+      "Bản mã chôn sẵn hoặc chi tiết cố định",
+      "Kiểu bản mã chôn sẵn"
+     ],
+     [
+      "Bản mã chôn sẵn hoặc chi tiết cố định",
+      "Vị trí thi công"
+     ],
+     [
+      "Lắp đặt mặt dựng tấm nhôm",
+      "Độ thẳng đứng của thanh nhôm đứng"
+     ],
+     [
+      "Lắp đặt mặt dựng tấm nhôm",
+      "Độ nằm ngang của thanh ngang"
+     ],
+     [
+      "Lắp đặt mặt dựng tấm nhôm",
+      "Vít cố định"
+     ],
+     [
+      "Lắp đặt kính",
+      "Độ nguyên vẹn của kính"
+     ],
+     [
+      "Lắp đặt kính",
+      "Silicone"
+     ],
+     [
+      "Tháo dỡ, vệ sinh",
+      "Bóc màng bảo vệ"
+     ],
+     [
+      "Tháo dỡ, vệ sinh",
+      "Vệ sinh"
+     ]
+    ]
+   }
+  },
+  "28": {
+   "category": "機電設備工程",
+   "title": "電梯工程施工自主檢查表-1",
+   "sub": "電梯工程",
+   "items": [
+    [
+     "電梯井",
+     "OH及PIT"
+    ],
+    [
+     "電梯井",
+     "機房樓板開孔"
+    ],
+    [
+     "電梯井",
+     "防水工程"
+    ],
+    [
+     "電梯井",
+     "清潔度"
+    ],
+    [
+     "電梯井",
+     "管線外露"
+    ],
+    [
+     "外門",
+     "開關盒高度"
+    ],
+    [
+     "外門",
+     "開關及指示功能"
+    ],
+    [
+     "外門",
+     "開關門是否平順或有異聲"
+    ],
+    [
+     "外門",
+     "門框垂直"
+    ],
+    [
+     "外門",
+     "門板間隙"
+    ],
+    [
+     "外門",
+     "組裝牢固"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công thang máy -1",
+    "sub": "Công tác thang máy",
+    "items": [
+     [
+      "Giếng thang",
+      "OH và hố PIT"
+     ],
+     [
+      "Giếng thang",
+      "Lỗ mở sàn phòng máy"
+     ],
+     [
+      "Giếng thang",
+      "Công tác chống thấm"
+     ],
+     [
+      "Giếng thang",
+      "Độ sạch sẽ"
+     ],
+     [
+      "Giếng thang",
+      "Đường ống, dây lộ ra ngoài"
+     ],
+     [
+      "Cửa tầng",
+      "Chiều cao hộp nút bấm"
+     ],
+     [
+      "Cửa tầng",
+      "Chức năng nút bấm và chỉ báo"
+     ],
+     [
+      "Cửa tầng",
+      "Đóng mở cửa có êm, có tiếng lạ không"
+     ],
+     [
+      "Cửa tầng",
+      "Khung cửa thẳng đứng"
+     ],
+     [
+      "Cửa tầng",
+      "Khe hở cánh cửa"
+     ],
+     [
+      "Cửa tầng",
+      "Lắp ráp chắc chắn"
+     ]
+    ]
+   }
+  },
+  "29": {
+   "category": "機電設備工程",
+   "title": "電梯工程施工自主檢查表-2",
+   "sub": "電梯工程",
+   "items": [
+    [
+     "電梯車廂",
+     "樓層準確度"
+    ],
+    [
+     "電梯車廂",
+     "電梯門防夾裝置"
+    ],
+    [
+     "電梯車廂",
+     "顯示器"
+    ],
+    [
+     "電梯車廂",
+     "照明與通風"
+    ],
+    [
+     "電梯車廂",
+     "警報系統"
+    ],
+    [
+     "電梯車廂",
+     "停電應變"
+    ],
+    [
+     "外觀",
+     "電梯外門"
+    ],
+    [
+     "外觀",
+     "電梯車廂"
+    ],
+    [
+     "外觀",
+     "保護"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công thang máy -2",
+    "sub": "Công tác thang máy",
+    "items": [
+     [
+      "Cabin thang máy",
+      "Độ chính xác dừng tầng"
+     ],
+     [
+      "Cabin thang máy",
+      "Thiết bị chống kẹp cửa thang"
+     ],
+     [
+      "Cabin thang máy",
+      "Màn hình hiển thị"
+     ],
+     [
+      "Cabin thang máy",
+      "Chiếu sáng và thông gió"
+     ],
+     [
+      "Cabin thang máy",
+      "Hệ thống báo động"
+     ],
+     [
+      "Cabin thang máy",
+      "Xử lý khi mất điện"
+     ],
+     [
+      "Ngoại quan",
+      "Cửa tầng thang máy"
+     ],
+     [
+      "Ngoại quan",
+      "Cabin thang máy"
+     ],
+     [
+      "Ngoại quan",
+      "Bảo vệ"
+     ]
+    ]
+   }
+  },
+  "30": {
+   "category": "防水工程",
+   "title": "防水工程施工自主檢查表-1",
+   "sub": "防水工程",
+   "items": [
+    [
+     "材料規格",
+     "彈性水泥、PU防水膜、EP防水膜"
+    ],
+    [
+     "施工面",
+     "清潔無雜物、基層含水率≤6%\n大氣相對溼度≤85%"
+    ],
+    [
+     "塗佈",
+     "底層塗佈≧0.2kg/m²"
+    ],
+    [
+     "塗佈",
+     "依各類材料規定\n中層塗佈≧1.5〜2.5kg/m²"
+    ],
+    [
+     "塗佈",
+     "面層塗佈依設計詳圖規定"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công chống thấm -1",
+    "sub": "Công tác chống thấm",
+    "items": [
+     [
+      "Quy cách vật liệu",
+      "Xi măng đàn hồi, màng chống thấm PU, màng chống thấm EP"
+     ],
+     [
+      "Bề mặt thi công",
+      "Sạch sẽ, không có vật lạ, độ ẩm lớp nền ≤ 6%\nĐộ ẩm tương đối không khí ≤ 85%"
+     ],
+     [
+      "Quét phủ",
+      "Lớp lót quét ≧ 0,2kg/m²"
+     ],
+     [
+      "Quét phủ",
+      "Theo quy định của từng loại vật liệu\nLớp giữa quét ≧ 1,5〜2,5kg/m²"
+     ],
+     [
+      "Quét phủ",
+      "Lớp mặt quét theo quy định của bản vẽ chi tiết thiết kế"
+     ]
+    ]
+   }
+  },
+  "31": {
+   "category": "防水工程",
+   "title": "防水工程施工自主檢查表-2",
+   "sub": "防水工程",
+   "items": [
+    [
+     "完成厚度",
+     "≧1mm ±0.2mm"
+    ],
+    [
+     "防水層高度",
+     "120cm(乾區)、180cm(濕區)、30cm(陽台)(依圖面高度)"
+    ],
+    [
+     "複合式防水材+聚脂纖維布補強",
+     "寬度20cm"
+    ],
+    [
+     "混凝土施工縫及陰角處理",
+     "是否滾圓角或加強處理"
+    ],
+    [
+     "完成面層",
+     "是否破損、針孔狀、空隙及裂縫"
+    ],
+    [
+     "完成面層",
+     "是否已將防水層全部覆蓋且黏結牢固"
+    ],
+    [
+     "清理",
+     "潑濺之材料是否清除乾淨"
+    ],
+    [
+     "保護",
+     "是否施作面層保護"
+    ],
+    [
+     "試水",
+     "放水72小時觀察有無漏水"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công chống thấm -2",
+    "sub": "Công tác chống thấm",
+    "items": [
+     [
+      "Chiều dày hoàn thiện",
+      "≧1mm ±0,2mm"
+     ],
+     [
+      "Chiều cao lớp chống thấm",
+      "120cm (khu khô), 180cm (khu ướt), 30cm (ban công) (theo chiều cao trên bản vẽ)"
+     ],
+     [
+      "Gia cường bằng vật liệu chống thấm composite + vải sợi polyester",
+      "Chiều rộng 20cm"
+     ],
+     [
+      "Xử lý mạch ngừng bê tông và góc trong",
+      "Có bo tròn góc hoặc xử lý gia cường không"
+     ],
+     [
+      "Lớp bề mặt hoàn thiện",
+      "Có hư hỏng, lỗ kim, khe hở và vết nứt không"
+     ],
+     [
+      "Lớp bề mặt hoàn thiện",
+      "Đã phủ kín toàn bộ lớp chống thấm và bám dính chắc chắn chưa"
+     ],
+     [
+      "Dọn dẹp",
+      "Vật liệu bắn vương vãi đã được dọn sạch chưa"
+     ],
+     [
+      "Bảo vệ",
+      "Đã làm lớp bảo vệ bề mặt chưa"
+     ],
+     [
+      "Thử nước",
+      "Ngâm nước 72 giờ, quan sát có rò rỉ không"
+     ]
+    ]
+   }
+  },
+  "32": {
+   "category": "金屬工程",
+   "title": "不銹鋼扶手欄杆工程施工自主檢查表",
+   "sub": "不銹鋼扶手欄杆工程",
+   "items": [
+    [
+     "支柱規格及間距",
+     "支柱規格50mm*6mmt\n間距=@120cm"
+    ],
+    [
+     "扶手規格及間距",
+     "圓管∮38mm，\n方管30mm*30mm 、60mm*30mm\n間距=@18cm"
+    ],
+    [
+     "支柱固定方式",
+     "預埋T型鋼板5cm*0.5cm"
+    ],
+    [
+     "扶手離地高度",
+     "H=80cm、90cm、120cm(依圖面)"
+    ],
+    [
+     "無障礙扶手高度",
+     "65cm、85cm"
+    ],
+    [
+     "固定方式",
+     "是否穩固"
+    ],
+    [
+     "焊接",
+     "焊接處磨平處理"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công tay vịn lan can inox",
+    "sub": "Công tác tay vịn lan can inox",
+    "items": [
+     [
+      "Quy cách và khoảng cách trụ",
+      "Quy cách trụ 50mm*6mmt\nKhoảng cách = @120cm"
+     ],
+     [
+      "Quy cách và khoảng cách tay vịn",
+      "Ống tròn ∮38mm,\nỐng vuông 30mm*30mm, 60mm*30mm\nKhoảng cách = @18cm"
+     ],
+     [
+      "Cách cố định trụ",
+      "Bản thép chữ T chôn sẵn 5cm*0,5cm"
+     ],
+     [
+      "Chiều cao tay vịn so với mặt sàn",
+      "H=80cm, 90cm, 120cm (theo bản vẽ)"
+     ],
+     [
+      "Chiều cao tay vịn cho người khuyết tật",
+      "65cm, 85cm"
+     ],
+     [
+      "Cách cố định",
+      "Có chắc chắn không"
+     ],
+     [
+      "Hàn",
+      "Mối hàn được mài phẳng"
+     ]
+    ]
+   }
+  },
+  "33": {
+   "category": "金屬工程",
+   "title": "不銹鋼爬梯工程施工自主檢查表",
+   "sub": "不銹鋼爬梯工程",
+   "items": [
+    [
+     "垂直鋼管直徑",
+     "2”ψ*3mm\n(依圖面)"
+    ],
+    [
+     "水平鋼管直徑",
+     "1 1/2”ψ*3mm\n(依圖面)"
+    ],
+    [
+     "水平鋼管間距",
+     "@30cm"
+    ],
+    [
+     "固定方式",
+     "是否穩固"
+    ],
+    [
+     "焊接",
+     "焊接處磨平處理"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công thang leo inox",
+    "sub": "Công tác thang leo inox",
+    "items": [
+     [
+      "Đường kính ống thép đứng",
+      "2”ψ*3mm\n(theo bản vẽ)"
+     ],
+     [
+      "Đường kính ống thép ngang",
+      "1 1/2”ψ*3mm\n(theo bản vẽ)"
+     ],
+     [
+      "Khoảng cách ống thép ngang",
+      "@30cm"
+     ],
+     [
+      "Cách cố định",
+      "Có chắc chắn không"
+     ],
+     [
+      "Hàn",
+      "Mối hàn được mài phẳng"
+     ]
+    ]
+   }
+  },
+  "34": {
+   "category": "景觀工程",
+   "title": "植栽工程施工自主檢查表",
+   "sub": "植栽工程",
+   "items": [
+    [
+     "喬木栽植",
+     "客土加肥料"
+    ],
+    [
+     "喬木栽植",
+     "種植位置"
+    ],
+    [
+     "喬木栽植",
+     "支柱"
+    ],
+    [
+     "喬木栽植",
+     "定植後養護"
+    ],
+    [
+     "灌木種植",
+     "整地"
+    ],
+    [
+     "灌木種植",
+     "種植位置"
+    ],
+    [
+     "灌木種植",
+     "澆水"
+    ],
+    [
+     "灌木種植",
+     "客土加肥料"
+    ],
+    [
+     "草皮之舖植",
+     "鬆土"
+    ],
+    [
+     "草皮之舖植",
+     "舖植位置"
+    ],
+    [
+     "草皮之舖植",
+     "客土加肥料"
+    ],
+    [
+     "完成面",
+     "完工後須清潔乾淨。"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công trồng cây",
+    "sub": "Công tác trồng cây",
+    "items": [
+     [
+      "Trồng cây thân gỗ",
+      "Đất trồng bổ sung và phân bón"
+     ],
+     [
+      "Trồng cây thân gỗ",
+      "Vị trí trồng"
+     ],
+     [
+      "Trồng cây thân gỗ",
+      "Cọc chống"
+     ],
+     [
+      "Trồng cây thân gỗ",
+      "Chăm sóc sau khi trồng"
+     ],
+     [
+      "Trồng cây bụi",
+      "San đất"
+     ],
+     [
+      "Trồng cây bụi",
+      "Vị trí trồng"
+     ],
+     [
+      "Trồng cây bụi",
+      "Tưới nước"
+     ],
+     [
+      "Trồng cây bụi",
+      "Đất trồng bổ sung và phân bón"
+     ],
+     [
+      "Trải thảm cỏ",
+      "Xới đất"
+     ],
+     [
+      "Trải thảm cỏ",
+      "Vị trí trải cỏ"
+     ],
+     [
+      "Trải thảm cỏ",
+      "Đất trồng bổ sung và phân bón"
+     ],
+     [
+      "Bề mặt hoàn thiện",
+      "Sau khi hoàn thành phải vệ sinh sạch sẽ."
+     ]
+    ]
+   }
+  },
+  "35": {
+   "category": "景觀工程",
+   "title": "景觀燈具工程施工自主檢查表",
+   "sub": "景觀照明燈具工程",
+   "items": [
+    [
+     "預埋管規格是否符合施工圖說",
+     "PVC1/2\"＝18mm、PVC3/4\"＝22mm、PVC1\"＝28mm、PVC1 1/4\"＝35mm、PVC1 1/2\"＝41mm"
+    ],
+    [
+     "預埋暗管迴路及路徑與施工圖是否相符",
+     "依核定之施工圖"
+    ],
+    [
+     "預埋管是否已固定於樓板或二層鋼筋中間",
+     "每1.5-2.0米固定1處"
+    ],
+    [
+     "預埋管施工深度否符合施工圖說",
+     "依核定之施工圖"
+    ],
+    [
+     "配管及接線盒引出口是否有封閉",
+     "有封閉"
+    ],
+    [
+     "回填土及澆灌混凝土前，現場配管及零料、材料是否清理完成",
+     "整理完成"
+    ],
+    [
+     "預埋管配置樓板保護層",
+     "使用管塞/盒塞，防止異物及砂漿阻塞出口"
+    ],
+    [
+     "燈具基礎座位置是否符合施工圖說",
+     "依核定之施工圖"
+    ],
+    [
+     "燈具規格",
+     "與選樣之樣式及尺寸相符"
+    ],
+    [
+     "運作狀況",
+     "燈具開關連動正確"
+    ],
+    [
+     "完成面",
+     "完工後須清潔乾淨。"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công đèn cảnh quan",
+    "sub": "Công tác đèn chiếu sáng cảnh quan",
+    "items": [
+     [
+      "Quy cách ống chôn sẵn có đúng bản vẽ thi công không",
+      "PVC1/2\"＝18mm, PVC3/4\"＝22mm, PVC1\"＝28mm, PVC1 1/4\"＝35mm, PVC1 1/2\"＝41mm"
+     ],
+     [
+      "Mạch và tuyến ống ngầm chôn sẵn có đúng bản vẽ thi công không",
+      "Theo bản vẽ thi công đã duyệt"
+     ],
+     [
+      "Ống chôn sẵn đã được cố định giữa sàn hoặc giữa 2 lớp thép chưa",
+      "Cứ 1,5-2,0 mét cố định 1 điểm"
+     ],
+     [
+      "Độ sâu chôn ống có đúng bản vẽ thi công không",
+      "Theo bản vẽ thi công đã duyệt"
+     ],
+     [
+      "Đầu ra của ống và hộp nối dây đã được bịt kín chưa",
+      "Đã bịt kín"
+     ],
+     [
+      "Trước khi lấp đất và đổ bê tông, ống, phụ kiện và vật liệu tại hiện trường đã dọn dẹp xong chưa",
+      "Đã dọn dẹp xong"
+     ],
+     [
+      "Lớp bảo vệ của ống chôn sẵn trong sàn",
+      "Dùng nút bịt ống / nút bịt hộp, tránh vật lạ và vữa làm tắc đầu ra"
+     ],
+     [
+      "Vị trí đế móng đèn có đúng bản vẽ thi công không",
+      "Theo bản vẽ thi công đã duyệt"
+     ],
+     [
+      "Quy cách đèn",
+      "Phù hợp với kiểu dáng và kích thước mẫu đã chọn"
+     ],
+     [
+      "Tình trạng vận hành",
+      "Công tắc và đèn liên động chính xác"
+     ],
+     [
+      "Bề mặt hoàn thiện",
+      "Sau khi hoàn thành phải vệ sinh sạch sẽ."
+     ]
+    ]
+   }
+  },
+  "36": {
+   "category": "機電設備工程",
+   "title": "接地系統工程施工自主檢查表",
+   "sub": "接地系統工程",
+   "items": [
+    [
+     "接地材料設備是否經進場材料查驗合格",
+     "ψ3/4”、ψ5/8”\n依合約規定"
+    ],
+    [
+     "接地銅棒頭端埋設深度是否合乎規定",
+     "銅棒頂端在PC層內"
+    ],
+    [
+     "各銅棒之連接線深度是否符合規定",
+     "連接銅線埋設於PC層，且不得碰觸建築物鋼筋及地下水電、瓦斯等管"
+    ],
+    [
+     "接地線是否未直接接觸鋼筋",
+     "未接觸"
+    ],
+    [
+     "接地極與測試點之間距是否合乎規定",
+     "3米以上"
+    ],
+    [
+     "電阻值是否合乎規定",
+     "避雷系統接地≦10歐姆"
+    ],
+    [
+     "電阻值是否合乎規定",
+     "台電配電場所接地≦50歐姆"
+    ],
+    [
+     "電阻值是否合乎規定",
+     "系統與設備共同接地≦50歐姆"
+    ],
+    [
+     "電阻值是否合乎規定",
+     "發電機系統接地≦10歐姆"
+    ],
+    [
+     "電阻值是否合乎規定",
+     "電信室系統接地≦10歐姆"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công hệ thống tiếp địa",
+    "sub": "Công tác hệ thống tiếp địa",
+    "items": [
+     [
+      "Vật liệu, thiết bị tiếp địa đã qua nghiệm thu vật liệu đầu vào chưa",
+      "ψ3/4”, ψ5/8”\nTheo quy định hợp đồng"
+     ],
+     [
+      "Độ sâu chôn đầu cọc đồng tiếp địa có đúng quy định không",
+      "Đỉnh cọc đồng nằm trong lớp bê tông lót (PC)"
+     ],
+     [
+      "Độ sâu dây nối giữa các cọc đồng có đúng quy định không",
+      "Dây đồng nối chôn trong lớp bê tông lót (PC), không được chạm vào cốt thép công trình và các ống điện nước, gas ngầm"
+     ],
+     [
+      "Dây tiếp địa có tránh tiếp xúc trực tiếp với cốt thép không",
+      "Không tiếp xúc"
+     ],
+     [
+      "Khoảng cách giữa cực tiếp địa và điểm đo có đúng quy định không",
+      "Từ 3 mét trở lên"
+     ],
+     [
+      "Trị số điện trở có đúng quy định không",
+      "Tiếp địa hệ thống chống sét ≦ 10 ohm"
+     ],
+     [
+      "Trị số điện trở có đúng quy định không",
+      "Tiếp địa tại trạm phân phối điện lực ≦ 50 ohm"
+     ],
+     [
+      "Trị số điện trở có đúng quy định không",
+      "Tiếp địa chung hệ thống và thiết bị ≦ 50 ohm"
+     ],
+     [
+      "Trị số điện trở có đúng quy định không",
+      "Tiếp địa hệ thống máy phát điện ≦ 10 ohm"
+     ],
+     [
+      "Trị số điện trở có đúng quy định không",
+      "Tiếp địa hệ thống phòng viễn thông ≦ 10 ohm"
+     ]
+    ]
+   }
+  },
+  "37": {
+   "category": "機電設備工程",
+   "title": "RC水電配管施工自主檢查表",
+   "sub": "RC水電配管",
+   "items": [
+    [
+     "BOX放樣、配置",
+     "放樣間距與圖面誤差不得大於10CM"
+    ],
+    [
+     "BOX放樣、配置",
+     "不可歪斜不正、鬆動"
+    ],
+    [
+     "管、管件之材質、尺寸、接法及位置",
+     "雙層筋內"
+    ],
+    [
+     "管、管件之材質、尺寸、接法及位置",
+     "樓板內配管管路相交時不可超過3層(板厚15CM以上)、2層(板厚15CM以下)"
+    ],
+    [
+     "管、管件之材質、尺寸、接法及位置",
+     "管與管最小淨間隙為2倍管徑"
+    ],
+    [
+     "穿牆管線",
+     "牆配管外徑須有3cm以上混凝土保護層"
+    ],
+    [
+     "管路出口是否封口",
+     "封口"
+    ],
+    [
+     "水電管穿梁",
+     "水電管穿越梁位時各管相距3倍管徑以上\n離柱2倍梁深範圍不可穿管\n穿梁須在梁中央1/3深度處"
+    ],
+    [
+     "水電管穿梁",
+     "水電管穿越地下室外牆時需施作防水處理"
+    ],
+    [
+     "柱邊上之接線盒其配管",
+     "須位於柱箍筋內側"
+    ],
+    [
+     "柱邊上之接線盒其配管",
+     "PVC管至接線盒管口應設盒接頭"
+    ],
+    [
+     "柱內配管",
+     "柱內埋管及其配件所佔面積不得超過柱設計斷面積4%，內徑不得大於5cm(2吋管)"
+    ],
+    [
+     "出線盒材質、厚度",
+     "鍍鋅鐵製厚度2.0mm以上，不鏽鋼製厚度1.2mm以上"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công đi ống điện nước trong bê tông cốt thép",
+    "sub": "Đi ống điện nước trong bê tông cốt thép",
+    "items": [
+     [
+      "Định vị, bố trí hộp BOX",
+      "Sai số khoảng cách định vị so với bản vẽ không được lớn hơn 10CM"
+     ],
+     [
+      "Định vị, bố trí hộp BOX",
+      "Không được lệch, nghiêng, lỏng lẻo"
+     ],
+     [
+      "Vật liệu, kích thước, cách nối và vị trí của ống, phụ kiện ống",
+      "Nằm trong 2 lớp thép"
+     ],
+     [
+      "Vật liệu, kích thước, cách nối và vị trí của ống, phụ kiện ống",
+      "Ống đi trong sàn khi giao nhau không được quá 3 lớp (sàn dày từ 15CM trở lên), 2 lớp (sàn dày dưới 15CM)"
+     ],
+     [
+      "Vật liệu, kích thước, cách nối và vị trí của ống, phụ kiện ống",
+      "Khe hở thông thủy tối thiểu giữa các ống bằng 2 lần đường kính ống"
+     ],
+     [
+      "Đường ống xuyên tường",
+      "Đường kính ngoài ống đi trong tường phải có lớp bê tông bảo vệ từ 3cm trở lên"
+     ],
+     [
+      "Đầu ra đường ống đã được bịt kín chưa",
+      "Đã bịt kín"
+     ],
+     [
+      "Ống điện nước xuyên dầm",
+      "Khi ống điện nước xuyên qua dầm, các ống cách nhau từ 3 lần đường kính ống trở lên\nTrong phạm vi 2 lần chiều cao dầm tính từ cột không được xuyên ống\nXuyên dầm phải ở vị trí 1/3 chiều cao giữa dầm"
+     ],
+     [
+      "Ống điện nước xuyên dầm",
+      "Ống điện nước xuyên qua tường ngoài tầng hầm phải xử lý chống thấm"
+     ],
+     [
+      "Ống nối vào hộp nối dây cạnh cột",
+      "Phải nằm phía trong đai cột"
+     ],
+     [
+      "Ống nối vào hộp nối dây cạnh cột",
+      "Đầu ống PVC vào hộp nối dây phải có đầu nối hộp"
+     ],
+     [
+      "Ống đi trong cột",
+      "Diện tích ống chôn trong cột và phụ kiện không được vượt quá 4% diện tích tiết diện thiết kế của cột, đường kính trong không được lớn hơn 5cm (ống 2 inch)"
+     ],
+     [
+      "Vật liệu, chiều dày hộp đầu ra",
+      "Hộp sắt mạ kẽm dày từ 2,0mm trở lên, hộp inox dày từ 1,2mm trở lên"
+     ]
+    ]
+   }
+  },
+  "38": {
+   "category": "假設及基礎工程",
+   "title": "土方開挖施工自主檢查表",
+   "sub": "土方開挖",
+   "items": [
+    [
+     "埋設物遷移",
+     "知會主管機關遷移"
+    ],
+    [
+     "安全防護設施",
+     "設置安全欄杆及照明"
+    ],
+    [
+     "地下水位控制",
+     "應至少低於開挖完成面(GL-____)·100cm"
+    ],
+    [
+     "運土卡車",
+     "車輛離場前須覆蓋防塵網及清理車輪"
+    ],
+    [
+     "開挖深度",
+     "GL-____m ±5cm"
+    ],
+    [
+     "開挖安全",
+     "開挖面有無湧水、隆起、沉陷或滑動現象"
+    ],
+    [
+     "開挖面平整",
+     "超挖 <5cm"
+    ],
+    [
+     "開挖面排水",
+     "開挖面四周應設置導溝及集水坑"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công đào đất",
+    "sub": "Đào đất",
+    "items": [
+     [
+      "Di dời công trình ngầm",
+      "Thông báo cơ quan quản lý để di dời"
+     ],
+     [
+      "Thiết bị an toàn bảo hộ",
+      "Lắp đặt lan can an toàn và chiếu sáng"
+     ],
+     [
+      "Kiểm soát mực nước ngầm",
+      "Phải thấp hơn mặt đáy hố đào (GL-____) ít nhất 100cm"
+     ],
+     [
+      "Xe tải chở đất",
+      "Trước khi xe rời công trường phải phủ lưới chống bụi và rửa sạch bánh xe"
+     ],
+     [
+      "Độ sâu đào",
+      "GL-____m ±5cm"
+     ],
+     [
+      "An toàn hố đào",
+      "Mặt hố đào có hiện tượng nước phun trào, đẩy trồi, lún hoặc trượt không"
+     ],
+     [
+      "Độ phẳng mặt hố đào",
+      "Đào quá < 5cm"
+     ],
+     [
+      "Thoát nước hố đào",
+      "Xung quanh hố đào phải làm rãnh dẫn nước và hố thu nước"
+     ]
+    ]
+   }
+  },
+  "01": {
+   "category": "假設及基礎工程",
+   "title": "放樣工程施工自主檢查表",
+   "sub": "放樣工程",
+   "items": [
+    [
+     "放樣圖是否核對完成",
+     "核對完成"
+    ],
+    [
+     "基準雙十字線距離誤差",
+     "誤差5mm以內"
+    ],
+    [
+     "高程之垂直引點誤差",
+     "誤差5mm以內"
+    ],
+    [
+     "柱位置及斷面尺寸",
+     "依放樣圖，誤差10mm以內"
+    ],
+    [
+     "牆位置及斷面尺寸",
+     "依放樣圖，誤差10mm以內"
+    ],
+    [
+     "梁位置及斷面尺寸",
+     "依放樣圖，誤差10mm以內"
+    ],
+    [
+     "板位置及厚度",
+     "板厚____cm，誤差6mm以內"
+    ],
+    [
+     "牆面開口尺寸，台度是否詳標於樓板上",
+     "標於樓板上，誤差13mm以內"
+    ],
+    [
+     "樓梯放樣是否無誤",
+     "級高=____cm、級深=____cm\n寬度=____cm，誤差10mm以內"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công định vị (trắc đạc)",
+    "sub": "Công tác định vị (trắc đạc)",
+    "items": [
+     [
+      "Bản vẽ định vị đã được đối chiếu xong chưa",
+      "Đã đối chiếu xong"
+     ],
+     [
+      "Sai số khoảng cách đường chữ thập kép chuẩn",
+      "Sai số trong phạm vi 5mm"
+     ],
+     [
+      "Sai số điểm dẫn cao độ theo phương đứng",
+      "Sai số trong phạm vi 5mm"
+     ],
+     [
+      "Vị trí và kích thước tiết diện cột",
+      "Theo bản vẽ định vị, sai số trong phạm vi 10mm"
+     ],
+     [
+      "Vị trí và kích thước tiết diện vách",
+      "Theo bản vẽ định vị, sai số trong phạm vi 10mm"
+     ],
+     [
+      "Vị trí và kích thước tiết diện dầm",
+      "Theo bản vẽ định vị, sai số trong phạm vi 10mm"
+     ],
+     [
+      "Vị trí và chiều dày sàn",
+      "Chiều dày sàn ____cm, sai số trong phạm vi 6mm"
+     ],
+     [
+      "Kích thước lỗ mở trên tường, bệ cửa sổ đã được đánh dấu rõ trên sàn chưa",
+      "Đánh dấu trên sàn, sai số trong phạm vi 13mm"
+     ],
+     [
+      "Định vị cầu thang có chính xác không",
+      "Chiều cao bậc=____cm, chiều sâu bậc=____cm\nChiều rộng=____cm, sai số trong phạm vi 10mm"
+     ]
+    ]
+   }
+  },
+  "02": {
+   "category": "模板工程",
+   "title": "柱模板工程施工自主檢查表",
+   "sub": "柱模板工程",
+   "items": [
+    [
+     "施工圖是否核對完成",
+     "核對完成"
+    ],
+    [
+     "模板板面",
+     "清潔無雜物"
+    ],
+    [
+     "斷面尺寸精度",
+     "±15mm"
+    ],
+    [
+     "模板支撐材",
+     "3層模(含背撐角材)以上"
+    ],
+    [
+     "模板繫結材",
+     "每面兩路2.5分螺桿，第一支離地30cm，其餘間距@50cm以內，且螺帽有鎖緊。"
+    ],
+    [
+     "模板支撐面",
+     "穩固無沈陷之虞"
+    ],
+    [
+     "清潔口",
+     "長度30cm，兩側"
+    ],
+    [
+     "顧模人員",
+     "有派駐人員現場顧模"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công cốp pha cột",
+    "sub": "Công tác cốp pha cột",
+    "items": [
+     [
+      "Bản vẽ thi công đã được đối chiếu xong chưa",
+      "Đã đối chiếu xong"
+     ],
+     [
+      "Bề mặt ván cốp pha",
+      "Sạch sẽ, không có vật lạ"
+     ],
+     [
+      "Độ chính xác kích thước tiết diện",
+      "±15mm"
+     ],
+     [
+      "Vật liệu chống đỡ cốp pha",
+      "Từ 3 lớp cốp pha trở lên (gồm cả thanh gỗ chống lưng)"
+     ],
+     [
+      "Vật liệu liên kết cốp pha",
+      "Mỗi mặt 2 hàng ty ren 2,5 phân, thanh đầu tiên cách mặt đất 30cm, các thanh còn lại khoảng cách @50cm trở xuống, đai ốc phải siết chặt."
+     ],
+     [
+      "Mặt tựa chống đỡ cốp pha",
+      "Vững chắc, không có nguy cơ lún"
+     ],
+     [
+      "Cửa vệ sinh",
+      "Dài 30cm, hai bên"
+     ],
+     [
+      "Người trực cốp pha",
+      "Có bố trí người túc trực tại hiện trường để theo dõi cốp pha"
+     ]
+    ]
+   }
+  },
+  "03": {
+   "category": "模板工程",
+   "title": "牆模板工程施工自主檢查表",
+   "sub": "牆模板工程",
+   "items": [
+    [
+     "模板面清潔",
+     "清潔無雜物"
+    ],
+    [
+     "放樣",
+     "牆厚15、20cm"
+    ],
+    [
+     "線型平順度",
+     "平直、曲線平順"
+    ],
+    [
+     "垂直精度",
+     "清水模板1/450以下\n普通模板1/300以下"
+    ],
+    [
+     "角材支撐材",
+     "3層模(含背撐角材)以上"
+    ],
+    [
+     "繫結材",
+     "每面兩路2.5分螺桿，第一支離地30cm，其餘間距@50cm以內，且螺帽有鎖緊。"
+    ],
+    [
+     "外牆繫結材",
+     "不得使用可回收式螺桿"
+    ],
+    [
+     "模板支撐面",
+     "穩固無沈陷之虞"
+    ],
+    [
+     "清潔口",
+     "高6cm，單側"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công cốp pha vách",
+    "sub": "Công tác cốp pha vách",
+    "items": [
+     [
+      "Vệ sinh bề mặt cốp pha",
+      "Sạch sẽ, không có vật lạ"
+     ],
+     [
+      "Định vị",
+      "Chiều dày vách 15, 20cm"
+     ],
+     [
+      "Độ thẳng, độ trơn của tuyến",
+      "Thẳng, đường cong trơn đều"
+     ],
+     [
+      "Độ chính xác thẳng đứng",
+      "Cốp pha bê tông trần: 1/450 trở xuống\nCốp pha thông thường: 1/300 trở xuống"
+     ],
+     [
+      "Thanh gỗ, vật liệu chống đỡ",
+      "Từ 3 lớp cốp pha trở lên (gồm cả thanh gỗ chống lưng)"
+     ],
+     [
+      "Vật liệu liên kết",
+      "Mỗi mặt 2 hàng ty ren 2,5 phân, thanh đầu tiên cách mặt đất 30cm, các thanh còn lại khoảng cách @50cm trở xuống, đai ốc phải siết chặt."
+     ],
+     [
+      "Vật liệu liên kết tường ngoài",
+      "Không được dùng loại ty ren thu hồi"
+     ],
+     [
+      "Mặt tựa chống đỡ cốp pha",
+      "Vững chắc, không có nguy cơ lún"
+     ],
+     [
+      "Cửa vệ sinh",
+      "Cao 6cm, một bên"
+     ]
+    ]
+   }
+  },
+  "04": {
+   "category": "模板工程",
+   "title": "梁模板工程施工自主檢查表",
+   "sub": "梁模板工程",
+   "items": [
+    [
+     "放樣尺寸",
+     "依模板施工圖"
+    ],
+    [
+     "線型平順度",
+     "平直、平順"
+    ],
+    [
+     "高程控制",
+     "梁底模高依樓層高扣除梁深 ____ cm"
+    ],
+    [
+     "寬度、深度精度(斷面尺寸)",
+     "+13mm/-6mm"
+    ],
+    [
+     "高程精度",
+     "長度3m以內，±0.6cm\n長度3~12m，±1.2cm\n長度12m以上，±2.5cm"
+    ],
+    [
+     "模板繫結材",
+     "每面兩路2.5分螺桿，間距@50cm內，且螺帽鎖緊"
+    ],
+    [
+     "鋼管支撐插銷",
+     "皆有安裝，不得使用鋼筋代替"
+    ],
+    [
+     "水平繫材",
+     "樓高超過3.6m須以水平繫材加固"
+    ],
+    [
+     "鋼管支撐",
+     "第一支距柱邊不得大於30cm，梁寬30cm以下(含)單排@60cm，30cm以上雙排@60cm，支撐不可搖動"
+    ],
+    [
+     "中央預拱值",
+     "每公尺0.4cm之坡度"
+    ],
+    [
+     "模板面清潔",
+     "清潔無雜物"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công cốp pha dầm",
+    "sub": "Công tác cốp pha dầm",
+    "items": [
+     [
+      "Kích thước định vị",
+      "Theo bản vẽ thi công cốp pha"
+     ],
+     [
+      "Độ thẳng, độ trơn của tuyến",
+      "Thẳng, trơn đều"
+     ],
+     [
+      "Kiểm soát cao độ",
+      "Cao độ ván đáy dầm = chiều cao tầng trừ chiều cao dầm ____ cm"
+     ],
+     [
+      "Độ chính xác chiều rộng, chiều cao (kích thước tiết diện)",
+      "+13mm/-6mm"
+     ],
+     [
+      "Độ chính xác cao độ",
+      "Chiều dài trong phạm vi 3m: ±0,6cm\nChiều dài 3~12m: ±1,2cm\nChiều dài trên 12m: ±2,5cm"
+     ],
+     [
+      "Vật liệu liên kết cốp pha",
+      "Mỗi mặt 2 hàng ty ren 2,5 phân, khoảng cách @50cm trở xuống, đai ốc siết chặt"
+     ],
+     [
+      "Chốt cây chống thép ống",
+      "Đều đã lắp đặt, không được dùng cốt thép thay thế"
+     ],
+     [
+      "Thanh giằng ngang",
+      "Chiều cao tầng trên 3,6m phải gia cố bằng thanh giằng ngang"
+     ],
+     [
+      "Cây chống thép ống",
+      "Cây đầu tiên cách mép cột không quá 30cm; dầm rộng từ 30cm trở xuống dùng 1 hàng @60cm, trên 30cm dùng 2 hàng @60cm; cây chống không được lung lay"
+     ],
+     [
+      "Độ vồng trước ở giữa nhịp",
+      "Độ dốc 0,4cm cho mỗi mét"
+     ],
+     [
+      "Vệ sinh bề mặt cốp pha",
+      "Sạch sẽ, không có vật lạ"
+     ]
+    ]
+   }
+  },
+  "05": {
+   "category": "模板工程",
+   "title": "板模板工程施工自主檢查表",
+   "sub": "模板工程",
+   "items": [
+    [
+     "模板面清潔",
+     "清潔無雜物"
+    ],
+    [
+     "高程控制",
+     "依樓層高扣除板厚 ____ cm"
+    ],
+    [
+     "高程精度",
+     "±0.6cm"
+    ],
+    [
+     "板面是否有孔隙",
+     "目視無孔隙"
+    ],
+    [
+     "板底加勁角材",
+     "2層(板底加勁角材)，端部距梁側不得大於30cm"
+    ],
+    [
+     "鋼管支撐",
+     "第一支距柱邊不得大於30cm，間距@90cm，支撐不可搖動"
+    ],
+    [
+     "板釘數",
+     "3尺*6尺每片最少10支"
+    ],
+    [
+     "開孔位置是否正確",
+     "核對設計圖位置"
+    ],
+    [
+     "模板支撐面",
+     "穩固無沈陷之虞"
+    ],
+    [
+     "是否降板",
+     "否、是(降5、10、20cm)"
+    ],
+    [
+     "鋼管支撐插銷",
+     "皆有安裝，不得使用鋼筋代替"
+    ],
+    [
+     "水平繫材",
+     "樓高超過3.6m須以水平繫材加固"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công cốp pha sàn",
+    "sub": "Công tác cốp pha",
+    "items": [
+     [
+      "Vệ sinh bề mặt cốp pha",
+      "Sạch sẽ, không có vật lạ"
+     ],
+     [
+      "Kiểm soát cao độ",
+      "Theo chiều cao tầng trừ chiều dày sàn ____ cm"
+     ],
+     [
+      "Độ chính xác cao độ",
+      "±0,6cm"
+     ],
+     [
+      "Mặt ván sàn có khe hở không",
+      "Quan sát bằng mắt không có khe hở"
+     ],
+     [
+      "Thanh gỗ gia cường đáy sàn",
+      "2 lớp (thanh gỗ gia cường đáy sàn), đầu thanh cách mép dầm không quá 30cm"
+     ],
+     [
+      "Cây chống thép ống",
+      "Cây đầu tiên cách mép cột không quá 30cm, khoảng cách @90cm, cây chống không được lung lay"
+     ],
+     [
+      "Số đinh trên ván",
+      "Tấm 3 thước × 6 thước tối thiểu 10 cây đinh"
+     ],
+     [
+      "Vị trí lỗ mở có chính xác không",
+      "Đối chiếu vị trí trên bản vẽ thiết kế"
+     ],
+     [
+      "Mặt tựa chống đỡ cốp pha",
+      "Vững chắc, không có nguy cơ lún"
+     ],
+     [
+      "Có hạ cốt sàn không",
+      "Không / Có (hạ 5, 10, 20cm)"
+     ],
+     [
+      "Chốt cây chống thép ống",
+      "Đều đã lắp đặt, không được dùng cốt thép thay thế"
+     ],
+     [
+      "Thanh giằng ngang",
+      "Chiều cao tầng trên 3,6m phải gia cố bằng thanh giằng ngang"
+     ]
+    ]
+   }
+  },
+  "06": {
+   "category": "模板工程",
+   "title": "模板拆模工程施工自主檢查表",
+   "sub": "拆模工程",
+   "items": [
+    [
+     "拆模時間",
+     "1.不受外力之柱、牆、墩側模12小時。\n2.板底淨跨3m以下4天，淨跨3~6m 10天，淨跨6m以上10天。\n3.梁底淨跨3m以下7天，淨跨3~6m 14天，淨跨6m以上21天。"
+    ],
+    [
+     "表面是否清除乾淨",
+     "木屑、夾板確實清除"
+    ],
+    [
+     "金屬件是否清除",
+     "拆模後需全部清除"
+    ],
+    [
+     "蜂巢現象",
+     "如有蜂巢須以無收縮混凝土修補"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công tháo dỡ cốp pha",
+    "sub": "Công tác tháo dỡ cốp pha",
+    "items": [
+     [
+      "Thời gian tháo cốp pha",
+      "1. Cốp pha thành cột, vách, trụ không chịu lực: 12 giờ.\n2. Đáy sàn nhịp thông thủy dưới 3m: 4 ngày; nhịp 3~6m: 10 ngày; nhịp trên 6m: 10 ngày.\n3. Đáy dầm nhịp thông thủy dưới 3m: 7 ngày; nhịp 3~6m: 14 ngày; nhịp trên 6m: 21 ngày."
+     ],
+     [
+      "Bề mặt đã được dọn sạch chưa",
+      "Đã dọn sạch mùn cưa, ván ép"
+     ],
+     [
+      "Chi tiết kim loại đã được loại bỏ chưa",
+      "Sau khi tháo cốp pha phải loại bỏ toàn bộ"
+     ],
+     [
+      "Hiện tượng rỗ tổ ong",
+      "Nếu có rỗ tổ ong phải sửa bằng bê tông không co ngót"
+     ]
+    ]
+   }
+  },
+  "07": {
+   "category": "鋼筋工程",
+   "title": "柱鋼筋工程施工自主檢查表",
+   "sub": "柱鋼筋工程",
+   "items": [
+    [
+     "主筋號數、支數、錨定長度檢視",
+     "依結構圖彙整之料單"
+    ],
+    [
+     "柱箍筋直徑、型式、間距檢視",
+     "依結構圖彙整之料單"
+    ],
+    [
+     "箍筋排紮方式",
+     "箍筋四向排紮、#22鐵絲每目綁紮"
+    ],
+    [
+     "繫筋號數、支數、型式、排紮方式",
+     "依結構圖彙整之料單\n90°+135°、交錯綁紮\n#22鐵絲每支綁紮"
+    ],
+    [
+     "柱間距是否平均",
+     "柱筋間距平均"
+    ],
+    [
+     "保護層是否合乎規定",
+     "柱 4cm，與土壤及水接觸 7.5cm\n保護層墊塊 @100cm(四向)"
+    ],
+    [
+     "續接器相鄰鋼筋互相錯開",
+     "非圍束區內60cm以上"
+    ],
+    [
+     "續接器扭力值",
+     "#10：216N-m"
+    ],
+    [
+     "續接器螺牙是否保護",
+     "須有護套保護"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công cốt thép cột",
+    "sub": "Công tác cốt thép cột",
+    "items": [
+     [
+      "Kiểm tra số hiệu, số thanh, chiều dài neo của thép chủ",
+      "Theo bảng thống kê thép lập từ bản vẽ kết cấu"
+     ],
+     [
+      "Kiểm tra đường kính, kiểu dáng, khoảng cách đai cột",
+      "Theo bảng thống kê thép lập từ bản vẽ kết cấu"
+     ],
+     [
+      "Cách bố trí và buộc thép đai",
+      "Thép đai bố trí theo 4 hướng, buộc từng mắt bằng dây thép #22"
+     ],
+     [
+      "Số hiệu, số thanh, kiểu dáng, cách bố trí thép giằng",
+      "Theo bảng thống kê thép lập từ bản vẽ kết cấu\nMóc 90°+135°, buộc so le\nBuộc từng thanh bằng dây thép #22"
+     ],
+     [
+      "Khoảng cách thép cột có đều không",
+      "Khoảng cách thép cột đều nhau"
+     ],
+     [
+      "Lớp bê tông bảo vệ có đúng quy định không",
+      "Cột 4cm, tiếp xúc với đất và nước 7,5cm\nCon kê lớp bảo vệ @100cm (4 hướng)"
+     ],
+     [
+      "Khớp nối ren của các thanh thép liền kề phải so le nhau",
+      "Ngoài vùng bó đai cột từ 60cm trở lên"
+     ],
+     [
+      "Lực siết khớp nối ren",
+      "#10: 216N-m"
+     ],
+     [
+      "Ren khớp nối có được bảo vệ không",
+      "Phải có nắp chụp bảo vệ"
+     ]
+    ]
+   }
+  },
+  "08": {
+   "category": "鋼筋工程",
+   "title": "牆鋼筋工程施工自主檢查表",
+   "sub": "牆鋼筋工程",
+   "items": [
+    [
+     "主筋位置、直徑、間距、錨定長度之檢視",
+     "直徑：#3\n水平間距：15、20cm\n垂直間距：15、20cm\n錨定：#3-11.4 cm"
+    ],
+    [
+     "排紮方式、固定方式",
+     "單層單向、#22鐵絲每目綁紮\n雙層雙向、#22鐵絲跳一目綁紮"
+    ],
+    [
+     "柱、梁處錨定",
+     "柱、梁處錨定入柱、梁深度"
+    ],
+    [
+     "保護層是否合乎規定",
+     "牆 2cm，與土壤及水接觸 7.5cm\n保護層墊塊(車輪)@150cm(雙層雙向)"
+    ],
+    [
+     "預埋筋直徑、形式",
+     "與原牆配筋同間距及號數，須留兩倍伸展長度，一半澆置於混凝土內"
+    ],
+    [
+     "開口補強筋",
+     "45°斜向各2支同號數長≧2倍伸展長度\n垂直與水平向各2支同號數突出開口長≧1倍伸展長度"
+    ],
+    [
+     "附屬設施位置(水電預留套管)設置補強筋",
+     "鋼筋未截斷，且開口≦10cm以下(含)免補\n開口介於10～30cm補45°斜向2支同號數長≧50cm\n開口≧30cm以上另依開口補強施作"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công cốt thép vách",
+    "sub": "Công tác cốt thép vách",
+    "items": [
+     [
+      "Kiểm tra vị trí, đường kính, khoảng cách, chiều dài neo của thép chủ",
+      "Đường kính: #3\nKhoảng cách ngang: 15, 20cm\nKhoảng cách dọc: 15, 20cm\nNeo: #3-11,4 cm"
+     ],
+     [
+      "Cách bố trí, cách cố định",
+      "1 lớp 1 phương: buộc từng mắt bằng dây thép #22\n2 lớp 2 phương: buộc cách 1 mắt bằng dây thép #22"
+     ],
+     [
+      "Neo tại cột, dầm",
+      "Neo vào cột, dầm đủ chiều sâu"
+     ],
+     [
+      "Lớp bê tông bảo vệ có đúng quy định không",
+      "Vách 2cm, tiếp xúc với đất và nước 7,5cm\nCon kê lớp bảo vệ (dạng bánh xe) @150cm (2 lớp 2 phương)"
+     ],
+     [
+      "Đường kính, kiểu thép chờ",
+      "Cùng khoảng cách và số hiệu với thép vách hiện hữu, chừa 2 lần chiều dài phát triển, một nửa đổ trong bê tông"
+     ],
+     [
+      "Thép gia cường lỗ mở",
+      "Theo phương chéo 45°, mỗi phía 2 thanh cùng số hiệu, dài ≧ 2 lần chiều dài phát triển\nTheo phương đứng và ngang mỗi phía 2 thanh cùng số hiệu, nhô ra khỏi lỗ mở ≧ 1 lần chiều dài phát triển"
+     ],
+     [
+      "Thép gia cường tại vị trí thiết bị phụ (ống lồng chờ điện nước)",
+      "Cốt thép không bị cắt và lỗ mở ≦ 10cm (bao gồm 10cm) thì không cần bổ sung\nLỗ mở từ 10～30cm bổ sung 2 thanh chéo 45° cùng số hiệu dài ≧ 50cm\nLỗ mở ≧ 30cm thì gia cường theo quy định gia cường lỗ mở"
+     ]
+    ]
+   }
+  },
+  "09": {
+   "category": "鋼筋工程",
+   "title": "梁鋼筋工程施工自主檢查表",
+   "sub": "梁鋼筋工程",
+   "items": [
+    [
+     "主筋位置、直徑、支數、錨定長度",
+     ""
+    ],
+    [
+     "加筋直徑、支數、長度",
+     ""
+    ],
+    [
+     "搭接長度(依設計圖面)",
+     "#8上層202cm、下層155cm\n#10上層256cm、下層197cm"
+    ],
+    [
+     "箍筋直徑、型式、間距",
+     ""
+    ],
+    [
+     "保護層是否合乎規定",
+     "梁 4cm，與土壤及水接觸 7.5cm"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công cốt thép dầm",
+    "sub": "Công tác cốt thép dầm",
+    "items": [
+     [
+      "Vị trí, đường kính, số thanh, chiều dài neo của thép chủ",
+      ""
+     ],
+     [
+      "Đường kính, số thanh, chiều dài thép tăng cường",
+      ""
+     ],
+     [
+      "Chiều dài nối chồng (theo bản vẽ thiết kế)",
+      "#8: lớp trên 202cm, lớp dưới 155cm\n#10: lớp trên 256cm, lớp dưới 197cm"
+     ],
+     [
+      "Đường kính, kiểu dáng, khoảng cách đai dầm",
+      ""
+     ],
+     [
+      "Lớp bê tông bảo vệ có đúng quy định không",
+      "Dầm 4cm, tiếp xúc với đất và nước 7,5cm"
+     ]
+    ]
+   }
+  },
+  "39": {
+   "category": "假設及基礎工程",
+   "title": "基礎工程施工自主檢查表",
+   "sub": "基礎工程",
+   "items": [
+    [
+     "開挖底面高程",
+     "依設計圖說 GL- ____ m，不得超挖；超挖部分不得以土方回填"
+    ],
+    [
+     "基底土壤",
+     "浮土、積水清除，無軟弱土層"
+    ],
+    [
+     "開挖面排水",
+     "抽排水設施運作正常，基底無積水"
+    ],
+    [
+     "基礎放樣位置",
+     "依基礎平面圖，軸線位置正確"
+    ],
+    [
+     "PC層(打底混凝土)",
+     "厚度 ____ cm，fc'= ____ kgf/cm²\n表面平整、無積水"
+    ],
+    [
+     "基礎鋼筋規格、間距",
+     "依結構設計圖說"
+    ],
+    [
+     "鋼筋保護層",
+     "直接澆置於土壤上者 7.5cm\n墊塊、馬椅設置穩固"
+    ],
+    [
+     "柱、牆插筋",
+     "位置、支數、錨定長度依設計圖說"
+    ],
+    [
+     "止水帶",
+     "施工縫處設置，連續無斷裂，搭接確實"
+    ],
+    [
+     "集水坑、機坑",
+     "尺寸、高程依設計圖說"
+    ],
+    [
+     "人孔、通氣孔、連通管",
+     "位置、尺寸、數量依設計圖說"
+    ],
+    [
+     "預埋管、套管",
+     "位置、數量依水電圖說，固定牢靠"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công móng",
+    "sub": "Công tác móng",
+    "items": [
+     [
+      "Cao độ đáy hố đào",
+      "Theo bản vẽ thiết kế GL- ____ m, không được đào quá; phần đào quá không được lấp lại bằng đất"
+     ],
+     [
+      "Đất nền đáy móng",
+      "Đã dọn đất xốp, nước đọng, không có lớp đất yếu"
+     ],
+     [
+      "Thoát nước hố đào",
+      "Thiết bị bơm thoát nước hoạt động bình thường, đáy móng không đọng nước"
+     ],
+     [
+      "Vị trí định vị móng",
+      "Theo bản vẽ mặt bằng móng, vị trí trục chính xác"
+     ],
+     [
+      "Lớp PC (bê tông lót)",
+      "Chiều dày ____ cm, fc'= ____ kgf/cm²\nBề mặt phẳng, không đọng nước"
+     ],
+     [
+      "Quy cách, khoảng cách cốt thép móng",
+      "Theo bản vẽ thiết kế kết cấu"
+     ],
+     [
+      "Lớp bê tông bảo vệ cốt thép",
+      "Đổ trực tiếp trên đất 7,5cm\nCon kê, ghế thép đặt chắc chắn"
+     ],
+     [
+      "Thép chờ cột, vách",
+      "Vị trí, số thanh, chiều dài neo theo bản vẽ thiết kế"
+     ],
+     [
+      "Băng cản nước",
+      "Đặt tại mạch ngừng thi công, liên tục không đứt, nối chồng chắc chắn"
+     ],
+     [
+      "Hố thu nước, hố thang máy",
+      "Kích thước, cao độ theo bản vẽ thiết kế"
+     ],
+     [
+      "Lỗ thăm, lỗ thông hơi, ống thông nhau",
+      "Vị trí, kích thước, số lượng theo bản vẽ thiết kế"
+     ],
+     [
+      "Ống chôn sẵn, ống lồng",
+      "Vị trí, số lượng theo bản vẽ điện nước, cố định chắc chắn"
+     ]
+    ]
+   }
+  },
+  "40": {
+   "category": "假設及基礎工程",
+   "title": "回填夯實施工自主檢查表",
+   "sub": "回填夯實",
+   "items": [
+    [
+     "回填時機",
+     "結構體達設計強度，外牆防水層及保護層完成後始可回填"
+    ],
+    [
+     "回填前清理",
+     "積水抽乾，木料、垃圾等雜物清除"
+    ],
+    [
+     "回填材料",
+     "依設計圖說，不得含有機物、垃圾、混凝土塊\n最大粒徑 ≦ ____ cm"
+    ],
+    [
+     "分層厚度",
+     "每層鬆方厚度 ≦ ____ cm"
+    ],
+    [
+     "含水量",
+     "接近最佳含水量 ____ %"
+    ],
+    [
+     "夯實機具",
+     "結構物旁使用小型夯實機，不得以重機具衝擊結構物"
+    ],
+    [
+     "夯實度",
+     "依規範 ≧ ____ %（改良式普氏試驗）"
+    ],
+    [
+     "工地密度試驗",
+     "依規範頻率辦理，記錄試驗位置及結果"
+    ],
+    [
+     "防水層保護",
+     "回填時不得損壞外牆防水層及保護板"
+    ],
+    [
+     "埋設管線保護",
+     "管線周圍以細砂或細料回填"
+    ],
+    [
+     "完成面高程、坡度",
+     "依設計圖說，排水坡度正確"
+    ],
+    [
+     "完成面",
+     "平整，無明顯沉陷、龜裂"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công lấp đất và đầm nén",
+    "sub": "Lấp đất và đầm nén",
+    "items": [
+     [
+      "Thời điểm lấp đất",
+      "Kết cấu đạt cường độ thiết kế, lớp chống thấm và lớp bảo vệ tường ngoài hoàn thành mới được lấp đất"
+     ],
+     [
+      "Dọn dẹp trước khi lấp",
+      "Bơm hết nước đọng, dọn sạch gỗ, rác và vật lạ"
+     ],
+     [
+      "Vật liệu lấp",
+      "Theo bản vẽ thiết kế, không được lẫn chất hữu cơ, rác, khối bê tông\nCỡ hạt lớn nhất ≦ ____ cm"
+     ],
+     [
+      "Chiều dày mỗi lớp",
+      "Chiều dày đất tơi mỗi lớp ≦ ____ cm"
+     ],
+     [
+      "Độ ẩm",
+      "Gần độ ẩm tối ưu ____ %"
+     ],
+     [
+      "Máy đầm",
+      "Cạnh công trình dùng máy đầm nhỏ, không được dùng máy móc hạng nặng va đập vào kết cấu"
+     ],
+     [
+      "Độ chặt",
+      "Theo quy chuẩn ≧ ____ % (thí nghiệm Proctor cải tiến)"
+     ],
+     [
+      "Thí nghiệm dung trọng hiện trường",
+      "Thực hiện theo tần suất quy chuẩn, ghi lại vị trí và kết quả thí nghiệm"
+     ],
+     [
+      "Bảo vệ lớp chống thấm",
+      "Khi lấp không được làm hỏng lớp chống thấm và tấm bảo vệ tường ngoài"
+     ],
+     [
+      "Bảo vệ đường ống chôn ngầm",
+      "Xung quanh đường ống lấp bằng cát mịn hoặc vật liệu hạt mịn"
+     ],
+     [
+      "Cao độ, độ dốc bề mặt hoàn thiện",
+      "Theo bản vẽ thiết kế, độ dốc thoát nước chính xác"
+     ],
+     [
+      "Bề mặt hoàn thiện",
+      "Phẳng, không có lún, nứt rõ rệt"
+     ]
+    ]
+   }
+  },
+  "41": {
+   "category": "模板工程",
+   "title": "樓梯模板工程施工自主檢查表",
+   "sub": "樓梯模板工程",
+   "items": [
+    [
+     "放樣",
+     "依樓梯施工圖，起迄點及平台位置正確"
+    ],
+    [
+     "梯板厚度",
+     "依設計圖說 ____ cm"
+    ],
+    [
+     "樓梯淨寬",
+     "依設計圖說 ____ cm"
+    ],
+    [
+     "級高",
+     "依設計圖說 ____ cm，同一梯段各級一致"
+    ],
+    [
+     "級深",
+     "依設計圖說 ____ cm，同一梯段各級一致"
+    ],
+    [
+     "平台高程",
+     "依樓層高程及設計圖說"
+    ],
+    [
+     "底模支撐",
+     "鋼管支撐間距 ____ cm，設斜撐，基腳穩固"
+    ],
+    [
+     "踏步側模",
+     "固定牢靠，垂直平順"
+    ],
+    [
+     "模板接縫",
+     "接縫密合，無漏漿之虞"
+    ],
+    [
+     "預埋件",
+     "扶手、欄杆預埋件位置及數量依設計圖說"
+    ],
+    [
+     "施工縫位置",
+     "依設計圖說或監造指示"
+    ],
+    [
+     "模板面清潔",
+     "清潔無雜物，脫模劑塗佈均勻"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công cốp pha cầu thang",
+    "sub": "Công tác cốp pha cầu thang",
+    "items": [
+     [
+      "Định vị",
+      "Theo bản vẽ thi công cầu thang, vị trí điểm đầu, điểm cuối và chiếu nghỉ chính xác"
+     ],
+     [
+      "Chiều dày bản thang",
+      "Theo bản vẽ thiết kế ____ cm"
+     ],
+     [
+      "Chiều rộng thông thủy cầu thang",
+      "Theo bản vẽ thiết kế ____ cm"
+     ],
+     [
+      "Chiều cao bậc",
+      "Theo bản vẽ thiết kế ____ cm, các bậc trong cùng một vế thang đồng đều"
+     ],
+     [
+      "Chiều sâu bậc",
+      "Theo bản vẽ thiết kế ____ cm, các bậc trong cùng một vế thang đồng đều"
+     ],
+     [
+      "Cao độ chiếu nghỉ",
+      "Theo cao độ tầng và bản vẽ thiết kế"
+     ],
+     [
+      "Chống đỡ ván đáy",
+      "Khoảng cách cây chống thép ống ____ cm, có giằng chéo, chân chống vững chắc"
+     ],
+     [
+      "Cốp pha thành bậc",
+      "Cố định chắc chắn, thẳng đứng, phẳng đều"
+     ],
+     [
+      "Mối nối cốp pha",
+      "Mối nối khít, không có nguy cơ rò rỉ vữa"
+     ],
+     [
+      "Chi tiết chôn sẵn",
+      "Vị trí và số lượng chi tiết chôn sẵn cho tay vịn, lan can theo bản vẽ thiết kế"
+     ],
+     [
+      "Vị trí mạch ngừng thi công",
+      "Theo bản vẽ thiết kế hoặc chỉ dẫn của tư vấn giám sát"
+     ],
+     [
+      "Vệ sinh bề mặt cốp pha",
+      "Sạch sẽ, không có vật lạ, chất chống dính quét đều"
+     ]
+    ]
+   }
+  },
+  "42": {
+   "category": "鋼筋工程",
+   "title": "樓梯鋼筋工程施工自主檢查表",
+   "sub": "樓梯鋼筋工程",
+   "items": [
+    [
+     "鋼筋規格",
+     "號數、材質依設計圖說"
+    ],
+    [
+     "梯板主筋",
+     "直徑、間距、錨定長度依設計圖說"
+    ],
+    [
+     "分佈筋",
+     "直徑、間距依設計圖說"
+    ],
+    [
+     "轉折處鋼筋",
+     "梯板與平台內轉折處鋼筋應分開彎折錨定，不得連續彎折"
+    ],
+    [
+     "平台鋼筋",
+     "直徑、間距依設計圖說"
+    ],
+    [
+     "搭接長度",
+     "依設計圖說"
+    ],
+    [
+     "錨定入梁、板",
+     "錨定長度依設計圖說"
+    ],
+    [
+     "保護層",
+     "樓梯板 2cm\n墊塊設置穩固"
+    ],
+    [
+     "綁紮",
+     "交點綁紮牢固，無鬆脫位移"
+    ],
+    [
+     "預埋件",
+     "扶手、欄杆預埋件位置正確，不影響鋼筋"
+    ],
+    [
+     "鋼筋清潔",
+     "無油污、泥土及浮鏽"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công cốt thép cầu thang",
+    "sub": "Công tác cốt thép cầu thang",
+    "items": [
+     [
+      "Quy cách cốt thép",
+      "Số hiệu, mác thép theo bản vẽ thiết kế"
+     ],
+     [
+      "Thép chủ bản thang",
+      "Đường kính, khoảng cách, chiều dài neo theo bản vẽ thiết kế"
+     ],
+     [
+      "Thép phân bố",
+      "Đường kính, khoảng cách theo bản vẽ thiết kế"
+     ],
+     [
+      "Cốt thép tại chỗ gãy khúc",
+      "Cốt thép tại góc gãy trong giữa bản thang và chiếu nghỉ phải bẻ và neo riêng, không được bẻ liên tục"
+     ],
+     [
+      "Cốt thép chiếu nghỉ",
+      "Đường kính, khoảng cách theo bản vẽ thiết kế"
+     ],
+     [
+      "Chiều dài nối chồng",
+      "Theo bản vẽ thiết kế"
+     ],
+     [
+      "Neo vào dầm, sàn",
+      "Chiều dài neo theo bản vẽ thiết kế"
+     ],
+     [
+      "Lớp bê tông bảo vệ",
+      "Bản thang 2cm\nCon kê đặt chắc chắn"
+     ],
+     [
+      "Buộc thép",
+      "Các điểm giao buộc chắc chắn, không lỏng, không xê dịch"
+     ],
+     [
+      "Chi tiết chôn sẵn",
+      "Vị trí chi tiết chôn sẵn cho tay vịn, lan can chính xác, không ảnh hưởng đến cốt thép"
+     ],
+     [
+      "Vệ sinh cốt thép",
+      "Không dính dầu mỡ, bùn đất và gỉ bề mặt"
+     ]
+    ]
+   }
+  },
+  "43": {
+   "category": "機電設備工程",
+   "title": "給水管試壓施工自主檢查表",
+   "sub": "給水管試壓",
+   "items": [
+    [
+     "管材規格",
+     "材質、管徑、廠牌依核定送審資料"
+    ],
+    [
+     "配管路徑",
+     "依給水施工圖"
+    ],
+    [
+     "管路固定",
+     "吊架、支架間距 ____ cm，固定牢靠"
+    ],
+    [
+     "接頭",
+     "接合確實，無鬆動、無滲漏"
+    ],
+    [
+     "套管",
+     "穿梁、穿牆套管預留，位置正確"
+    ],
+    [
+     "防火填塞",
+     "穿越防火區劃處以防火材料填塞"
+    ],
+    [
+     "管口封閉",
+     "施工中管口封閉，防止異物進入"
+    ],
+    [
+     "冷熱水管位置",
+     "依設計圖說，左熱右冷"
+    ],
+    [
+     "試壓時機",
+     "混凝土澆置或封牆前試壓；粉刷或貼磚前再次試壓"
+    ],
+    [
+     "試壓壓力及時間",
+     "≧10 kg/cm²，保持60分鐘無滲漏\n起始 ____ / 終止 ____ kg/cm²"
+    ],
+    [
+     "壓力錶",
+     "經校正且於有效期限內"
+    ],
+    [
+     "保溫及標示",
+     "熱水管保溫依設計圖說，管路標示用途及流向"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công thử áp ống cấp nước",
+    "sub": "Thử áp ống cấp nước",
+    "items": [
+     [
+      "Quy cách ống",
+      "Vật liệu, đường kính, nhãn hiệu theo hồ sơ trình duyệt đã phê duyệt"
+     ],
+     [
+      "Tuyến đi ống",
+      "Theo bản vẽ thi công cấp nước"
+     ],
+     [
+      "Cố định đường ống",
+      "Khoảng cách giá treo, giá đỡ ____ cm, cố định chắc chắn"
+     ],
+     [
+      "Mối nối",
+      "Nối chắc chắn, không lỏng, không rò rỉ"
+     ],
+     [
+      "Ống lồng",
+      "Đã chừa ống lồng xuyên dầm, xuyên tường, vị trí chính xác"
+     ],
+     [
+      "Chèn chống cháy",
+      "Chỗ xuyên qua ranh giới khoang chống cháy được chèn bằng vật liệu chống cháy"
+     ],
+     [
+      "Bịt miệng ống",
+      "Trong thi công bịt kín miệng ống, tránh vật lạ lọt vào"
+     ],
+     [
+      "Vị trí ống nước nóng, lạnh",
+      "Theo bản vẽ thiết kế, nóng bên trái, lạnh bên phải"
+     ],
+     [
+      "Thời điểm thử áp",
+      "Thử áp trước khi đổ bê tông hoặc bít tường; thử áp lại trước khi trát hoặc ốp gạch"
+     ],
+     [
+      "Áp lực và thời gian thử",
+      "≧10 kg/cm², giữ 60 phút không rò rỉ\nBan đầu ____ / Kết thúc ____ kg/cm²"
+     ],
+     [
+      "Đồng hồ áp lực",
+      "Đã hiệu chuẩn và còn trong thời hạn hiệu lực"
+     ],
+     [
+      "Bảo ôn và đánh dấu",
+      "Bảo ôn ống nước nóng theo bản vẽ thiết kế, ghi rõ công dụng và chiều dòng chảy trên đường ống"
+     ]
+    ]
+   }
+  },
+  "44": {
+   "category": "機電設備工程",
+   "title": "排水管試水施工自主檢查表",
+   "sub": "排水管試水",
+   "items": [
+    [
+     "管材規格",
+     "材質、管徑、廠牌依核定送審資料"
+    ],
+    [
+     "配管路徑",
+     "依排水施工圖"
+    ],
+    [
+     "排水坡度",
+     "依設計圖說 1/ ____"
+    ],
+    [
+     "存水彎",
+     "封水深度 5~10cm"
+    ],
+    [
+     "通氣管",
+     "連接位置及管徑依設計圖說"
+    ],
+    [
+     "清潔口",
+     "設置位置依設計圖說，便於清理"
+    ],
+    [
+     "管路固定",
+     "吊架、支架間距 ____ cm，固定牢靠"
+    ],
+    [
+     "穿樓板處理",
+     "套管預留，周邊防水處理確實"
+    ],
+    [
+     "落水頭",
+     "高程低於完成面，周邊防水收邊確實"
+    ],
+    [
+     "滿水試驗",
+     "灌水至最高開口，保持60分鐘無滲漏"
+    ],
+    [
+     "通水試驗",
+     "排水順暢，無阻塞、無倒灌"
+    ],
+    [
+     "管口封閉",
+     "施工中管口封閉，防止異物進入"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công thử nước ống thoát nước",
+    "sub": "Thử nước ống thoát nước",
+    "items": [
+     [
+      "Quy cách ống",
+      "Vật liệu, đường kính, nhãn hiệu theo hồ sơ trình duyệt đã phê duyệt"
+     ],
+     [
+      "Tuyến đi ống",
+      "Theo bản vẽ thi công thoát nước"
+     ],
+     [
+      "Độ dốc thoát nước",
+      "Theo bản vẽ thiết kế 1/ ____"
+     ],
+     [
+      "Bẫy nước (xi phông)",
+      "Chiều sâu nước bịt 5~10cm"
+     ],
+     [
+      "Ống thông hơi",
+      "Vị trí đấu nối và đường kính ống theo bản vẽ thiết kế"
+     ],
+     [
+      "Lỗ thông tắc",
+      "Vị trí lắp đặt theo bản vẽ thiết kế, thuận tiện vệ sinh"
+     ],
+     [
+      "Cố định đường ống",
+      "Khoảng cách giá treo, giá đỡ ____ cm, cố định chắc chắn"
+     ],
+     [
+      "Xử lý chỗ xuyên sàn",
+      "Đã chừa ống lồng, xử lý chống thấm xung quanh chắc chắn"
+     ],
+     [
+      "Phễu thu nước sàn",
+      "Cao độ thấp hơn mặt hoàn thiện, xử lý viền chống thấm xung quanh chắc chắn"
+     ],
+     [
+      "Thử nước đầy ống",
+      "Đổ nước đến miệng ống cao nhất, giữ 60 phút không rò rỉ"
+     ],
+     [
+      "Thử thông nước",
+      "Thoát nước thông suốt, không tắc, không chảy ngược"
+     ],
+     [
+      "Bịt miệng ống",
+      "Trong thi công bịt kín miệng ống, tránh vật lạ lọt vào"
+     ]
+    ]
+   }
+  },
+  "45": {
+   "category": "機電設備工程",
+   "title": "配線及絕緣電阻測試施工自主檢查表",
+   "sub": "配線及絕緣電阻測試",
+   "items": [
+    [
+     "電線規格",
+     "線徑、材質、廠牌依核定送審資料"
+    ],
+    [
+     "穿線前管路",
+     "管內清理，無積水、雜物"
+    ],
+    [
+     "管內線數",
+     "導線總截面積不超過管截面積40%"
+    ],
+    [
+     "接頭位置",
+     "管內不得有接頭，接頭應於出線盒內"
+    ],
+    [
+     "線色區分",
+     "接地線綠色，中性線白色或灰色"
+    ],
+    [
+     "接地線連接",
+     "依設計圖說，連接確實"
+    ],
+    [
+     "迴路標示",
+     "配電盤迴路編號與單線圖一致"
+    ],
+    [
+     "漏電斷路器",
+     "浴室、潮濕場所等依規定裝設"
+    ],
+    [
+     "開關、插座安裝",
+     "高度、位置依設計圖說"
+    ],
+    [
+     "絕緣電阻測試儀器",
+     "500V 高阻計，經校正且於有效期限內"
+    ],
+    [
+     "絕緣電阻值",
+     "對地150V以下 ≧0.1MΩ\n對地151~300V ≧0.2MΩ\n300V以上 ≧0.4MΩ"
+    ],
+    [
+     "測試紀錄",
+     "逐迴路記錄實測值 ____ MΩ"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công đi dây và đo điện trở cách điện",
+    "sub": "Đi dây và đo điện trở cách điện",
+    "items": [
+     [
+      "Quy cách dây điện",
+      "Tiết diện dây, vật liệu, nhãn hiệu theo hồ sơ trình duyệt đã phê duyệt"
+     ],
+     [
+      "Đường ống trước khi kéo dây",
+      "Đã làm sạch trong ống, không đọng nước, không có vật lạ"
+     ],
+     [
+      "Số dây trong ống",
+      "Tổng tiết diện dây dẫn không vượt quá 40% tiết diện ống"
+     ],
+     [
+      "Vị trí mối nối",
+      "Trong ống không được có mối nối, mối nối phải nằm trong hộp đầu ra"
+     ],
+     [
+      "Phân biệt màu dây",
+      "Dây tiếp địa màu xanh lá, dây trung tính màu trắng hoặc xám"
+     ],
+     [
+      "Đấu nối dây tiếp địa",
+      "Theo bản vẽ thiết kế, đấu nối chắc chắn"
+     ],
+     [
+      "Ghi nhãn mạch",
+      "Số mạch trên tủ điện khớp với sơ đồ một sợi"
+     ],
+     [
+      "Cầu dao chống rò điện (ELCB)",
+      "Lắp đặt theo quy định tại phòng tắm, nơi ẩm ướt"
+     ],
+     [
+      "Lắp đặt công tắc, ổ cắm",
+      "Chiều cao, vị trí theo bản vẽ thiết kế"
+     ],
+     [
+      "Thiết bị đo điện trở cách điện",
+      "Megohm kế 500V, đã hiệu chuẩn và còn trong thời hạn hiệu lực"
+     ],
+     [
+      "Trị số điện trở cách điện",
+      "Điện áp so với đất từ 150V trở xuống ≧ 0,1MΩ\nĐiện áp so với đất 151~300V ≧ 0,2MΩ\nTrên 300V ≧ 0,4MΩ"
+     ],
+     [
+      "Biên bản đo",
+      "Ghi trị số đo thực tế cho từng mạch ____ MΩ"
+     ]
+    ]
+   }
+  },
+  "46": {
+   "category": "假設及基礎工程",
+   "title": "中間樁及構台樁施工自主檢查表",
+   "sub": "中間樁及構台樁工程",
+   "items": [
+    [
+     "中間樁材料長度",
+     "H350*350*12*19，L=11.5M"
+    ],
+    [
+     "構台樁材料長度",
+     "H350*350*12*19，L=11.5M"
+    ],
+    [
+     "中間樁點位放樣",
+     "誤差≦5cm"
+    ],
+    [
+     "中間樁打設深度",
+     "符合圖說"
+    ],
+    [
+     "垂直度",
+     "因地質不同而異"
+    ],
+    [
+     "構台樁打設深度",
+     "符合圖說"
+    ],
+    [
+     "構台樁續接",
+     "平整及滿銲"
+    ],
+    [
+     "接樁後垂直度",
+     "保持平整"
+    ],
+    [
+     "完成樁頂高程",
+     "符合圖說"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công cọc trung gian và cọc sàn công tác",
+    "sub": "Công tác cọc trung gian và cọc sàn công tác",
+    "items": [
+     [
+      "Chiều dài vật liệu cọc trung gian",
+      "H350*350*12*19, L=11,5M"
+     ],
+     [
+      "Chiều dài vật liệu cọc sàn công tác",
+      "H350*350*12*19, L=11,5M"
+     ],
+     [
+      "Định vị điểm cọc trung gian",
+      "Sai số ≦ 5cm"
+     ],
+     [
+      "Chiều sâu đóng cọc trung gian",
+      "Đúng bản vẽ"
+     ],
+     [
+      "Độ thẳng đứng",
+      "Thay đổi tùy theo địa chất"
+     ],
+     [
+      "Chiều sâu đóng cọc sàn công tác",
+      "Đúng bản vẽ"
+     ],
+     [
+      "Nối cọc sàn công tác",
+      "Phẳng và hàn kín đầy"
+     ],
+     [
+      "Độ thẳng đứng sau khi nối cọc",
+      "Giữ phẳng"
+     ],
+     [
+      "Cao độ đỉnh cọc hoàn thành",
+      "Đúng bản vẽ"
+     ]
+    ]
+   }
+  },
+  "47": {
+   "category": "假設及基礎工程",
+   "title": "構台施工自主檢查表",
+   "sub": "構台工程",
+   "items": [
+    [
+     "型鋼材料進場",
+     "主樑 H400*400*13*21\n副樑 H350*350*12*19"
+    ],
+    [
+     "覆工板材料進場",
+     "MD-200×100×20"
+    ],
+    [
+     "構台高程",
+     "依設計圖說，並不影響第一層支撐架設"
+    ],
+    [
+     "構台主副樑架設",
+     "符合設計圖說"
+    ],
+    [
+     "覆工板架設",
+     "符合設計圖說"
+    ],
+    [
+     "覆工鈑固定",
+     "角鐵擋燒焊"
+    ],
+    [
+     "安全欄杆設置",
+     "依勞工安全規定設置"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công sàn công tác",
+    "sub": "Công tác sàn công tác",
+    "items": [
+     [
+      "Thép hình vật liệu nhập công trường",
+      "Dầm chính H400*400*13*21\nDầm phụ H350*350*12*19"
+     ],
+     [
+      "Tấm sàn phủ (tấm lót đường) nhập công trường",
+      "MD-200×100×20"
+     ],
+     [
+      "Cao độ sàn công tác",
+      "Theo bản vẽ thiết kế, không ảnh hưởng việc lắp đặt thanh chống tầng thứ nhất"
+     ],
+     [
+      "Lắp dựng dầm chính, dầm phụ sàn công tác",
+      "Đúng bản vẽ thiết kế"
+     ],
+     [
+      "Lắp đặt tấm sàn phủ",
+      "Đúng bản vẽ thiết kế"
+     ],
+     [
+      "Cố định tấm sàn phủ",
+      "Hàn thép góc chặn"
+     ],
+     [
+      "Lắp đặt lan can an toàn",
+      "Lắp đặt theo quy định an toàn lao động"
+     ]
+    ]
+   }
+  },
+  "48": {
+   "category": "假設及基礎工程",
+   "title": "水平支撐施工自主檢查表",
+   "sub": "水平支撐工程",
+   "items": [
+    [
+     "水平支撐材料規格",
+     "H350*350*12*19"
+    ],
+    [
+     "三角托架高程放樣",
+     "誤差≦5cm"
+    ],
+    [
+     "三角托架固定",
+     "需鎖固"
+    ],
+    [
+     "支撐安裝軸線",
+     "需無歪斜"
+    ],
+    [
+     "支撐與支撐接合處",
+     "需以連接鈑及螺栓接合"
+    ],
+    [
+     "圍苓吊放水平度",
+     "≦5cm"
+    ],
+    [
+     "圍苓與支撐接合",
+     "是否補強、緊固"
+    ],
+    [
+     "圍苓與鋼鈑樁接觸面",
+     "使用fc'280kgf/cm2背填"
+    ],
+    [
+     "支撐與中間樁三角架",
+     "U型螺栓接合"
+    ],
+    [
+     "土壓計及油壓計設置位置及固定方式",
+     "依設計圖說"
+    ],
+    [
+     "土壓計及支撐應變計之觀測",
+     "依監測警戒值管理"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công thanh chống ngang",
+    "sub": "Công tác thanh chống ngang",
+    "items": [
+     [
+      "Quy cách vật liệu thanh chống ngang",
+      "H350*350*12*19"
+     ],
+     [
+      "Định vị cao độ giá đỡ tam giác",
+      "Sai số ≦ 5cm"
+     ],
+     [
+      "Cố định giá đỡ tam giác",
+      "Phải bắt bu lông chắc chắn"
+     ],
+     [
+      "Trục lắp đặt thanh chống",
+      "Không được lệch, nghiêng"
+     ],
+     [
+      "Chỗ nối giữa các thanh chống",
+      "Phải nối bằng bản mã và bu lông"
+     ],
+     [
+      "Độ ngang bằng khi cẩu lắp dầm vành (wale)",
+      "≦ 5cm"
+     ],
+     [
+      "Liên kết dầm vành với thanh chống",
+      "Đã gia cường, siết chặt chưa"
+     ],
+     [
+      "Mặt tiếp xúc dầm vành với cọc ván thép",
+      "Chèn lấp phía sau bằng bê tông fc'280kgf/cm2"
+     ],
+     [
+      "Thanh chống với giá tam giác cọc trung gian",
+      "Liên kết bằng bu lông chữ U"
+     ],
+     [
+      "Vị trí lắp đặt và cách cố định áp kế đất, áp kế dầu",
+      "Theo bản vẽ thiết kế"
+     ],
+     [
+      "Quan trắc áp kế đất và đồng hồ đo biến dạng thanh chống",
+      "Quản lý theo giá trị cảnh báo quan trắc"
+     ]
+    ]
+   }
+  },
+  "49": {
+   "category": "機電設備工程",
+   "title": "消防灑水管路工程施工自主檢查表",
+   "sub": "消防灑水管路工程",
+   "items": [
+    [
+     "管材規格",
+     "管材、管徑、廠牌依核定送審資料，材料經進場查驗合格"
+    ],
+    [
+     "配管路徑",
+     "依消防圖說，不妨礙其他管線及結構"
+    ],
+    [
+     "吊架、支撐",
+     "間距、固定方式依規定，無晃動"
+    ],
+    [
+     "接頭",
+     "螺紋或溝槽接頭確實，無滲漏"
+    ],
+    [
+     "穿牆、穿版",
+     "預埋套管，防火區劃以防火材料填塞"
+    ],
+    [
+     "撒水頭型式",
+     "型式、標示溫度依設計，有消防認可標示"
+    ],
+    [
+     "撒水頭位置",
+     "迴水板距天花板 30cm 以下，間距依設計"
+    ],
+    [
+     "撒水頭淨空",
+     "迴水板下方 45cm、水平 30cm 內無障礙物"
+    ],
+    [
+     "末端查驗管",
+     "設於管系末端，附壓力錶及排水"
+    ],
+    [
+     "水壓試驗",
+     "加壓 1.4MPa 以上，持續 2 小時無漏水，壓力 ____ MPa"
+    ],
+    [
+     "管口封閉",
+     "未完成管口確實封閉，防止異物進入"
+    ],
+    [
+     "標示",
+     "管路塗色或標示消防用途"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công hệ thống ống sprinkler chữa cháy",
+    "sub": "Hệ thống ống sprinkler chữa cháy",
+    "items": [
+     [
+      "Quy cách ống",
+      "Vật liệu, đường kính, nhãn hiệu theo hồ sơ trình duyệt; vật liệu đã nghiệm thu đầu vào"
+     ],
+     [
+      "Tuyến ống",
+      "Theo bản vẽ PCCC, không cản trở đường ống khác và kết cấu"
+     ],
+     [
+      "Giá treo, giá đỡ",
+      "Khoảng cách, cách cố định theo quy định, không rung lắc"
+     ],
+     [
+      "Mối nối",
+      "Mối nối ren hoặc rãnh chắc chắn, không rò rỉ"
+     ],
+     [
+      "Xuyên tường, xuyên sàn",
+      "Đặt ống lồng chờ sẵn; vùng ngăn cháy chèn bằng vật liệu chống cháy"
+     ],
+     [
+      "Loại đầu phun",
+      "Loại, nhiệt độ danh định theo thiết kế, có nhãn chứng nhận PCCC"
+     ],
+     [
+      "Vị trí đầu phun",
+      "Đĩa tán nước cách trần ≦ 30cm, khoảng cách theo thiết kế"
+     ],
+     [
+      "Khoảng trống đầu phun",
+      "Trong phạm vi 45cm phía dưới và 30cm theo phương ngang không có vật cản"
+     ],
+     [
+      "Van kiểm tra cuối",
+      "Đặt ở cuối hệ thống ống, có đồng hồ áp lực và thoát nước"
+     ],
+     [
+      "Thử áp lực nước",
+      "Tăng áp ≧ 1,4MPa, giữ 2 giờ không rò rỉ, áp lực ____ MPa"
+     ],
+     [
+      "Bịt miệng ống",
+      "Miệng ống chưa hoàn thành được bịt kín, tránh vật lạ lọt vào"
+     ],
+     [
+      "Ghi nhãn",
+      "Sơn màu hoặc ghi nhãn ống dùng cho PCCC"
+     ]
+    ]
+   }
+  },
+  "50": {
+   "category": "機電設備工程",
+   "title": "火警自動警報設備工程施工自主檢查表",
+   "sub": "火警自動警報設備工程",
+   "items": [
+    [
+     "設備規格",
+     "受信總機、探測器、手動報警機有消防認可標示"
+    ],
+    [
+     "配管配線",
+     "耐燃或耐熱保護依規定，線路與一般電源分開"
+    ],
+    [
+     "探測器型式",
+     "偵煙、定溫、差動式依場所及設計圖說"
+    ],
+    [
+     "探測器位置",
+     "距牆或梁 60cm 以上，距出風口 1.5m 以上"
+    ],
+    [
+     "探測器安裝",
+     "傾斜不超過 45°，固定確實"
+    ],
+    [
+     "手動報警機",
+     "距樓地板 1.2m～1.5m，步行距離 50m 以內"
+    ],
+    [
+     "標示燈、警鈴",
+     "位置明顯，音量足夠"
+    ],
+    [
+     "受信總機",
+     "設於值日室或常時有人處，回路標示清楚"
+    ],
+    [
+     "絕緣電阻",
+     "回路對地 ≧0.1MΩ，實測 ____ MΩ"
+    ],
+    [
+     "功能測試",
+     "各探測器動作，總機正確顯示區域並鳴動"
+    ],
+    [
+     "探測器防塵",
+     "施工期間加防塵蓋，完工後拆除"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công thiết bị báo cháy tự động",
+    "sub": "Thiết bị báo cháy tự động",
+    "items": [
+     [
+      "Quy cách thiết bị",
+      "Tủ trung tâm, đầu báo, nút ấn báo cháy có nhãn chứng nhận PCCC"
+     ],
+     [
+      "Đi ống, đi dây",
+      "Bảo vệ chống cháy hoặc chịu nhiệt theo quy định, tách khỏi nguồn điện thông thường"
+     ],
+     [
+      "Loại đầu báo",
+      "Đầu báo khói, nhiệt cố định, nhiệt gia tăng theo khu vực và bản vẽ thiết kế"
+     ],
+     [
+      "Vị trí đầu báo",
+      "Cách tường hoặc dầm ≧ 60cm, cách miệng gió ≧ 1,5m"
+     ],
+     [
+      "Lắp đặt đầu báo",
+      "Nghiêng không quá 45°, cố định chắc chắn"
+     ],
+     [
+      "Nút ấn báo cháy",
+      "Cách sàn 1,2m～1,5m, khoảng cách đi bộ ≦ 50m"
+     ],
+     [
+      "Đèn báo, chuông báo",
+      "Vị trí dễ thấy, âm lượng đủ lớn"
+     ],
+     [
+      "Tủ trung tâm",
+      "Đặt tại phòng trực hoặc nơi thường xuyên có người, ghi nhãn mạch rõ ràng"
+     ],
+     [
+      "Điện trở cách điện",
+      "Mạch so với đất ≧ 0,1MΩ, đo thực tế ____ MΩ"
+     ],
+     [
+      "Thử chức năng",
+      "Từng đầu báo tác động, tủ trung tâm hiển thị đúng khu vực và phát chuông"
+     ],
+     [
+      "Chống bụi đầu báo",
+      "Trong thời gian thi công lắp nắp chống bụi, tháo sau khi hoàn thành"
+     ]
+    ]
+   }
+  },
+  "51": {
+   "category": "機電設備工程",
+   "title": "空調冷媒管及風管工程施工自主檢查表",
+   "sub": "空調冷媒管及風管工程",
+   "items": [
+    [
+     "材料規格",
+     "冷媒銅管、保溫材、風管板厚依核定送審資料"
+    ],
+    [
+     "冷媒管配管",
+     "路徑依圖說，彎管無壓扁，焊接時充填氮氣"
+    ],
+    [
+     "冷媒管保溫",
+     "保溫厚度依規定，接縫確實黏貼無破損"
+    ],
+    [
+     "冷媒管氣密試驗",
+     "加壓 ____ kgf/cm²，保壓 24 小時無洩漏"
+    ],
+    [
+     "抽真空",
+     "真空度達 ____ mmHg 以下並保持"
+    ],
+    [
+     "冷凝排水管",
+     "坡度 1/100 以上，設存水彎，試水通暢"
+    ],
+    [
+     "風管接合",
+     "法蘭或接縫密封，無漏風"
+    ],
+    [
+     "風管吊架",
+     "間距、固定依規定，加防震墊"
+    ],
+    [
+     "風管保溫",
+     "保溫材包覆完整，外包鋁箔無破損"
+    ],
+    [
+     "防火閘門",
+     "穿越防火區劃處設置，位置可檢修"
+    ],
+    [
+     "出風口、回風口",
+     "位置、尺寸依圖說，與天花板對齊"
+    ],
+    [
+     "室外機基座",
+     "基座穩固、防震，周邊散熱空間足夠"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công ống gas lạnh và ống gió điều hòa",
+    "sub": "Ống gas lạnh và ống gió điều hòa",
+    "items": [
+     [
+      "Quy cách vật liệu",
+      "Ống đồng gas lạnh, vật liệu bảo ôn, độ dày tôn ống gió theo hồ sơ trình duyệt"
+     ],
+     [
+      "Đi ống gas lạnh",
+      "Tuyến ống theo bản vẽ, chỗ uốn không bị bẹp, nạp khí nitơ khi hàn"
+     ],
+     [
+      "Bảo ôn ống gas",
+      "Độ dày bảo ôn theo quy định, mối nối dán chắc chắn, không hư hỏng"
+     ],
+     [
+      "Thử kín ống gas",
+      "Tăng áp ____ kgf/cm², giữ áp 24 giờ không rò rỉ"
+     ],
+     [
+      "Hút chân không",
+      "Độ chân không đạt ____ mmHg trở xuống và giữ ổn định"
+     ],
+     [
+      "Ống thoát nước ngưng",
+      "Độ dốc ≧ 1/100, có bẫy nước, thử nước thông suốt"
+     ],
+     [
+      "Mối nối ống gió",
+      "Mặt bích hoặc mối nối được làm kín, không rò gió"
+     ],
+     [
+      "Giá treo ống gió",
+      "Khoảng cách, cố định theo quy định, có đệm chống rung"
+     ],
+     [
+      "Bảo ôn ống gió",
+      "Vật liệu bảo ôn bọc kín, lớp nhôm bên ngoài không rách"
+     ],
+     [
+      "Van chặn lửa",
+      "Đặt tại chỗ xuyên vùng ngăn cháy, vị trí có thể bảo trì"
+     ],
+     [
+      "Miệng gió cấp, gió hồi",
+      "Vị trí, kích thước theo bản vẽ, thẳng hàng với trần"
+     ],
+     [
+      "Bệ cục nóng",
+      "Bệ vững chắc, chống rung, không gian tản nhiệt xung quanh đủ"
+     ]
+    ]
+   }
+  },
+  "52": {
+   "category": "機電設備工程",
+   "title": "配電盤（箱）安裝工程施工自主檢查表",
+   "sub": "配電盤（箱）安裝工程",
+   "items": [
+    [
+     "設備規格",
+     "箱體尺寸、板厚、斷路器容量依核定送審資料"
+    ],
+    [
+     "安裝位置",
+     "位置、高度依圖說，前方維修空間 ≧ 80cm"
+    ],
+    [
+     "箱體固定",
+     "固定確實、水平垂直，嵌入式與牆面齊平"
+    ],
+    [
+     "進出線",
+     "管口加護圈，線路整齊綁紮"
+    ],
+    [
+     "斷路器",
+     "規格、極數與單線圖一致"
+    ],
+    [
+     "漏電斷路器",
+     "依規定迴路裝設，測試鈕動作正常"
+    ],
+    [
+     "接地",
+     "箱體及接地匯流排連接確實，接地線綠色"
+    ],
+    [
+     "端子鎖緊",
+     "壓接端子確實，螺絲鎖緊無鬆動"
+    ],
+    [
+     "迴路標示",
+     "迴路名稱、編號標示清楚，單線圖貼於箱門內"
+    ],
+    [
+     "絕緣電阻",
+     "各迴路實測 ____ MΩ，符合規定"
+    ],
+    [
+     "箱內清潔",
+     "無線頭、雜物，箱門開關正常"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công lắp đặt tủ (bảng) điện",
+    "sub": "Lắp đặt tủ (bảng) điện",
+    "items": [
+     [
+      "Quy cách thiết bị",
+      "Kích thước tủ, độ dày tôn, dung lượng CB theo hồ sơ trình duyệt"
+     ],
+     [
+      "Vị trí lắp đặt",
+      "Vị trí, chiều cao theo bản vẽ; không gian bảo trì phía trước ≧ 80cm"
+     ],
+     [
+      "Cố định tủ",
+      "Cố định chắc chắn, ngang bằng thẳng đứng; tủ âm tường phẳng với mặt tường"
+     ],
+     [
+      "Dây vào ra",
+      "Miệng ống có vòng bảo vệ, dây được bó gọn gàng"
+     ],
+     [
+      "CB (cầu dao)",
+      "Quy cách, số cực khớp với sơ đồ một sợi"
+     ],
+     [
+      "Cầu dao chống rò điện (ELCB)",
+      "Lắp cho các mạch theo quy định, nút thử hoạt động bình thường"
+     ],
+     [
+      "Tiếp địa",
+      "Thân tủ và thanh cái tiếp địa đấu nối chắc chắn, dây tiếp địa màu xanh lá"
+     ],
+     [
+      "Siết đầu cốt",
+      "Đầu cốt bấm chắc chắn, vít siết chặt không lỏng"
+     ],
+     [
+      "Ghi nhãn mạch",
+      "Tên mạch, số mạch ghi rõ ràng; sơ đồ một sợi dán trong cửa tủ"
+     ],
+     [
+      "Điện trở cách điện",
+      "Đo thực tế từng mạch ____ MΩ, đạt quy định"
+     ],
+     [
+      "Vệ sinh trong tủ",
+      "Không còn đầu dây thừa, vật lạ; cửa tủ đóng mở bình thường"
+     ]
+    ]
+   }
+  },
+  "53": {
+   "category": "機電設備工程",
+   "title": "照明燈具及開關插座安裝工程施工自主檢查表",
+   "sub": "照明燈具及開關插座安裝工程",
+   "items": [
+    [
+     "器具規格",
+     "燈具、開關、插座型號依核定送審資料"
+    ],
+    [
+     "燈具位置",
+     "依天花板配置圖，與天花板分割對齊"
+    ],
+    [
+     "燈具固定",
+     "重量較大者獨立吊掛，不得由天花板骨架承重"
+    ],
+    [
+     "接線",
+     "接線盒內接線確實，以壓接或接線帽連接"
+    ],
+    [
+     "燈具接地",
+     "金屬燈具外殼確實接地"
+    ],
+    [
+     "開關位置",
+     "高度 ____ cm，距門框 ____ cm，依圖說"
+    ],
+    [
+     "插座位置",
+     "高度 ____ cm，依圖說；潮濕場所使用防水型"
+    ],
+    [
+     "插座極性",
+     "火線、中性線、接地線位置正確"
+    ],
+    [
+     "面板安裝",
+     "水平、與牆面密合，無破損汙染"
+    ],
+    [
+     "緊急照明、出口標示燈",
+     "位置依圖說，斷電後正常點亮"
+    ],
+    [
+     "點燈測試",
+     "各迴路開關控制正確，燈具全數點亮"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công lắp đặt đèn chiếu sáng, công tắc và ổ cắm",
+    "sub": "Lắp đặt đèn chiếu sáng, công tắc và ổ cắm",
+    "items": [
+     [
+      "Quy cách thiết bị",
+      "Model đèn, công tắc, ổ cắm theo hồ sơ trình duyệt"
+     ],
+     [
+      "Vị trí đèn",
+      "Theo bản vẽ bố trí trần, thẳng hàng với ô chia trần"
+     ],
+     [
+      "Cố định đèn",
+      "Đèn nặng treo độc lập, không để khung trần chịu lực"
+     ],
+     [
+      "Đấu dây",
+      "Đấu dây trong hộp nối chắc chắn, dùng đầu cốt bấm hoặc nắp chụp nối dây"
+     ],
+     [
+      "Tiếp địa đèn",
+      "Vỏ đèn kim loại được tiếp địa chắc chắn"
+     ],
+     [
+      "Vị trí công tắc",
+      "Chiều cao ____ cm, cách khung cửa ____ cm, theo bản vẽ"
+     ],
+     [
+      "Vị trí ổ cắm",
+      "Chiều cao ____ cm theo bản vẽ; nơi ẩm ướt dùng loại chống nước"
+     ],
+     [
+      "Cực tính ổ cắm",
+      "Vị trí dây pha, dây trung tính, dây tiếp địa đúng"
+     ],
+     [
+      "Lắp mặt che",
+      "Ngang bằng, ôm sát mặt tường, không vỡ, không bẩn"
+     ],
+     [
+      "Đèn sự cố, đèn chỉ dẫn lối thoát",
+      "Vị trí theo bản vẽ, sáng bình thường khi mất điện"
+     ],
+     [
+      "Thử bật đèn",
+      "Công tắc điều khiển đúng từng mạch, tất cả đèn đều sáng"
+     ]
+    ]
+   }
+  },
+  "54": {
+   "category": "機電設備工程",
+   "title": "衛生器具安裝工程施工自主檢查表",
+   "sub": "衛生器具安裝工程",
+   "items": [
+    [
+     "器具規格",
+     "馬桶、面盆、龍頭等型號依核定送審資料"
+    ],
+    [
+     "安裝位置",
+     "中心線、高度依圖說"
+    ],
+    [
+     "馬桶安裝",
+     "排水中心距牆依器具規格，底座以防霉矽利康封邊"
+    ],
+    [
+     "面盆安裝",
+     "固定牢靠，承重無晃動"
+    ],
+    [
+     "給水接頭",
+     "止水閥、軟管接合確實無滲漏"
+    ],
+    [
+     "排水接頭",
+     "存水彎接合確實，無滲漏、無臭味"
+    ],
+    [
+     "龍頭",
+     "冷熱水方向正確（左熱右冷）"
+    ],
+    [
+     "配件",
+     "鏡子、毛巾架、扶手等位置依圖說，固定確實"
+    ],
+    [
+     "無障礙設施",
+     "扶手高度、迴轉空間依無障礙設計規範"
+    ],
+    [
+     "通水試驗",
+     "給排水通暢，沖水正常"
+    ],
+    [
+     "成品保護",
+     "安裝後包覆保護，無刮傷破損"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công lắp đặt thiết bị vệ sinh",
+    "sub": "Lắp đặt thiết bị vệ sinh",
+    "items": [
+     [
+      "Quy cách thiết bị",
+      "Model bồn cầu, lavabo, vòi nước theo hồ sơ trình duyệt"
+     ],
+     [
+      "Vị trí lắp đặt",
+      "Đường tim, chiều cao theo bản vẽ"
+     ],
+     [
+      "Lắp bồn cầu",
+      "Khoảng cách tâm thoát nước đến tường theo quy cách thiết bị, chân đế bơm silicone chống mốc"
+     ],
+     [
+      "Lắp lavabo",
+      "Cố định chắc chắn, chịu lực không rung lắc"
+     ],
+     [
+      "Mối nối cấp nước",
+      "Van khóa, ống mềm đấu nối chắc chắn không rò rỉ"
+     ],
+     [
+      "Mối nối thoát nước",
+      "Bẫy nước đấu nối chắc chắn, không rò rỉ, không có mùi hôi"
+     ],
+     [
+      "Vòi nước",
+      "Hướng nước nóng lạnh đúng (trái nóng, phải lạnh)"
+     ],
+     [
+      "Phụ kiện",
+      "Gương, giá treo khăn, tay vịn theo vị trí bản vẽ, cố định chắc chắn"
+     ],
+     [
+      "Tiện ích cho người khuyết tật",
+      "Chiều cao tay vịn, không gian quay xe theo quy chuẩn tiếp cận"
+     ],
+     [
+      "Thử thông nước",
+      "Cấp thoát nước thông suốt, xả nước bình thường"
+     ],
+     [
+      "Bảo vệ thành phẩm",
+      "Sau khi lắp được bọc bảo vệ, không trầy xước, không hư hỏng"
+     ]
+    ]
+   }
+  },
+  "55": {
+   "category": "機電設備工程",
+   "title": "弱電（電信、網路、監視）配管線工程施工自主檢查表",
+   "sub": "弱電（電信、網路、監視）配管線工程",
+   "items": [
+    [
+     "材料規格",
+     "線材、配管、插座依核定送審資料"
+    ],
+    [
+     "配管",
+     "與強電管線分開，間距依規定"
+    ],
+    [
+     "拉線盒",
+     "直線距離或彎曲過多處設拉線盒"
+    ],
+    [
+     "線材敷設",
+     "不得過度彎折、拉扯，預留長度足夠"
+    ],
+    [
+     "電信箱",
+     "位置、尺寸依圖說，接地確實"
+    ],
+    [
+     "資訊插座",
+     "位置、高度依圖說，線色及端接依標準"
+    ],
+    [
+     "監視攝影機",
+     "位置、角度依圖說，固定確實"
+    ],
+    [
+     "線路標示",
+     "兩端標示編號，與配置圖一致"
+    ],
+    [
+     "測試",
+     "網路線測試通過，電話、監視訊號正常"
+    ],
+    [
+     "竣工資料",
+     "線路編號表、測試紀錄完成"
+    ]
+   ],
+   "vi": {
+    "title": "Phiếu tự kiểm tra thi công ống và dây điện nhẹ (viễn thông, mạng, camera)",
+    "sub": "Ống và dây điện nhẹ (viễn thông, mạng, camera)",
+    "items": [
+     [
+      "Quy cách vật liệu",
+      "Dây, ống, ổ cắm theo hồ sơ trình duyệt"
+     ],
+     [
+      "Đi ống",
+      "Tách khỏi đường ống điện mạnh, khoảng cách theo quy định"
+     ],
+     [
+      "Hộp kéo dây",
+      "Đặt hộp kéo dây ở đoạn thẳng dài hoặc chỗ có nhiều khúc uốn"
+     ],
+     [
+      "Kéo dây",
+      "Không uốn gập, kéo căng quá mức; chừa đủ chiều dài"
+     ],
+     [
+      "Tủ viễn thông",
+      "Vị trí, kích thước theo bản vẽ, tiếp địa chắc chắn"
+     ],
+     [
+      "Ổ cắm mạng",
+      "Vị trí, chiều cao theo bản vẽ; màu dây và đấu nối theo tiêu chuẩn"
+     ],
+     [
+      "Camera giám sát",
+      "Vị trí, góc quay theo bản vẽ, cố định chắc chắn"
+     ],
+     [
+      "Ghi nhãn dây",
+      "Hai đầu ghi số hiệu, khớp với bản vẽ bố trí"
+     ],
+     [
+      "Thử nghiệm",
+      "Dây mạng đo đạt, tín hiệu điện thoại, camera bình thường"
+     ],
+     [
+      "Hồ sơ hoàn công",
+      "Hoàn thành bảng số hiệu dây, biên bản thử nghiệm"
+     ]
+    ]
+   }
+  }
+ },
+ "viCategories": {
+  "假設及基礎工程": "Công tác tạm & nền móng",
+  "模板工程": "Công tác cốp pha",
+  "鋼筋工程": "Công tác cốt thép",
+  "混凝土工程": "Công tác bê tông",
+  "裝修工程": "Công tác hoàn thiện",
+  "門窗及外牆工程": "Cửa & tường ngoài",
+  "防水工程": "Công tác chống thấm",
+  "金屬工程": "Công tác kim loại",
+  "機電設備工程": "Cơ điện & thiết bị",
+  "景觀工程": "Công tác cảnh quan"
+ },
+ "migrations": [
+  {
+   "template": "23",
+   "fromItems": 6,
+   "map": [
+    0,
+    1,
+    2,
+    7,
+    4,
+    9
+   ],
+   "note": "2026-10-17 併入原 49 號鋼軌樁施工自主檢查表"
+  }
+ ]
+}
