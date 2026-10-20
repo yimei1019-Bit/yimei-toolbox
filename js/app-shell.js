@@ -1,5 +1,5 @@
 /**
- * Yimei 營造工具箱：外框邏輯（主網站與離線版共用，原始檔在 web-prototype/js/app-shell.js）
+ * 機電自檢紀錄表：外框邏輯（主網站與離線版共用，原始檔在 web-prototype/js/app-shell.js）
  * 資料來源 window.APP_STORE：離線版 offline-store.js（裝置本身）、主網站 js/server-store.js（伺服器）。
  * APP_STORE.can(功能) 決定按鈕是否顯示：manage（工地、公司名稱）、templates（自訂空白檢查表）、
  * backup（備份）、accounts（帳號管理）；離線版全部可用，主網站只有管理者可用。
@@ -25,7 +25,7 @@
     const page = window.PAGES['self-check'];
     content.innerHTML = page.render();
     page.mount(content);
-    document.title = `自主檢查表｜${window.SK_STORE.projectName()}｜Yimei 營造工具箱`;
+    document.title = `自主檢查表｜${window.SK_STORE.projectName()}｜機電自檢紀錄表`;
   }
   function renderSelect() {
     sel.innerHTML = O.projects().map(p => `<option value="${esc(p.id)}">${esc(p.name)}</option>`).join('');
@@ -53,6 +53,12 @@
             <button class="ac-save" type="submit">儲存</button>
           </div>
         </form>
+        <form class="pj-company pj-locs" data-locations>
+          <h4 class="pj-sub">檢查位置選項（${esc(O.projects().find(p => p.id === O.current()).name)}）</h4>
+          <p class="pj-hint">填表時「檢查位置」會變成下拉選單，只能從這裡設定的選項挑。一行一個，例如：B1、1F、2F 機房、屋頂。</p>
+          <textarea name="locations" rows="5" placeholder="B1&#10;1F&#10;2F&#10;屋頂">${esc(O.locationsOf().join('\n'))}</textarea>
+          <button class="ac-save" type="submit">儲存位置選項</button>
+        </form>
         <h4 class="pj-sub">工地（工程名稱）</h4>
         <p class="pj-hint">工地名稱會印在檢查表的「工程名稱」。每個工地各有一整套檢查表。</p>
         <ul class="pj-list">
@@ -70,9 +76,13 @@
         <div class="pj-msg" ${msg ? '' : 'hidden'}>${esc(msg)}</div>
       </div>`;
   }
+  // okMsg 可以是文字，或依 fn 的結果產生文字的函式
   async function run(fn, okMsg) {
     let msg = okMsg;
-    try { await fn(); } catch (e) { msg = e.message; }
+    try {
+      const r = await fn();
+      if (typeof okMsg === 'function') msg = okMsg(r);
+    } catch (e) { msg = e.message; }
     renderSelect();
     showPage();
     dlg.innerHTML = manageHTML(msg);
@@ -271,6 +281,12 @@
         else await O.setCurrent(p ? (await O.renameProject(p.id, name), p.id) : (await O.addProject(name)).id);
         if (co !== O.company()) await O.setCompany(co);
       });
+      return;
+    }
+    if (e.target.matches('[data-locations]')) {
+      const list = e.target.locations.value.split('\n');
+      run(() => O.setLocations(O.current(), list),
+        saved => (saved.length ? `已儲存 ${saved.length} 個檢查位置選項` : '已清空檢查位置選項，填表時改回自行輸入'));
       return;
     }
     if (e.target.matches('[data-company]')) {
@@ -526,13 +542,13 @@
       else {
         content.innerHTML = window.PAGES[tool].render();
         window.PAGES[tool].mount(content);
-        document.title = `${PAGE_TITLE[tool]}｜Yimei 營造工具箱`;
+        document.title = `${PAGE_TITLE[tool]}｜機電自檢紀錄表`;
       }
     }
     shown = tool;
     checkRemind();
     if (tool === 'self-check' && (entering || placeholder()) && !dlg.open) openSetup();
-    if (!tool) document.title = 'Yimei 營造工具箱';
+    if (!tool) document.title = '機電自檢紀錄表';
     window.scrollTo(0, 0);
   }
   window.addEventListener('hashchange', route);

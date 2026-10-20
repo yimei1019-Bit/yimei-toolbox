@@ -22,6 +22,7 @@
 (function () {
   const LANG_KEY = 'sk-lang';
   const PRINT_LANG_KEY = 'sk-print-lang';
+  const VIEW_KEY = 'sk-view'; // 清單檢視：list 條列／cards 卡片（每台裝置記住）
   const store = {
     get(k, d) { try { return localStorage.getItem(k) || d; } catch (e) { return d; } },
     set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
@@ -29,11 +30,13 @@
   const state = {
     trade: 'all', openId: null, draft: null, tpl: null, forms: [], error: null,
     lang: store.get(LANG_KEY, 'zh') === 'vi' ? 'vi' : 'zh',
+    view: store.get(VIEW_KEY, 'list') === 'cards' ? 'cards' : 'list',
   };
 
   /* ---------- 介面文字（中／越） ---------- */
   const UI = {
     zh: {
+      viewList: '☰ 條列', viewCards: '▦ 卡片', viewAria: '切換檢視',
       title: '自主檢查表', projectHint: '目前專案（在上方選單切換）', newForm: '＋ 增加既有檢查表',
       all: '全部', colCat: '類別', colItem: '檢查項目', colLoc: '位置', colDate: '日期', colStatus: '狀態',
       fill: '✎ 填表', fails: n => `${n} 項不合格`, empty: '沒有符合條件的檢查表', loading: '載入中…',
@@ -41,6 +44,7 @@
       done: '完成', doing: '進行中', todo: '未填',
       pass: '合格', fail: '不合格', na: '不適用',
       before: '施工前', during: '施工中', after: '施工完成',
+      locPick: '（請選擇位置）', locOld: '（不在選項中）',
       newTitle: '增加既有檢查表', formType: '檢查表種類', location: '檢查位置', locEg: '例如：2F、B1 東側、全區',
       cancel: '取消', create: '建立並開始填寫',
       close: '關閉（不儲存）', noLoc: '未填位置', marked: (a, b) => `已標記 ${a}/${b} 項`,
@@ -72,6 +76,7 @@
       pvLang: '列印語言', print: '🖨 列印', pdf: '⬇ 下載 PDF', pdfBusy: '產生中…',
     },
     vi: {
+      viewList: '☰ Danh sách', viewCards: '▦ Thẻ', viewAria: 'Đổi kiểu xem',
       title: 'Phiếu tự kiểm tra', projectHint: 'Dự án hiện tại (đổi ở menu phía trên)', newForm: '＋ Thêm phiếu',
       all: 'Tất cả', colCat: 'Hạng mục', colItem: 'Phiếu kiểm tra', colLoc: 'Vị trí', colDate: 'Ngày', colStatus: 'Trạng thái',
       fill: '✎ Điền phiếu', fails: n => `${n} mục không đạt`, empty: 'Không có phiếu phù hợp', loading: 'Đang tải…',
@@ -79,6 +84,7 @@
       done: 'Hoàn thành', doing: 'Đang thực hiện', todo: 'Chưa điền',
       pass: 'Đạt', fail: 'Không đạt', na: 'Không áp dụng',
       before: 'Trước thi công', during: 'Trong thi công', after: 'Sau khi hoàn thành',
+      locPick: '(Chọn vị trí)', locOld: '(không có trong danh sách)',
       newTitle: 'Thêm phiếu kiểm tra', formType: 'Loại phiếu', location: 'Vị trí kiểm tra', locEg: 'VD: 2F, B1 phía Đông, toàn khu',
       cancel: 'Hủy', create: 'Tạo và bắt đầu điền',
       close: 'Đóng (không lưu)', noLoc: 'Chưa có vị trí', marked: (a, b) => `Đã đánh dấu ${a}/${b} mục`,
@@ -182,6 +188,10 @@
           <button class="${state.lang === 'zh' ? 'on' : ''}" data-lang="zh" aria-pressed="${state.lang === 'zh'}">中文</button>
           <button class="${state.lang === 'vi' ? 'on' : ''}" data-lang="vi" aria-pressed="${state.lang === 'vi'}" lang="vi">Tiếng Việt</button>
         </div>
+        <div class="sk-lang sk-view" role="group" aria-label="${esc(T('viewAria'))}">
+          ${[['list', 'viewList'], ['cards', 'viewCards']].map(([v, k]) =>
+            `<button class="${state.view === v ? 'on' : ''}" data-view="${v}" aria-pressed="${state.view === v}">${T(k)}</button>`).join('')}
+        </div>
         ${state.tpl ? `<div class="sk-new-btns">
           <button class="sk-fill sk-new-btn" data-act="new">${T('newForm')}</button>
           ${store$().toolbarHTML ? store$().toolbarHTML() : ''}
@@ -237,10 +247,54 @@
       </div>`;
   }
 
+  /* ---------- 清單（卡片） ---------- */
+  // 每份檢查表一張卡片：類別、工項名稱、位置與日期、填寫進度條、狀態；整張卡片可點開填表
+  function cardsHTML() {
+    const rows = forms().filter(f => state.trade === 'all' || f.trade === state.trade);
+    if (!rows.length) return `<div class="sk-empty sk-cards-empty">${T('empty')}</div>`;
+    return `
+      <div class="sk-cards">
+        ${rows.map(f => {
+          const s = statusOf(f);
+          const fails = failCount(f);
+          const pct = f.marks.length ? Math.round(markedCount(f) / f.marks.length * 100) : 0;
+          return `
+            <button class="sk-card sk-card-${s}" data-form="${esc(f.id)}" title="${esc(nameOf(f))}">
+              <span class="sk-card-top">
+                <span class="sk-card-cat">${esc(catLabel(f.trade))}</span>
+                <span class="sk-status sk-status-${s}"><i></i>${T(s)}</span>
+              </span>
+              <span class="sk-card-name">${esc(listName(f))}</span>
+              <span class="sk-card-meta">📍 ${esc(f.location || '—')}　📅 ${ymd(f.date)}</span>
+              <span class="sk-card-bar" aria-hidden="true"><i style="width:${pct}%"></i></span>
+              <span class="sk-card-foot">
+                <span>${markedCount(f)}/${f.marks.length}</span>
+                ${fails ? `<span class="sk-fail-tag">${T('fails')(fails)}</span>` : ''}
+                <span class="sk-card-go">${T('fill')}</span>
+              </span>
+            </button>`;
+        }).join('')}
+      </div>`;
+  }
+
   function bodyHTML() {
     if (state.error) return `<div class="sk-empty">${esc(state.error)}</div>`;
     if (!state.tpl) return `<div class="sk-empty">${T('loading')}</div>`;
-    return chipsHTML() + tableHTML();
+    return chipsHTML() + (state.view === 'cards' ? cardsHTML() : tableHTML());
+  }
+
+  /* ---------- 檢查位置欄位 ----------
+   * 管理者在「✎ 工地」設定了位置選項 → 下拉選單，只能從選項挑；沒設定 → 自行輸入
+   * 已存的位置不在選項中（例如選項後來改了）仍保留顯示，避免被清掉 */
+  function locationField(value, attrs, ph) {
+    const opts = store$().locations ? store$().locations() : [];
+    if (!opts.length) return `<input ${attrs} value="${esc(value)}" placeholder="${esc(ph)}" maxlength="100" />`;
+    const extra = value && !opts.includes(value) ? [value] : [];
+    return `<select ${attrs}>
+      <option value="">${T('locPick')}</option>
+      ${opts.map(o => `<option ${o === value ? 'selected' : ''}>${esc(o)}</option>`).join('')}
+      ${extra.map(o => `<option selected value="${esc(o)}">${esc(o)} ${T('locOld')}</option>`).join('')}
+    </select>`;
   }
 
   /* ---------- 新增檢查表視窗 ---------- */
@@ -263,7 +317,7 @@
               </optgroup>`).join('')}
           </select>
         </label>
-        <label>${T('location')}<input name="location" placeholder="${esc(T('locEg'))}" maxlength="100" /></label>
+        <label>${T('location')}${locationField('', 'name="location"', T('locEg'))}</label>
         <div class="sk-new-msg" hidden></div>
         <div class="sk-new-actions">
           <button type="button" class="sk-btn" data-act="cancel">${T('cancel')}</button>
@@ -342,7 +396,7 @@
           </label>
           <label>${T('contractor')}<input data-field="contractor" value="${esc(d.contractor)}" placeholder="${esc(T('contractorPh'))}" maxlength="100" /></label>
           <label>${T('sub')}<input data-field="sub" value="${esc(d.sub)}" placeholder="${esc(T('subPh'))}" maxlength="100" /></label>
-          <label>${T('location')}<input data-field="location" value="${esc(d.location)}" placeholder="${esc(T('locPh'))}" maxlength="100" /></label>
+          <label>${T('location')}${locationField(d.location, 'data-field="location"', T('locPh'))}</label>
           <label>${T('date')}<input type="date" data-field="date" value="${esc(d.date)}" required /></label>
           <div class="sk-timing">
             <div class="sk-info-label">${T('timing')}</div>
@@ -793,6 +847,8 @@
           refresh();
           return;
         }
+        const vw = e.target.closest('[data-view]');
+        if (vw) { state.view = vw.dataset.view; store.set(VIEW_KEY, state.view); refresh(); return; }
         if (e.target.closest('[data-act="new"]')) { openNew(); return; }
         const tr = e.target.closest('[data-trade]');
         if (tr) { state.trade = tr.dataset.trade; refresh(); return; }

@@ -1,6 +1,6 @@
 {
-  "name": "Yimei 營造工具箱",
-  "short_name": "Yimei 工具箱",
+  "name": "機電自檢紀錄表",
+  "short_name": "機電自檢",
   "description": "工地隨身工具：自主檢查表離線填寫、簽名、產生 PDF",
   "lang": "zh-Hant",
   "start_url": "./",

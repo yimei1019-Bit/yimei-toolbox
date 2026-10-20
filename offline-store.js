@@ -6,7 +6,7 @@
  * 資料：
  *   forms 表：每份檢查表 { id, project, template, location, date, contractor, sub, subName（自訂分項工程名稱，空白＝用範本的）, timing, result（pass／fail）, marks,
  *             notes, review, signs, version, createdAt, updatedAt }
- *   kv 表   ：projects（工地清單 [{id, name}]）、current（目前工地 id）、
+ *   kv 表   ：projects（工地清單 [{id, name, locations}]，locations＝管理者設定的「檢查位置」選項）、current（目前工地 id）、
  *             company（公司名稱，印在表頭，可空白）、customTemplates（使用者自己新增的範本 {C01: {...}}）、
  *             lastBackup（上次匯出備份的時間，用來提醒「超過 7 天沒備份」）
  * 新增工地時，自動為每份範本建立一份空白檢查表（與主網站相同）。
@@ -209,6 +209,14 @@
     if (current === id) await setCurrent(projects[0].id);
   }
   async function setCurrent(id) { current = id; await kvSet('current', id); }
+  // 檢查位置選項（每個工地各自一份）：去掉空白與重複，最多 200 項、每項 100 字
+  const locationsOf = (id = current) => ((projects.find(p => p.id === id) || {}).locations || []);
+  async function setLocations(id, list) {
+    const clean = [...new Set((list || []).map(x => String(x || '').trim().slice(0, 100)).filter(Boolean))].slice(0, 200);
+    projects = projects.map(p => (p.id === id ? { ...p, locations: clean } : p));
+    await kvSet('projects', projects);
+    return clean;
+  }
   const savedCount = async id => (await formsOf(id)).filter(f => f.version > 0).length;
 
   /* ---------- 備份 ---------- */
@@ -238,7 +246,11 @@
     const okForm = f => f && typeof f.id === 'string' && typeof f.project === 'string' && Array.isArray(f.marks);
     const forms = data.forms.filter(okForm);
     const byId = new Map(projects.map(p => [p.id, p]));
-    data.projects.forEach(p => { if (p && p.id && p.name) byId.set(p.id, { id: p.id, name: String(p.name).slice(0, 50) }); });
+    data.projects.forEach(p => {
+      if (!p || !p.id || !p.name) return;
+      const locations = Array.isArray(p.locations) ? p.locations.map(x => String(x).slice(0, 100)).filter(Boolean).slice(0, 200) : [];
+      byId.set(p.id, { id: p.id, name: String(p.name).slice(0, 50), locations });
+    });
     projects = [...byId.values()];
     const tpls = data.customTemplates && typeof data.customTemplates === 'object' ? data.customTemplates : {};
     Object.entries(tpls).forEach(([id, t]) => {
@@ -295,6 +307,7 @@
     canDelete: () => true,
     projectName: () => (projects.find(p => p.id === current) || {}).name || '',
     companyName: () => company,
+    locations: () => locationsOf(),
   };
 
   // 外框（js/app-shell.js）用的資料介面；主網站的同一介面在 web-prototype/js/server-store.js
@@ -305,7 +318,7 @@
     projects: () => projects,
     DEFAULT_PROJECT,
     current: () => current,
-    setCurrent, addProject, renameProject, deleteProject, savedCount,
+    setCurrent, addProject, renameProject, deleteProject, savedCount, locationsOf, setLocations,
     exportBackup, importBackup, markBackedUp, backupDue,
     company: () => company, setCompany,
     templates, customTemplates: () => custom, saveTemplate, deleteTemplate, templateUsage,
