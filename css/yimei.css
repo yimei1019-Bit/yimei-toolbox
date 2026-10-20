@@ -154,3 +154,10 @@ body { background: linear-gradient(180deg, #e9eef5 0, #f4f6fa 320px) no-repeat, 
 /* 進入時確認工地：選單與輸入框同樣大小 */
 .ol-setup select { padding: 10px 12px; font: inherit; font-size: 16px; color: var(--y-ink); background: #fff; border: 1px solid #d9dde4; border-radius: 10px; }
 .ol-setup .ol-setup-go { background: var(--y-blue); }
+
+/* 填表：分項工程名稱可自行修改（整列寬）；檢查時機單選、檢查結果自己勾 */
+.sk-info > label.sk-subname { grid-column: 1 / -1; }
+.sk-subname-row { display: flex; gap: 8px; }
+.sk-subname-row input { flex: 1; min-width: 0; }
+.sk-subname-row .sk-btn { padding: 5px 12px; font-size: 13px; }
+.sk-check input[type="radio"] { accent-color: var(--y-blue); }

@@ -1,7 +1,7 @@
 /**
  * 自主檢查表：列印／PDF 用的 A4 版面（依公司 Word 範本的表格格式）
  *   SelfCheckPrint.paperHTML(form, tpl, ctx)  回傳 A4 頁面 HTML
- *     form：填寫內容（可用草稿，含未儲存的修改）
+ *     form：填寫內容（可用草稿，含未儲存的修改）；subName 有填就取代範本的分項工程名稱，result 為整份檢查結果（pass／fail）
  *     tpl ：範本 { title, sub, items, vi: { title, sub, items } }
  *     ctx ：{ company, project, lang }   lang：'zh' 中文／'vi' 越南文／'bi' 中越對照
  *   SelfCheckPrint.fitOnePage(scope)          稍微超出一頁（15% 內）時等比例縮小成一頁，回傳比例
@@ -123,14 +123,14 @@
         <table class="pp-table pp-info">
           <colgroup><col style="width:18%"><col style="width:32%"><col style="width:18%"><col style="width:32%"></colgroup>
           <tr><th>${lb('project')}</th><td colspan="3">${esc(ctx.project)}</td></tr>
-          <tr><th>${lb('sub')}</th><td colspan="3">${pick(tpl.sub, vi.sub)}</td></tr>
+          <tr><th>${lb('sub')}</th><td colspan="3">${form.subName ? esc(form.subName) : pick(tpl.sub, vi.sub)}</td></tr>
           <tr><th>${lb('contractor')}</th><td>${esc(form.contractor)}</td><th>${lb('subc')}</th><td>${esc(form.sub)}</td></tr>
           <tr><th>${lb('location')}</th><td>${esc(form.location)}</td><th>${lb('date')}</th><td>${dateText(form.date)}</td></tr>
           <tr><th>${lb('timing')}</th><td colspan="3" class="pp-opts">
             ${['before', 'during', 'after'].map(v => `<span>${box(form.timing.includes(v))}${lb(v)}</span>`).join('')}
           </td></tr>
           <tr><th>${lb('result')}</th><td colspan="3" class="pp-opts">
-            <span>○ ${lb('ok')}</span><span>╳ ${lb('ng')}</span><span>／ ${lb('na')}</span>
+            <span>${box(form.result === 'pass')}${lb('ok')}</span><span>${box(form.result === 'fail')}${lb('ng')}</span>
           </td></tr>
         </table>
         <table class="pp-table pp-items">

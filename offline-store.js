@@ -4,7 +4,7 @@
  * 另加 OFFLINE 物件管理「工地」（工程名稱）與備份匯出／匯入。
  *
  * 資料：
- *   forms 表：每份檢查表 { id, project, template, location, date, contractor, sub, timing, marks,
+ *   forms 表：每份檢查表 { id, project, template, location, date, contractor, sub, subName（自訂分項工程名稱，空白＝用範本的）, timing, result（pass／fail）, marks,
  *             notes, review, signs, version, createdAt, updatedAt }
  *   kv 表   ：projects（工地清單 [{id, name}]）、current（目前工地 id）、
  *             company（公司名稱，印在表頭，可空白）、customTemplates（使用者自己新增的範本 {C01: {...}}）、
@@ -121,7 +121,7 @@
   function blankForm(project, tid, n, location = '') {
     const t = now();
     return {
-      id: newId('L'), project, template: tid, location, date: '', contractor: '', sub: '', timing: [],
+      id: newId('L'), project, template: tid, location, date: '', contractor: '', sub: '', subName: '', timing: ['during'], result: '',
       marks: Array(n).fill(null), notes: {}, review: { status: null, date: '', title: '' }, signs: {},
       version: 0, createdAt: t, updatedAt: t,
     };
@@ -277,7 +277,7 @@
     async saveForm(id, body) {
       const f = await this.getForm(id);
       if (!body.date) throw new Error('請填寫檢查日期');
-      const fields = ['location', 'date', 'contractor', 'sub', 'timing', 'marks', 'notes', 'review', 'signs', 'extras'];
+      const fields = ['location', 'date', 'contractor', 'sub', 'subName', 'timing', 'result', 'marks', 'notes', 'review', 'signs', 'extras'];
       fields.forEach(k => { f[k] = body[k]; });
       f.version += 1;
       f.updatedAt = now();

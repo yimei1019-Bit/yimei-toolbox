@@ -47,6 +47,7 @@
       preview: '👁 預覽／列印', save: '💾 儲存', saving: '儲存中…',
       contractor: '承攬廠商', contractorPh: '廠商名稱', sub: '協力廠商', subPh: '協力廠商（如有）',
       locPh: '例如：2F、B1 東側', date: '檢查日期', timing: '檢查時機', legend: '結果標記：',
+      subName: '分項工程名稱', subNameReset: '↺ 用原本的', result: '檢查結果', resultPass: '檢查合格', resultFail: '有缺失需改正',
       std: '規定標準：', notePh: '實際檢查情形（可空白）', itemAria: n => `第 ${n} 項結果`,
       review: '缺失複查結果', reviewDone: '已完成改善（檢附改善前中後照片）',
       reviewPending: '未完成改善，填具「缺失改善追蹤表」進行追蹤改善',
@@ -84,6 +85,7 @@
       preview: '👁 Xem trước / In', save: '💾 Lưu', saving: 'Đang lưu…',
       contractor: 'Nhà thầu thi công', contractorPh: 'Tên nhà thầu', sub: 'Nhà thầu phụ', subPh: 'Nhà thầu phụ (nếu có)',
       locPh: 'VD: 2F, B1 phía Đông', date: 'Ngày kiểm tra', timing: 'Thời điểm kiểm tra', legend: 'Ký hiệu kết quả:',
+      subName: 'Tên hạng mục', subNameReset: '↺ Dùng tên gốc', result: 'Kết quả kiểm tra', resultPass: 'Kiểm tra đạt', resultFail: 'Có lỗi cần khắc phục',
       std: 'Tiêu chuẩn: ', notePh: 'Tình trạng kiểm tra thực tế (có thể để trống)', itemAria: n => `Kết quả mục ${n}`,
       review: 'Kết quả kiểm tra lại lỗi', reviewDone: 'Đã khắc phục xong (kèm ảnh trước, trong và sau khi khắc phục)',
       reviewPending: 'Chưa khắc phục xong, lập "Phiếu theo dõi khắc phục lỗi" để theo dõi khắc phục',
@@ -332,6 +334,12 @@
       </div>
       <div class="sk-dlg-body">
         <div class="sk-info">
+          <label class="sk-subname">${T('subName')}
+            <span class="sk-subname-row">
+              <input data-field="subName" value="${esc(d.subName || tplText(d).sub)}" maxlength="60" />
+              <button type="button" class="sk-btn" data-act="subname-reset" ${d.subName ? '' : 'hidden'}>${T('subNameReset')}</button>
+            </span>
+          </label>
           <label>${T('contractor')}<input data-field="contractor" value="${esc(d.contractor)}" placeholder="${esc(T('contractorPh'))}" maxlength="100" /></label>
           <label>${T('sub')}<input data-field="sub" value="${esc(d.sub)}" placeholder="${esc(T('subPh'))}" maxlength="100" /></label>
           <label>${T('location')}<input data-field="location" value="${esc(d.location)}" placeholder="${esc(T('locPh'))}" maxlength="100" /></label>
@@ -339,7 +347,12 @@
           <div class="sk-timing">
             <div class="sk-info-label">${T('timing')}</div>
             ${TIMING.map(v => `
-              <label class="sk-check"><input type="checkbox" data-timing="${v}" ${d.timing.includes(v) ? 'checked' : ''} />${T(v)}</label>`).join('')}
+              <label class="sk-check"><input type="radio" name="skTiming" data-timing="${v}" ${d.timing.includes(v) ? 'checked' : ''} />${T(v)}</label>`).join('')}
+          </div>
+          <div class="sk-timing sk-result">
+            <div class="sk-info-label">${T('result')}</div>
+            <label class="sk-check"><input type="radio" name="skResult" data-result="pass" ${d.result === 'pass' ? 'checked' : ''} />${T('resultPass')}</label>
+            <label class="sk-check"><input type="radio" name="skResult" data-result="fail" ${d.result === 'fail' ? 'checked' : ''} />${T('resultFail')}</label>
           </div>
         </div>
         <div class="sk-legend">${T('legend')}
@@ -494,7 +507,7 @@
       function snapshot(d) {
         const notes = Object.fromEntries(Object.entries(d.notes || {}).filter(([, v]) => String(v).trim()));
         const extras = (d.extras || []).filter(x => !isBlankExtra(x));
-        return JSON.stringify([d.location, d.date, d.contractor, d.sub, d.timing, d.marks, notes, d.review, d.signs, extras]);
+        return JSON.stringify([d.location, d.date, d.contractor, d.sub, d.subName, d.timing, d.result, d.marks, notes, d.review, d.signs, extras]);
       }
       let openedSnapshot = null;
       const isDirty = () => !!state.draft && snapshot(state.draft) !== openedSnapshot;
@@ -597,7 +610,9 @@
           ...f,
           marks: [...f.marks],
           notes: { ...f.notes },
-          timing: [...f.timing],
+          timing: f.timing && f.timing.length ? [f.timing[0]] : ['during'], // 單選，預設施工中
+          subName: f.subName || '', // 空白＝用範本原本的分項工程名稱
+          result: f.result || '',
           date: f.date || today(), // 新表單預設今天，可自行修改
           review: { status: null, date: '', title: '', ...f.review },
           // 已填的自填項目，不足 3 列補空白列（空白列儲存時會略過）
@@ -626,7 +641,8 @@
         try {
           const body = {
             version: d.version, location: d.location, date: d.date,
-            contractor: d.contractor, sub: d.sub, timing: d.timing,
+            contractor: d.contractor, sub: d.sub, timing: d.timing, result: d.result,
+            subName: d.subName.trim() === tplOf(d).sub ? '' : d.subName.trim(),
             marks: d.marks, notes: d.notes, review: d.review, signs: d.signs,
             extras: d.extras.filter(x => !isBlankExtra(x))
               .map(x => ({ name: x.name.trim(), std: x.std.trim(), mark: x.mark, note: x.note.trim() })),
@@ -648,7 +664,7 @@
         if (!confirm(T('resetConfirm'))) return;
         const d = state.draft;
         Object.assign(d, {
-          contractor: '', sub: '', date: today(), timing: [],
+          contractor: '', sub: '', subName: '', date: today(), timing: ['during'], result: '',
           marks: d.marks.map(() => null), notes: {},
           extras: Array.from({ length: EXTRA_ROWS }, blankExtra),
           review: { status: null, date: '', title: '' }, signs: {},
@@ -810,6 +826,11 @@
         if (a === 'save') save(act);
         if (a === 'preview') openPreview();
         if (a === 'reset') reset();
+        if (a === 'subname-reset') {
+          state.draft.subName = '';
+          dlg.querySelector('[data-field="subName"]').value = tplText(state.draft).sub;
+          act.hidden = true;
+        }
         if (a === 'delete') remove();
         if (a === 'extra-add') {
           state.draft.extras.push(blankExtra());
@@ -841,12 +862,16 @@
           d[f] = t.value;
           if (f === 'date') dlg.querySelector('[data-meta="date"]').textContent = ymd(t.value);
           if (f === 'location') dlg.querySelector('[data-meta="location"]').textContent = t.value || T('noLoc');
+          if (f === 'subName') {
+            const orig = tplText(d).sub;
+            if (t.value.trim() === orig) d.subName = '';
+            dlg.querySelector('[data-act="subname-reset"]').hidden = !d.subName;
+          }
         }
         else if (t.dataset.review) d.review.status = t.dataset.review;
         else if (t.dataset.reviewField) d.review[t.dataset.reviewField] = t.value;
-        else if (t.dataset.timing) {
-          d.timing = TIMING.filter(v => v === t.dataset.timing ? t.checked : d.timing.includes(v));
-        }
+        else if (t.dataset.timing) d.timing = [t.dataset.timing];
+        else if (t.dataset.result) d.result = t.dataset.result;
       });
 
       dlg.addEventListener('close', () => {
