@@ -59,6 +59,7 @@
           <textarea name="locations" rows="5" placeholder="B1&#10;1F&#10;2F&#10;屋頂">${esc(O.locationsOf().join('\n'))}</textarea>
           <button class="ac-save" type="submit">儲存位置選項</button>
         </form>
+        ${shareHTML()}
         <h4 class="pj-sub">工地（工程名稱）</h4>
         <p class="pj-hint">工地名稱會印在檢查表的「工程名稱」。每個工地各有一整套檢查表。</p>
         <ul class="pj-list">
@@ -77,6 +78,38 @@
       </div>`;
   }
   // okMsg 可以是文字，或依 fn 的結果產生文字的函式
+  // 同事共用：管理密碼＋匯出設定檔（同事匯入後只能填表）
+  function shareHTML() {
+    if (!O.exportSettings) return '';
+    return `
+      <div class="pj-share">
+        <h4 class="pj-sub">👥 同事共用</h4>
+        <p class="pj-hint">你是管理者。設定管理密碼後，按「匯出設定檔」用 LINE 傳給同事；同事在「💾 備份 → 匯入」選這個檔，
+          就會拿到你的工地、位置選項、公司名稱和自訂檢查表，而且只能填表、不能改設定。之後新增檢查表，再匯出一次讓同事重新匯入即可。</p>
+        <form class="pj-company" data-pin>
+          <label for="olPin">${O.hasPin() ? '管理密碼（已設定 ✓，要改就輸入新密碼）' : '管理密碼（4～20 個字，請記住）'}</label>
+          <div class="pj-row">
+            <input id="olPin" name="pin" type="password" autocomplete="new-password" minlength="4" maxlength="20" required />
+            <button class="ac-save" type="submit">${O.hasPin() ? '更改' : '設定'}</button>
+          </div>
+        </form>
+        <button class="ol-btn pj-share-go" data-export-settings ${O.hasPin() ? '' : 'disabled title="請先設定管理密碼"'}>⬇ 匯出設定檔給同事</button>
+      </div>`;
+  }
+  async function exportSettings() {
+    const data = await O.exportSettings();
+    const d = new Date();
+    const stamp = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`;
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(data)], { type: 'application/json' }));
+    a.download = `機電自檢設定檔_${stamp}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    return `已匯出設定檔（${data.projects.length} 個工地、${Object.keys(data.customTemplates).length} 份自訂檢查表），請傳給同事匯入`;
+  }
+
   async function run(fn, okMsg) {
     let msg = okMsg;
     try {
@@ -129,14 +162,14 @@
         <label class="pj-company">工地名稱
           <select name="site">
             ${O.projects().map(p => `<option value="${esc(p.id)}" ${p.id === cur ? 'selected' : ''}>${esc(p.name)}</option>`).join('')}
-            <option value="">＋ 新增工地…</option>
+            ${can('manage') ? '<option value="">＋ 新增工地…</option>' : ''}
           </select>
         </label>
         <label class="pj-company" data-newsite hidden>新工地名稱
           <input name="name" placeholder="例如：○○大樓新建工程" maxlength="50" autocomplete="off" />
         </label>
         <label class="pj-company">公司名稱（可空白）
-          <input name="company" value="${esc(O.company())}" placeholder="例如：○○營造有限公司" maxlength="40" autocomplete="off" />
+          <input name="company" value="${esc(O.company())}" placeholder="例如：○○營造有限公司" maxlength="40" autocomplete="off" ${can('manage') ? '' : 'readonly title="由管理者設定"'} />
         </label>
         <div class="pj-msg" ${msg ? '' : 'hidden'}>${esc(msg)}</div>
         <button class="sk-fill ol-setup-go" type="submit">開始填表</button>
@@ -169,6 +202,35 @@
     if (placeholder()) location.hash = '#/';
   });
 
+  /* ---------- 同事模式：輸入管理密碼解鎖 ---------- */
+  function lockHTML(msg = '') {
+    return `
+      <form class="pj-box ol-setup" data-unlock>
+        <div class="pj-head">
+          <h3>🔒 同事模式</h3>
+          <button class="sk-dlg-x" type="button" data-x aria-label="關閉">✕</button>
+        </div>
+        <p class="pj-hint">這支手機是用管理者的設定檔，只能填表、簽名、下載 PDF。檢查表種類、工地、位置選項由管理者設定；
+          管理者更新後，重新匯入新的設定檔即可。</p>
+        <label class="pj-company">管理密碼（管理者才需要）
+          <input name="pin" type="password" autocomplete="current-password" maxlength="20" required />
+        </label>
+        <div class="pj-msg" ${msg ? '' : 'hidden'}>${esc(msg)}</div>
+        <button class="sk-fill ol-setup-go" type="submit">解鎖管理功能</button>
+      </form>`;
+  }
+  const lockBtn = document.getElementById('olLock');
+  lockBtn.addEventListener('click', () => {
+    dlg.innerHTML = lockHTML();
+    dlg.showModal();
+  });
+  // 依這台裝置的身分顯示按鈕（管理者／同事模式），並重畫清單上方的按鈕
+  function applyRole() {
+    document.getElementById('olManage').hidden = !can('manage');
+    document.getElementById('olBackup').hidden = !can('backup');
+    lockBtn.hidden = !O.role || O.role() !== 'member';
+  }
+
   /* ---------- 備份 ---------- */
   function backupHTML(msg = '') {
     return `
@@ -180,7 +242,7 @@
         <p>檢查表只存在這台裝置。換手機、清除瀏覽器資料或裝置故障前，請先匯出備份檔，存到電腦或雲端硬碟。</p>
         <div class="ol-backup-actions">
           <button class="ol-btn" data-export>⬇ 匯出備份檔（所有工地與檢查表）</button>
-          <button class="ol-btn" data-import>⬆ 匯入備份檔</button>
+          <button class="ol-btn" data-import>⬆ 匯入備份檔／管理者的設定檔</button>
         </div>
         <div class="ol-tip">匯入會「合併」資料：相同的工地與檢查表以備份檔內容為準，其他資料保留。</div>
         <div class="pj-msg" ${msg ? '' : 'hidden'}>${esc(msg)}</div>
@@ -212,8 +274,15 @@
     if (!file) return;
     let msg;
     try {
-      const r = await O.importBackup(JSON.parse(await file.text()));
-      msg = `已匯入 ${r.projects} 個工地、${r.forms} 份檢查表${r.templates ? `、${r.templates} 份自訂範本` : ''}`;
+      const data = JSON.parse(await file.text());
+      if (data && data.app === 'selfcheck-settings' && O.importSettings) {
+        const r = await O.importSettings(data);
+        msg = `已套用管理者的設定（${r.projects} 個工地、${r.templates} 份自訂檢查表）。這支手機現在是同事模式，只能填表。`;
+        applyRole();
+      } else {
+        const r = await O.importBackup(data);
+        msg = `已匯入 ${r.projects} 個工地、${r.forms} 份檢查表${r.templates ? `、${r.templates} 份自訂範本` : ''}`;
+      }
       renderSelect();
       showPage();
     } catch (e) {
@@ -228,6 +297,7 @@
     if (e.target === dlg || e.target.closest('[data-x]')) { dlg.close(); return; }
     if (e.target.closest('[data-export]')) { dlg.innerHTML = backupHTML(await exportBackup()); return; }
     if (e.target.closest('[data-import]')) { fileInput.click(); return; }
+    if (e.target.closest('[data-export-settings]')) { run(() => exportSettings(), r => r); return; }
     if (e.target.closest('[data-setup-del]')) {
       const p = placeholder();
       const n = p ? await O.savedCount(p.id) : 0;
@@ -269,7 +339,7 @@
     const li = e.target.closest('li[data-id]');
     if (li && e.key === 'Enter') { e.preventDefault(); li.querySelector('[data-rename]').click(); }
   });
-  dlg.addEventListener('submit', e => {
+  dlg.addEventListener('submit', async e => {
     e.preventDefault();
     if (e.target.matches('[data-setup]')) {
       const name = e.target.name.value.trim();
@@ -281,6 +351,19 @@
         else await O.setCurrent(p ? (await O.renameProject(p.id, name), p.id) : (await O.addProject(name)).id);
         if (co !== O.company()) await O.setCompany(co);
       });
+      return;
+    }
+    if (e.target.matches('[data-pin]')) {
+      run(() => O.setPin(e.target.pin.value), '管理密碼已設定，現在可以匯出設定檔給同事');
+      return;
+    }
+    if (e.target.matches('[data-unlock]')) {
+      try {
+        await O.unlock(e.target.pin.value);
+      } catch (err) { dlg.innerHTML = lockHTML(err.message); return; }
+      dlg.close();
+      applyRole();
+      showPage();
       return;
     }
     if (e.target.matches('[data-locations]')) {
@@ -580,9 +663,8 @@
       location.reload();
     });
   }
-  // 沒有權限的按鈕不顯示（主網站一般使用者只能填表）
-  document.getElementById('olManage').hidden = !can('manage');
-  document.getElementById('olBackup').hidden = !can('backup');
+  // 沒有權限的按鈕不顯示（主網站一般使用者、離線版同事模式只能填表）；資料載入後再依身分更新一次
+  applyRole();
 
   /* ---------- 封面「最新更新」（data/updates.json 由 更新紀錄.md 產生） ---------- */
   const SEEN_KEY = 'ol-seen-update';
@@ -613,6 +695,7 @@
   (async () => {
     try {
       await O.init();
+      applyRole();
       renderSelect();
       ready = true;
       route();

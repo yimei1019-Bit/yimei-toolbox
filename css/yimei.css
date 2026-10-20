@@ -192,3 +192,10 @@ body { background: linear-gradient(180deg, #e9eef5 0, #f4f6fa 320px) no-repeat, 
 .pj-locs .ac-save { align-self: flex-end; }
 /* 檢視切換（條列／卡片） */
 .sk-view button { white-space: nowrap; }
+
+/* 同事共用（管理者）與同事模式 */
+.pj-share { display: flex; flex-direction: column; gap: 8px; margin: 6px 0 4px; padding: 12px 14px; background: #f4f7fb; border-radius: 14px; }
+.pj-share .pj-sub { margin: 0; }
+.pj-share-go { align-self: flex-start; padding: 8px 14px; font-weight: 700; color: #fff; background: var(--y-sun); border: 0; border-radius: 999px; }
+.pj-share-go:disabled { background: #c9d0da; cursor: not-allowed; }
+.ol-bar .ol-lock { background: rgba(232, 129, 58, .35); border-color: rgba(253, 230, 207, .6); }

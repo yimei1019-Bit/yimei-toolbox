@@ -8,18 +8,24 @@
  *             notes, review, signs, version, createdAt, updatedAt }
  *   kv 表   ：projects（工地清單 [{id, name, locations}]，locations＝管理者設定的「檢查位置」選項）、current（目前工地 id）、
  *             company（公司名稱，印在表頭，可空白）、customTemplates（使用者自己新增的範本 {C01: {...}}）、
- *             lastBackup（上次匯出備份的時間，用來提醒「超過 7 天沒備份」）
+ *             lastBackup（上次匯出備份的時間，用來提醒「超過 7 天沒備份」）、
+ *             role（admin 管理者／member 同事模式）、pinHash（管理密碼的雜湊）
+ * 管理者匯出「設定檔」（工地、位置選項、公司名稱、自訂範本、管理密碼雜湊）給同事；同事匯入後變成同事模式，
+ * 只能填表，不能改範本、工地與位置選項，輸入管理密碼才能解鎖。密碼只防誤改，資料仍存在各自的手機。
  * 新增工地時，自動為每份範本建立一份空白檢查表（與主網站相同）。
  * 自訂範本與內建範本一起使用；沒有越南文，切到越南文時顯示中文。
  */
 (function () {
   const DB_NAME = 'selfcheck-offline';
   const BACKUP_APP = 'selfcheck-offline';
+  const SETTINGS_APP = 'selfcheck-settings';
   const REMIND_DAYS = 7;
   let dbp = null;
   let tplCache = null; // 內建範本（data/templates.json）
   let custom = {};     // 自訂範本
   let company = '';
+  let role = 'admin'; // 沒匯入過設定檔的裝置就是管理者
+  let pinHash = '';
 
   /* ---------- IndexedDB 小工具 ---------- */
   function db() {
@@ -139,6 +145,8 @@
   async function init() {
     custom = (await kvGet('customTemplates')) || {};
     company = (await kvGet('company')) || '';
+    role = (await kvGet('role')) === 'member' ? 'member' : 'admin';
+    pinHash = (await kvGet('pinHash')) || '';
     projects = (await kvGet('projects')) || [];
     current = await kvGet('current');
     if (!projects.length) await addProject(DEFAULT_PROJECT);
@@ -267,6 +275,71 @@
     await init(); // 補齊缺少的範本
     return { projects: data.projects.length, forms: forms.length, templates: Object.keys(tpls).length };
   }
+  /* ---------- 管理者與同事模式 ---------- */
+  async function hashPin(pin) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('mep-selfcheck:' + String(pin)));
+    return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+  async function setPin(pin) {
+    pin = String(pin || '').trim();
+    if (pin.length < 4 || pin.length > 20) throw new Error('管理密碼需為 4～20 個字');
+    pinHash = await hashPin(pin);
+    await kvSet('pinHash', pinHash);
+  }
+  // 同事模式輸入管理密碼 → 這台裝置改回管理者
+  async function unlock(pin) {
+    if (!pinHash || (await hashPin(String(pin || '').trim())) !== pinHash) throw new Error('管理密碼不正確');
+    role = 'admin';
+    await kvSet('role', role);
+  }
+  async function exportSettings() {
+    if (!pinHash) throw new Error('請先設定管理密碼，同事的手機才會鎖住設定');
+    return {
+      app: SETTINGS_APP, format: 1, exportedAt: new Date().toISOString(),
+      company, pinHash, customTemplates: custom,
+      projects: projects.map(p => ({ id: p.id, name: p.name, locations: p.locations || [] })),
+    };
+  }
+  // 同事匯入設定檔：工地、位置選項、公司名稱、自訂範本以設定檔為準；已填的檢查表不動
+  async function importSettings(data) {
+    if (!data || data.app !== SETTINGS_APP || !Array.isArray(data.projects) || !data.pinHash) {
+      throw new Error('這不是機電自檢紀錄表的設定檔');
+    }
+    Object.entries(data.customTemplates || {}).forEach(([id, t]) => {
+      if (!/^C\d+$/.test(id)) return;
+      try { custom = { ...custom, [id]: cleanTemplate(t) }; } catch (e) {}
+    });
+    const byId = new Map(projects.map(p => [p.id, p]));
+    const incoming = [];
+    data.projects.forEach(p => {
+      if (!p || !p.id || !p.name) return;
+      const locations = Array.isArray(p.locations) ? p.locations.map(x => String(x).slice(0, 100)).filter(Boolean).slice(0, 200) : [];
+      byId.set(p.id, { ...(byId.get(p.id) || {}), id: p.id, name: String(p.name).slice(0, 50), locations });
+      incoming.push(p.id);
+    });
+    projects = [...byId.values()];
+    // 還沒用過的暫用工地「我的工地」直接拿掉，改用管理者的工地
+    const ph = projects.find(p => p.name === DEFAULT_PROJECT && !incoming.includes(p.id));
+    if (ph && incoming.length && !(await savedCount(ph.id))) {
+      const ids = (await formsOf(ph.id)).map(f => f.id);
+      projects = projects.filter(p => p !== ph);
+      await tx(['forms'], 'readwrite', t => ids.forEach(fid => t.objectStore('forms').delete(fid)));
+    }
+    company = str(data.company, 40);
+    pinHash = String(data.pinHash);
+    role = 'member';
+    await tx(['kv'], 'readwrite', t => {
+      t.objectStore('kv').put({ key: 'projects', value: projects });
+      t.objectStore('kv').put({ key: 'customTemplates', value: custom });
+      t.objectStore('kv').put({ key: 'company', value: company });
+      t.objectStore('kv').put({ key: 'pinHash', value: pinHash });
+      t.objectStore('kv').put({ key: 'role', value: role });
+    });
+    if (!projects.some(p => p.id === current)) await setCurrent(incoming[0] || projects[0].id);
+    await fillMissing(); // 新工地、新範本補上空白檢查表
+    return { projects: incoming.length, templates: Object.keys(data.customTemplates || {}).length };
+  }
+
   async function setCompany(name) {
     company = str(name, 40);
     await kvSet('company', company);
@@ -304,7 +377,7 @@
       return f;
     },
     deleteForm: id => tx(['forms'], 'readwrite', t => { t.objectStore('forms').delete(id); }),
-    canDelete: () => true,
+    canDelete: () => role === 'admin',
     projectName: () => (projects.find(p => p.id === current) || {}).name || '',
     companyName: () => company,
     locations: () => locationsOf(),
@@ -313,7 +386,9 @@
   // 外框（js/app-shell.js）用的資料介面；主網站的同一介面在 web-prototype/js/server-store.js
   window.APP_STORE = window.OFFLINE = {
     offline: true,
-    can: () => true, // 離線版沒有登入，所有功能都可用
+    // 管理者全部可用；同事模式只能備份（自己的填表資料）
+    can: key => role === 'admin' || key === 'backup',
+    role: () => role, hasPin: () => !!pinHash, setPin, unlock, exportSettings, importSettings,
     init,
     projects: () => projects,
     DEFAULT_PROJECT,
