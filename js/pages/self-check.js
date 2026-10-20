@@ -208,33 +208,30 @@
       </div>`;
   }
 
-  /* ---------- 清單（卡片） ---------- */
-  // 每份檢查表一張卡片：類別、工項名稱、位置與日期、填寫進度條、狀態；整張卡片可點開填表
+  /* ---------- 清單 ---------- */
   function tableHTML() {
     const rows = forms().filter(f => state.trade === 'all' || f.trade === state.trade);
-    if (!rows.length) return `<div class="sk-empty">${T('empty')}</div>`;
     return `
-      <div class="sk-cards">
-        ${rows.map(f => {
-          const s = statusOf(f);
-          const fails = failCount(f);
-          const pct = f.marks.length ? Math.round(markedCount(f) / f.marks.length * 100) : 0;
-          return `
-            <button class="sk-card sk-card-${s}" data-form="${esc(f.id)}" title="${esc(nameOf(f))}">
-              <span class="sk-card-top">
-                <span class="sk-card-cat">${esc(catLabel(f.trade))}</span>
-                <span class="sk-status sk-status-${s}"><i></i>${T(s)}</span>
-              </span>
-              <span class="sk-card-name">${esc(listName(f))}</span>
-              <span class="sk-card-meta">📍 ${esc(f.location || '—')}　📅 ${ymd(f.date)}</span>
-              <span class="sk-card-bar" aria-hidden="true"><i style="width:${pct}%"></i></span>
-              <span class="sk-card-foot">
-                <span>${markedCount(f)}/${f.marks.length}</span>
-                ${fails ? `<span class="sk-fail-tag">${T('fails')(fails)}</span>` : ''}
-                <span class="sk-card-go">${T('fill')}</span>
-              </span>
-            </button>`;
-        }).join('')}
+      <div class="sk-table-wrap">
+        <table class="sk-table">
+          <thead><tr><th>${T('colCat')}</th><th>${T('colItem')}</th><th>${T('colLoc')}</th><th>${T('colDate')}</th><th>${T('colStatus')}</th><th></th></tr></thead>
+          <tbody>
+            ${rows.length ? rows.map(f => {
+              const s = statusOf(f);
+              const fails = failCount(f);
+              return `
+                <tr>
+                  <td><span class="sk-trade">${esc(catLabel(f.trade))}</span></td>
+                  <td class="sk-name" title="${esc(nameOf(f))}">${esc(listName(f))}${fails ? `<span class="sk-fail-tag">${T('fails')(fails)}</span>` : ''}${
+                    f.location || f.date ? `<small class="sk-m-meta">${esc([f.location, f.date && ymd(f.date)].filter(Boolean).join('・'))}</small>` : ''}</td>
+                  <td>${esc(f.location || '—')}</td>
+                  <td>${ymd(f.date)}</td>
+                  <td><span class="sk-status sk-status-${s}"><i></i>${T(s)}</span></td>
+                  <td class="sk-act"><button class="sk-fill" data-form="${esc(f.id)}">${T('fill')}</button></td>
+                </tr>`;
+            }).join('') : `<tr><td colspan="6" class="sk-empty">${T('empty')}</td></tr>`}
+          </tbody>
+        </table>
       </div>`;
   }
 

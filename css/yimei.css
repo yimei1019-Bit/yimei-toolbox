@@ -92,32 +92,18 @@ body { background: linear-gradient(180deg, #e9eef5 0, #f4f6fa 320px) no-repeat, 
 .sk-chip-done:not(.active) { color: #2e7d4f; }
 .sk-chip-doing i { background: var(--y-sun); }
 
-/* 卡片 */
-.sk-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
-.sk-card {
-  position: relative; display: flex; flex-direction: column; gap: 6px; padding: 14px 16px 12px 18px;
-  font: inherit; text-align: left; color: var(--y-ink); background: var(--y-card);
-  border: 0; border-radius: 16px; box-shadow: 0 3px 12px rgba(36, 54, 77, .07); overflow: hidden; cursor: pointer;
-}
-.sk-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: #cfd6e0; }
-.sk-card-doing::before { background: var(--y-sun); }
-.sk-card-done::before { background: #3c9a63; }
-.sk-card:hover { box-shadow: 0 8px 22px rgba(36, 54, 77, .14); transform: translateY(-1px); }
-.sk-card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.sk-card-cat { font-size: 12px; color: var(--y-sky); font-weight: 700; letter-spacing: 1px; }
-.sk-card-name { font-size: 17px; font-weight: 700; line-height: 1.35; }
-.sk-card-meta { font-size: 12px; color: #7a889b; }
-.sk-card-bar { height: 6px; margin-top: 4px; background: var(--y-cloud); border-radius: 999px; overflow: hidden; }
-.sk-card-bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--y-sky), var(--y-sun)); border-radius: 999px; }
-.sk-card-done .sk-card-bar i { background: #3c9a63; }
-.sk-card-foot { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #7a889b; }
-.sk-card-foot .sk-fail-tag { margin-left: 0; }
-.sk-card-go { margin-left: auto; padding: 4px 12px; font-size: 12px; font-weight: 700; color: var(--y-blue); background: #e6edf6; border-radius: 999px; }
-.sk-card:hover .sk-card-go { color: #fff; background: var(--y-blue); }
+/* 條列清單 */
+.sk-table-wrap { background: #fff; border-radius: 16px; box-shadow: 0 3px 12px rgba(36, 54, 77, .07); }
+.sk-table th { color: #6a7f99; font-size: 13px; background: #f4f6fa; }
+.sk-table td { border-top-color: var(--y-line); }
+.sk-table tbody tr:hover { background: #f7f9fc; }
+.sk-name { font-weight: 700; color: var(--y-ink); }
+.sk-trade { color: var(--y-blue); border: 0; background: #e6edf6; border-radius: 999px; }
+.sk-table .sk-fill { padding: 5px 12px; border-radius: 999px; background: var(--y-blue); }
+.sk-table .sk-fill:hover { background: var(--y-ink); }
 .sk-status { padding: 2px 9px; font-size: 12px; background: var(--y-cloud); border-radius: 999px; gap: 5px; }
 .sk-status-done { --c: #3c9a63; color: #2e7d4f; background: #e7f5ec; }
 .sk-status-doing { --c: var(--y-sun); color: #b8591c; background: #fdf0e4; }
-.sk-empty { background: #fff; border-radius: 16px; }
 
 /* ========== 填表視窗 ========== */
 .sk-dialog { border-radius: 22px; }
@@ -162,7 +148,6 @@ body { background: linear-gradient(180deg, #e9eef5 0, #f4f6fa 320px) no-repeat, 
   .cv-hero { min-height: 270px; }
   .cv-hero .cv-name { font-size: 26px; }
   .sk-tab { font-size: 20px; }
-  .sk-cards { grid-template-columns: 1fr; gap: 10px; }
   .sk-new-btns { width: 100%; margin-left: 0; }
 }
 
