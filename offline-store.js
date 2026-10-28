@@ -1,6 +1,6 @@
 /**
  * 自主檢查表離線版：資料存在裝置本身（瀏覽器 IndexedDB），不需伺服器、不需網路
- * 提供與主網站相同介面的 SK_STORE（見 web-prototype/js/selfcheck-store-server.js），
+ * 提供填表畫面用的 SK_STORE，
  * 另加 OFFLINE 物件管理「工地」（工程名稱）與備份匯出／匯入。
  *
  * 資料：
@@ -12,7 +12,7 @@
  *             role（admin 管理者／member 同事模式）、pinHash（管理密碼的雜湊）
  * 管理者匯出「設定檔」（工地、位置選項、公司名稱、自訂範本、管理密碼雜湊）給同事；同事匯入後變成同事模式，
  * 只能填表，不能改範本、工地與位置選項，輸入管理密碼才能解鎖。密碼只防誤改，資料仍存在各自的手機。
- * 新增工地時，自動為每份範本建立一份空白檢查表（與主網站相同）。
+ * 新增工地時，自動為每份範本建立一份空白檢查表。
  * 自訂範本與內建範本一起使用；沒有越南文，切到越南文時顯示中文。
  */
 (function () {
@@ -345,7 +345,7 @@
     await kvSet('company', company);
   }
 
-  /* ---------- 與主網站相同介面的 SK_STORE ---------- */
+  /* ---------- 填表畫面用的 SK_STORE ---------- */
   window.SK_STORE = {
     templates,
     async listForms() {
@@ -383,7 +383,7 @@
     locations: () => locationsOf(),
   };
 
-  // 外框（js/app-shell.js）用的資料介面；主網站的同一介面在 web-prototype/js/server-store.js
+  // 外框（js/app-shell.js）用的資料介面
   window.APP_STORE = window.OFFLINE = {
     offline: true,
     // 管理者全部可用；同事模式只能備份（自己的填表資料）

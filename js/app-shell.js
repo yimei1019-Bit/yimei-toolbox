@@ -1,15 +1,15 @@
 /**
- * 機電自檢紀錄表：外框邏輯（主網站與離線版共用，原始檔在 web-prototype/js/app-shell.js）
- * 資料來源 window.APP_STORE：離線版 offline-store.js（裝置本身）、主網站 js/server-store.js（伺服器）。
+ * 機電自檢紀錄表：外框邏輯
+ * 資料來源 window.APP_STORE：offline-store.js（資料存在裝置本身）。
  * APP_STORE.can(功能) 決定按鈕是否顯示：manage（工地、公司名稱）、templates（自訂空白檢查表）、
- * backup（備份）、accounts（帳號管理）；離線版全部可用，主網站只有管理者可用。
- *   - 載入共用的自主檢查表畫面（PAGES['self-check']）；主網站另有帳號管理（PAGES.accounts）
+ * backup（備份）、accounts（帳號管理）；管理者全部可用，同事模式只能備份。
+ *   - 載入自主檢查表畫面（PAGES['self-check']）；有註冊帳號管理（PAGES.accounts）時也可切換過去
  *   - 公司名稱（印在表頭，可空白）；工地（工程名稱）切換、新增／改名／刪除
  *   - 第一次進入檢查表先填工地名稱（取代暫用的「我的工地」）
  *   - 自訂範本：自己新增、修改、刪除整份檢查表（或複製現有範本再改）
  *   - 備份匯出（下載 .json）／匯入；有填寫內容超過 7 天沒備份時提醒
  *   - 離線版：註冊 Service Worker，讓第一次開啟後沒有網路也能使用
- *   - 主網站：右上角顯示登入者（帳號管理、登出）
+ *   - 有登入者資料（APP_STORE.user）時，右上角顯示登入者（帳號管理、登出）
  */
 (function () {
   const content = document.getElementById('content');
@@ -636,7 +636,7 @@
   }
   window.addEventListener('hashchange', route);
 
-  /* ---------- 登入者（主網站）：帳號管理、登出 ---------- */
+  /* ---------- 登入者（有 APP_STORE.user 時）：帳號管理、登出 ---------- */
   const userBtn = document.getElementById('olUser');
   if (userBtn && O.user) {
     const u = O.user();
@@ -663,7 +663,7 @@
       location.reload();
     });
   }
-  // 沒有權限的按鈕不顯示（主網站一般使用者、離線版同事模式只能填表）；資料載入後再依身分更新一次
+  // 沒有權限的按鈕不顯示（同事模式只能填表）；資料載入後再依身分更新一次
   applyRole();
 
   /* ---------- 啟動 ---------- */

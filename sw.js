@@ -1,9 +1,9 @@
 /**
  * 自主檢查表離線版：Service Worker
  * 第一次開啟時把所有檔案存到裝置，之後沒有網路也能開啟。
- * VERSION 由 tools/build_offline.py 依檔案內容自動更新；版本變了會換新快取。
+ * 修改網站後把 VERSION 改成新的值；版本變了手機會換新快取。
  */
-const VERSION = 'yimei-20261028f';
+const VERSION = 'yimei-20261028g';
 const CACHE = `selfcheck-offline-${VERSION}`;
 const FILES = [
   './',
@@ -25,6 +25,7 @@ const FILES = [
   'water/index.html',
   'water/water.css',
   'water/water.js',
+  'water/xlsx.js',
   'icons/icon-192.png',
   'icons/icon-512.png',
   'icons/apple-touch-icon.png',

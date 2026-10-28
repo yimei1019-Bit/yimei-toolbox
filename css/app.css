@@ -1,4 +1,4 @@
-/* 自主檢查表離線版：外框（填表畫面共用主網站的 css/style.css） */
+/* 自主檢查表：外框（填表畫面樣式在 css/style.css） */
 body { margin: 0; background: var(--page-bg); }
 .ol-bar {
   position: sticky; top: 0; z-index: 5;
@@ -120,9 +120,9 @@ body { margin: 0; background: var(--page-bg); }
 
 /* 帳號管理等不需要工地的頁面：隱藏工地選單與按鈕 */
 .ol-bar-page .ol-project, .ol-bar-page #olManage { display: none; }
-/* 登入者視窗（主網站） */
+/* 登入者視窗 */
 .ol-user .ol-btn { display: block; text-align: center; text-decoration: none; font-size: 15px; padding: 10px; }
 
-/* 登入畫面（主網站）：標誌 */
+/* 登入畫面：標誌 */
 .login-logo { display: block; width: 84px; height: auto; margin: 0 auto 6px; }
 .login-card .login-brand { text-align: center; color: #3e5878; font-weight: 800; }

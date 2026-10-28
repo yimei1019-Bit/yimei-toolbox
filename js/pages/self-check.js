@@ -129,7 +129,7 @@
   const REVIEW = [['done', 'reviewDone'], ['pending', 'reviewPending']];
   const SIGNS = { review: 'signReview', manager: 'signManager', worker: 'signWorker' };
 
-  // 資料來源：主網站用 js/server-store.js（伺服器），離線版用 offline-store.js（裝置本身）
+  // 資料來源：offline-store.js（資料存在裝置本身）
   const store$ = () => window.SK_STORE;
   const isAdmin = () => store$().canDelete();
   const tplOf = f => state.tpl.templates[f.template];
@@ -484,7 +484,7 @@
   function paperHTML() {
     const d = state.draft;
     return window.SelfCheckPrint.paperHTML(d, tplOf(d), {
-      // 離線版的公司名稱由使用者自己填（可空白）；主網站用範本裡的公司名稱
+      // 公司名稱由使用者自己填（可空白）；沒有提供時用範本裡的公司名稱
       company: store$().companyName ? store$().companyName() : state.tpl.company,
       project: store$().projectName(),
       lang: printLang(),
