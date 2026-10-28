@@ -10,6 +10,7 @@
  *     units: { '1': { type, s: {u01: '✓'}, n: {u01: '缺失說明／未做原因'}, ph: {u01: [照片 id]}, at（最後修改時間）, by（填寫人） } },
  *     pub: { s: {}, n: {}, ph: {}, at: {p01: 時間}, by: {p01: 填寫人} }（公共區域逐項記時間），
  *     fx: { '3|u05': '2026-10-28' }（✗／△ 改成 ✓ 的改善日期），
+ *     due: { '3|u05': '2026-11-05' }（預定改善日期，在缺失追蹤填），
  *     log: [{ t, w, k, from, to, by }]（與 ✗、△ 有關的修正紀錄，新的在前），
  * 填寫人名字存在這台裝置（localStorage wc-inspector），第一次進入時填。
  *     printVer（輸出 PDF／列印的版次）, printedAt, updatedAt }
@@ -376,8 +377,9 @@
       const add = (w, s, n, ph, items) => {
         for (const it of items) {
           const v = s?.[it.k], fx = r.fx[`${w}|${it.k}`];
-          if (OPEN(v)) out.push({ r, w, k: it.k, v, note: n?.[it.k], ph: ph?.[it.k] || [], fixed: false });
-          else if (fx && v === '✓') out.push({ r, w, k: it.k, note: n?.[it.k], ph: ph?.[it.k] || [], fixed: true, at: fx });
+          const due = r.due?.[`${w}|${it.k}`] || '';
+          if (OPEN(v)) out.push({ r, w, k: it.k, v, note: n?.[it.k], ph: ph?.[it.k] || [], due, fixed: false });
+          else if (fx && v === '✓') out.push({ r, w, k: it.k, v: '✓', note: n?.[it.k], ph: ph?.[it.k] || [], due, fixed: true, at: fx });
         }
       };
       for (let i = 1; i <= unitsOf(r); i++) add(String(i), r.units[i]?.s, r.units[i]?.n, r.units[i]?.ph, UI);
@@ -386,7 +388,9 @@
     const fo = f => FLOORS.indexOf(f);
     return out.sort((a, b) => a.r.b.localeCompare(b.r.b) || fo(a.r.f) - fo(b.r.f) || (a.w === 'pub') - (b.w === 'pub') || Number(a.w) - Number(b.w));
   }
-  const defLine = d => `${d.r.b}棟 ${label(d.r, d.w)} ${NAME[d.k]} ${d.v}${d.note ? ` ${d.note}` : ''}`;
+  const md = ymd => (ymd ? `${+ymd.slice(5, 7)}/${+ymd.slice(8, 10)}` : '');
+  const overdue = d => !d.fixed && d.due && d.due < today();
+  const defLine = d => `${d.r.b}棟 ${label(d.r, d.w)} ${NAME[d.k]} ${d.v}${d.note ? ` ${d.note}` : ''}${d.due ? `（預定 ${md(d.due)} 前改善）` : ''}`;
   function defectsHTML() {
     const all = allDefects(), open = all.filter(d => !d.fixed), fixed = all.filter(d => d.fixed);
     const cats = [...new Set(open.map(d => CAT[d.k]))];
@@ -394,25 +398,28 @@
     const shown = open.filter(match);
     for (const k of [...ui.sel]) if (!open.some(d => defKey(d) === k)) ui.sel.delete(k); // 已改善的自動取消勾選
     let h = `<div class="card" style="display:flex;flex-direction:column;gap:8px">
-      <div class="row"><span class="muted grow">未改善 ${open.length} 項・已改善 ${fixed.length} 項</span>
+      <div class="row"><span class="muted grow">未改善 ${open.length} 項${open.some(overdue) ? `（<b class="bad-t">逾期 ${open.filter(overdue).length}</b>）` : ''}・已改善 ${fixed.length} 項</span>
       <button class="btn sm" data-act="togfix">${ui.showFixed ? '隱藏已改善' : '顯示已改善'}</button></div>
       <div class="row"><select id="f-fb" data-filter="fb" aria-label="篩選棟別"><option value="">全部棟別</option>${ORDER_B.map(b => `<option value="${b}" ${ui.fb === b ? 'selected' : ''}>${b} 棟</option>`).join('')}</select>
       <select id="f-fc" data-filter="fc" aria-label="篩選工種"><option value="">全部工種</option>${cats.map(c => `<option ${ui.fc === c ? 'selected' : ''}>${esc(c)}</option>`).join('')}</select></div>
       <div class="row"><button class="btn sm" data-act="selall">${shown.length && shown.every(d => ui.sel.has(defKey(d))) ? '取消全選' : '全選這些'}</button>
       <span class="muted grow">已勾選 ${ui.sel.size} 項</span>
-      <button class="btn line" data-act="line" ${ui.sel.size ? '' : 'disabled'}>傳到 LINE</button><button class="btn sm" data-act="copy" ${ui.sel.size ? '' : 'disabled'}>複製文字</button></div></div>`;
+      <button class="btn line" data-act="line" ${ui.sel.size ? '' : 'disabled'}>傳到 LINE</button><button class="btn sm" data-act="copy" ${ui.sel.size ? '' : 'disabled'}>複製文字</button></div>
+      <button class="btn pri" data-act="fixsheet" ${ui.sel.size ? '' : 'disabled'}>📊 勾選的 ${ui.sel.size} 項匯出 Excel 給工班</button>
+      <button class="btn" data-act="fiximport">📥 匯入工班回傳的改善單（一次結案）</button></div>`;
     const list = ui.showFixed ? [...shown, ...fixed.filter(match)] : shown;
     if (!list.length) return h + `<div class="empty"><b>${open.length ? '這個篩選沒有項目' : '目前沒有未改善的項目'}</b>在樓層裡把項目點成 ✗（缺失）或 △（未做／施工中），就會出現在這裡；改善後按「已改善」。</div>`;
     h += `<div class="defs">`;
     for (const d of list) {
       const where = `${d.r.b}棟 ${label(d.r, d.w)}`, key = defKey(d);
       const tag = d.fixed ? '' : d.v === '△' ? '<span class="tag doing">△ 未做</span>' : '<span class="tag bad">✗ 缺失</span>';
-      h += `<div class="def ${d.fixed ? 'fixed' : d.v === '△' ? 'doing' : ''}">
+      h += `<div class="def ${d.fixed ? 'fixed' : d.v === '△' ? 'doing' : ''} ${overdue(d) ? 'late' : ''}">
         <div class="def-h">${d.fixed ? '' : `<input type="checkbox" class="pick" id="pk-${esc(key)}" data-key="${esc(key)}" ${ui.sel.has(key) ? 'checked' : ''}>`}
         <label for="pk-${esc(key)}"><div class="where">${where}・${esc(CAT[d.k])}</div><div class="what">${tag}${esc(NAME[d.k])}</div></label></div>
         ${d.fixed ? `<span class="muted">✓ ${esc(d.at)} 已改善</span>` : `<button class="btn" data-act="fix" data-aid="${esc(`fix:${d.r.id}:${d.w}:${d.k}`)}">已改善</button>`}
         <div class="why"><span class="grow">${d.note ? esc(d.note) : `<span class="muted">（未寫${d.v === '△' ? '原因' : '缺失說明'}）</span>`}</span>
         <a class="btn sm" href="#/f/${d.r.b}/${d.r.f}" data-unit="${d.w}">前往</a></div>
+        ${d.fixed ? (d.due ? `<div class="due muted">預定 ${md(d.due)}・實際 ${md(d.at)} 完成</div>` : '') : `<label class="due ${overdue(d) ? 'late' : ''}">預定改善<input type="date" id="due-${esc(key)}" data-due="${esc(`${d.r.id}|${d.w}|${d.k}`)}" value="${esc(d.due)}">${overdue(d) ? '<b>已逾期</b>' : ''}</label>`}
         ${d.ph.length ? `<div class="thumbs">${d.ph.map(id => `<button class="thumb" data-act="photo" data-pid="${esc(id)}" aria-label="看照片"><img data-pid="${esc(id)}" alt=""></button>`).join('')}</div>` : ''}</div>`;
     }
     return h + `</div>`;
@@ -721,16 +728,92 @@
       [{ v: '樓層', s: 'head' }, ...bs.map(b => ({ v: `${b} 棟`, s: 'head' }))]];
     for (const f of ACTIVE) ov.push([{ v: f, s: 'head' }, ...bs.map(b => { const r = floors.get(fid(b, f)), fi = r ? floorInfo(r) : null; return !fi?.touched || fi.rate == null ? { v: fi?.touched ? '—' : '', s: 'cell' } : { v: fi.rate, s: 'pct' }; })]);
     const defs = allDefects().filter(d => !d.fixed && (!onlyB || d.r.b === onlyB));
-    const dl = [[{ v: '缺失／未完成清單', s: 'title' }], [], ['棟別', '戶號／區域', '工種', '項目', '狀態', '缺失／未做說明', '照片', '最後填寫'].map(v => ({ v, s: 'head' })),
+    const dl = [[{ v: '缺失／未完成清單', s: 'title' }], [], ['棟別', '戶號／區域', '工種', '項目', '狀態', '缺失／未做說明', '照片', '預定改善日期', '改善完成日期', '最後填寫'].map(v => ({ v, s: 'head' })),
       ...defs.map(d => [{ v: `${d.r.b} 棟`, s: 'cell' }, { v: label(d.r, d.w), s: 'cell' }, { v: CAT[d.k], s: 'cell' }, { v: NAME[d.k], s: 'left' }, stCell(d.v), { v: d.note || '', s: 'wrap' },
-        { v: d.ph.length || '', s: 'cell' }, d.w === 'pub' ? byCell(d.r.pub.by?.[d.k], d.r.pub.at?.[d.k]) : byCell(d.r.units[d.w]?.by, d.r.units[d.w]?.at)])];
-    const blob = window.XLSXLite.build([{ name: '總覽', cols: [8, ...bs.map(() => 9)], rows: ov }, { name: '缺失清單', cols: [8, 12, 12, 22, 7, 40, 6, 16], rows: dl }, ...list.map(floorSheet)]);
+        { v: d.ph.length || '', s: 'cell' }, { v: d.due || '', s: 'cell' }, { v: '', s: 'cell' }, d.w === 'pub' ? byCell(d.r.pub.by?.[d.k], d.r.pub.at?.[d.k]) : byCell(d.r.units[d.w]?.by, d.r.units[d.w]?.at)])];
+    const blob = window.XLSXLite.build([{ name: '總覽', cols: [8, ...bs.map(() => 9)], rows: ov }, { name: '缺失清單', cols: [8, 12, 12, 22, 7, 40, 6, 13, 13, 16], rows: dl }, ...list.map(floorSheet)]);
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = `水電清查_${onlyB ? `${onlyB}棟_` : ''}${today().replace(/-/g, '')}.xlsx`;
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 5000);
     toast(`已匯出 Excel（${list.length} 層）`);
+  }
+
+  // 缺失改善單：只匯出勾選的項目，給工班填「改善完成日期」
+  function exportFixSheet() {
+    const list = selectedDefects();
+    if (!list.length) return toast('請先勾選要給工班的項目');
+    const head = v => ({ v, s: 'head' });
+    const rows = [[{ v: `${settings.company}　缺失改善單`, s: 'title' }], [`工程名稱：${settings.project}`],
+      [`開單日期：${today()}　開單人：${me()}　共 ${list.length} 項`], [],
+      ['項次', '棟別', '戶號／區域', '工種', '項目', '狀態', '缺失／未做說明', '照片', '預定改善日期', '改善完成日期', '工班簽名／備註', '編號（請勿修改）'].map(head),
+      ...list.map((d, i) => [{ v: i + 1, s: 'cell' }, { v: `${d.r.b} 棟`, s: 'cell' }, { v: label(d.r, d.w), s: 'cell' }, { v: CAT[d.k], s: 'cell' },
+        { v: NAME[d.k], s: 'left' }, stCell(d.v), { v: d.note || '', s: 'wrap' }, { v: d.ph.length ? `${d.ph.length} 張` : '', s: 'cell' },
+        { v: d.due || '', s: 'cell' }, { v: d.fixed ? d.at : '', s: 'cell' }, { v: '', s: 'wrap' }, { v: defKey(d), s: 'cell' }]),
+      [], ['說明：改善完成後請填「改善完成日期」（例：2026/11/3）並簽名，拍照回傳；狀態 ✗ 缺失、△ 未完成。最後一欄「編號」請勿修改。']];
+    const blob = window.XLSXLite.build([{ name: '缺失改善單', cols: [6, 7, 12, 11, 20, 6, 36, 7, 13, 13, 18, 14], rows, merges: ['A1:L1', 'A2:L2', 'A3:L3', `A${rows.length}:L${rows.length}`] }]);
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `缺失改善單_${today().replace(/-/g, '')}_${list.length}項.xlsx`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+    toast(`已匯出 ${list.length} 項缺失改善單`);
+  }
+
+  // 改善完成日期：Excel 日期（數字）、2026/11/3、2026-11-03、115/11/3（民國）、11/3（今年）都可以
+  function toYmd(v) {
+    if (typeof v === 'number' && v > 20000 && v < 80000) { const d = new Date(Date.UTC(1899, 11, 30) + Math.round(v) * 86400000); return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`; }
+    const t = String(v || '').trim();
+    let m = t.match(/(\d{2,4})\s*[\/\-.年]\s*(\d{1,2})\s*[\/\-.月]\s*(\d{1,2})/);
+    if (m) { let y = +m[1]; if (y < 1911) y += 1911; return `${y}-${pad(+m[2])}-${pad(+m[3])}`; }
+    m = t.match(/^(\d{1,2})\s*[\/\-.月]\s*(\d{1,2})日?$/);
+    if (m) return `${new Date().getFullYear()}-${pad(+m[1])}-${pad(+m[2])}`;
+    return '';
+  }
+  let pendingClose = [];
+  async function importFixSheet(file) {
+    let rows;
+    try { rows = await window.XLSXRead.firstSheet(file); } catch (e) { return toast(e.message || '讀不到這個 Excel'); }
+    const hi = rows.findIndex(r => r.some(c => String(c).startsWith('編號')) && r.some(c => String(c).includes('改善完成日期')));
+    if (hi < 0) return toast('這不是新版的缺失改善單（找不到「編號」或「改善完成日期」欄），請重新匯出改善單給工班');
+    const H = rows[hi], ci = name => H.findIndex(c => String(c).startsWith(name));
+    const cKey = ci('編號'), cDone = ci('改善完成日期'), cNote = ci('工班簽名');
+    const open = new Map(allDefects().map(d => [defKey(d), d]));
+    const ok = [], skip = { noDate: 0, done: 0, missing: 0, bad: 0 };
+    for (const r of rows.slice(hi + 1)) {
+      const key = String(r[cKey] || '').trim(); if (!key) continue;
+      const d = open.get(key);
+      if (!d) { skip.missing++; continue; }
+      if (d.fixed) { skip.done++; continue; }
+      const raw = r[cDone];
+      if (raw === '' || raw == null) { skip.noDate++; continue; }
+      const date = toYmd(raw);
+      if (!date) { skip.bad++; continue; }
+      ok.push({ d, date, remark: cNote >= 0 ? String(r[cNote] || '').trim() : '' });
+    }
+    pendingClose = ok;
+    const why = [skip.noDate && `${skip.noDate} 項沒填完成日期（不動）`, skip.done && `${skip.done} 項之前已結案`, skip.bad && `${skip.bad} 項日期看不懂（不動）`, skip.missing && `${skip.missing} 項在這支手機找不到`].filter(Boolean);
+    $('#pv')?.remove();
+    const m = document.createElement('div'); m.className = 'modal'; m.id = 'pv';
+    m.innerHTML = `<div class="modal-in" role="dialog" aria-label="匯入改善單"><div class="modal-head"><b>匯入改善單：${ok.length ? `可以結案 ${ok.length} 項` : '沒有可以結案的項目'}</b>
+      ${ok.length ? `<button class="btn pri" data-act="closeall">確定結案 ${ok.length} 項</button>` : ''}<button class="btn" data-act="close">${ok.length ? '取消' : '關閉'}</button></div>
+      <div class="modal-body close-list">${why.length ? `<p class="muted">${why.join('；')}</p>` : ''}
+      ${ok.map(x => `<div class="close-row"><b>${esc(x.d.r.b)}棟 ${esc(label(x.d.r, x.d.w))}</b> ${esc(NAME[x.d.k])} ${x.d.v} → ✓ <span class="muted">${esc(x.date)} 完成${x.remark ? `・${esc(x.remark)}` : ''}</span></div>`).join('')}</div></div>`;
+    document.body.appendChild(m);
+  }
+  function closeAll() {
+    const touched = new Set();
+    for (const { d, date, remark } of pendingClose) {
+      const r = d.r, b = box(r, d.w); b.s = { ...(b.s || {}), [d.k]: '✓' };
+      if (remark) b.n = { ...(b.n || {}), [d.k]: `${b.n?.[d.k] ? `${b.n[d.k]}；` : ''}工班回覆：${remark}` };
+      r.fx = { ...r.fx, [`${d.w}|${d.k}`]: date };
+      r.log.unshift({ t: Date.now(), w: d.w, k: d.k, from: d.v, to: '✓', by: `${me()}（匯入改善單）` }); r.log.length = Math.min(r.log.length, 300);
+      touch(r, d.w, d.k); touched.add(r);
+    }
+    touched.forEach(r => commit(r, true));
+    const n = pendingClose.length; pendingClose = [];
+    $('#pv')?.remove(); render(); toast(`已結案 ${n} 項`);
   }
 
   /* ---------- 照片：拍照存檔、放大看、刪除 ---------- */
@@ -807,6 +890,7 @@
     const seen = new Set((mine.log || []).map(l => `${l.t}|${l.w}|${l.k}`));
     out.log = [...(mine.log || []), ...(Array.isArray(x.log) ? x.log : []).filter(l => l && !seen.has(`${l.t}|${l.w}|${l.k}`))].sort((a, b) => b.t - a.t).slice(0, 300);
     if ((x.updatedAt || 0) > (mine.updatedAt || 0)) { out.date = x.date || out.date; out.inspector = x.inspector || out.inspector; }
+    out.due = (x.updatedAt || 0) > (mine.updatedAt || 0) ? { ...(mine.due || {}), ...(x.due || {}) } : { ...(x.due || {}), ...(mine.due || {}) };
     out.printVer = Math.max(mine.printVer || 0, x.printVer || 0);
     out.updatedAt = Math.max(mine.updatedAt || 0, x.updatedAt || 0);
     return { out, changed };
@@ -888,6 +972,9 @@
       render();
     } else if (act === 'line') shareLine();
     else if (act === 'copy') copyText();
+    else if (act === 'fixsheet') exportFixSheet();
+    else if (act === 'fiximport') $('#fixFile').click();
+    else if (act === 'closeall') closeAll();
     else if (act === 'install') { installEvt?.prompt(); installEvt?.userChoice.finally(() => { installEvt = null; render(); }); }
     else if (act === 'installhide') { ls.set('wc-install-hide', '1'); render(); }
     else if (act === 'import') $('#importFile').click();
@@ -895,7 +982,13 @@
   document.addEventListener('change', e => {
     const el = e.target;
     if (el.id === 'importFile') { if (el.files[0]) importBackup(el.files[0]); el.value = ''; return; }
+    if (el.id === 'fixFile') { if (el.files[0]) importFixSheet(el.files[0]); el.value = ''; return; }
     if (el.dataset?.photo) { if (el.files[0]) addPhoto(el.files[0], el.dataset.photo); el.value = ''; return; }
+    if (el.dataset?.due) {
+      const [id, w, k] = el.dataset.due.split('|'), r = floors.get(id);
+      if (r) { r.due = { ...(r.due || {}), [`${w}|${k}`]: el.value }; commit(r); toast(el.value ? `預定 ${md(el.value)} 前改善` : '已清除預定日期'); }
+      return;
+    }
     if (el.classList?.contains('pick')) { el.checked ? ui.sel.add(el.dataset.key) : ui.sel.delete(el.dataset.key); render(); return; }
     if (el.dataset?.filter) { ui[el.dataset.filter] = el.value; render(); return; }
     const f = el.dataset?.f; if (!f) return;
