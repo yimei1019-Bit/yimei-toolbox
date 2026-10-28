@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>水電清查使用流程</title>
+  <meta name="theme-color" content="#2f3446" />
+  <link rel="icon" href="../icons/icon-192.png" />
+  <style>
+    /* 使用流程：一欄由上往下的流程圖，三種角色用顏色分（同事＝霧玫瑰、管理者＝深藍灰、統包＝鼠尾草綠） */
+    :root {
+      --bg: #f4f3f7; --card: #ffffff; --ink: #2e2a3a; --muted: #6f6a82; --line: #e3e0ea;
+      --crew: #c47a92; --crew-soft: #f6e6eb;
+      --admin: #4d5675; --admin-soft: #e6e9f2;
+      --gc: #5f8a6e; --gc-soft: #e3efe6;
+      --font: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", system-ui, sans-serif;
+      color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 15px; line-height: 1.6; }
+    header { background: linear-gradient(120deg, #2f3446, #5e4f6e); color: #fff;
+      padding: calc(env(safe-area-inset-top, 0px) + 22px) max(18px, env(safe-area-inset-right, 0px)) 26px max(18px, env(safe-area-inset-left, 0px)); }
+    header .in, main { max-width: 760px; margin: 0 auto; }
+    header a { color: #fff; opacity: .85; font-size: 14px; text-decoration: none; }
+    h1 { margin: 10px 0 4px; font-size: 26px; letter-spacing: 2px; text-wrap: balance; }
+    header p { margin: 0; opacity: .85; font-size: 14px; }
+    main { padding: 18px max(16px, env(safe-area-inset-right, 0px)) calc(40px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); display: flex; flex-direction: column; gap: 18px; }
+    h2 { margin: 8px 2px 0; font-size: 14px; letter-spacing: 3px; color: var(--muted); }
+
+    .roles { display: flex; flex-wrap: wrap; gap: 8px; }
+    .role { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 999px; font-size: 13px; font-weight: 700; }
+    .role.crew { background: var(--crew-soft); color: var(--crew); }
+    .role.admin { background: var(--admin-soft); color: var(--admin); }
+    .role.gc { background: var(--gc-soft); color: var(--gc); }
+
+    /* 流程：每一步一張卡，卡與卡之間有往下的箭頭 */
+    .flow { display: flex; flex-direction: column; }
+    .step { position: relative; display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 0 12px; padding: 14px 16px; border-radius: 16px;
+      background: var(--card); border: 1px solid var(--line); border-left: 6px solid var(--c); box-shadow: 0 6px 16px rgba(46, 42, 58, .06); }
+    .step.crew { --c: var(--crew); --s: var(--crew-soft); }
+    .step.admin { --c: var(--admin); --s: var(--admin-soft); }
+    .step.gc { --c: var(--gc); --s: var(--gc-soft); }
+    .num { grid-row: span 3; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: var(--s); color: var(--c); font-size: 18px; font-weight: 800; }
+    .who { font-size: 12px; font-weight: 700; color: var(--c); letter-spacing: 1px; }
+    .step h3 { margin: 0 0 4px; font-size: 17px; }
+    .step ul { margin: 0; padding-left: 18px; color: #48435a; font-size: 14px; }
+    .step li + li { margin-top: 2px; }
+    .btns { display: inline-block; padding: 0 6px; border-radius: 6px; background: var(--s); color: var(--c); font-weight: 700; font-size: 13px; white-space: nowrap; }
+    .arrow { align-self: center; width: 2px; height: 26px; background: #c9c4d6; position: relative; margin: 2px 0 6px; }
+    .arrow::after { content: ""; position: absolute; left: -6px; bottom: -6px; border: 7px solid transparent; border-top-color: #c9c4d6; border-bottom: 0; }
+    .arrow span { position: absolute; left: 14px; top: 2px; font-size: 12px; color: var(--muted); white-space: nowrap; }
+    .loop { margin-top: 10px; padding: 10px 14px; border: 2px dashed #c9c4d6; border-radius: 14px; font-size: 14px; color: var(--muted); text-align: center; }
+
+    /* 資料怎麼用 */
+    .uses { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+    .use { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; }
+    .use b { display: block; font-size: 16px; margin-bottom: 4px; }
+    .use .ic { font-size: 22px; }
+    .use p { margin: 0; font-size: 14px; color: #48435a; }
+    .use small { display: block; margin-top: 6px; color: var(--muted); font-size: 12px; }
+
+    /* 一張圖看懂：五個節點，手機上兩欄、寬螢幕一排 */
+    .quick { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 16px; box-shadow: 0 6px 16px rgba(46, 42, 58, .06); }
+    .quick ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; counter-reset: q; }
+    .quick li { position: relative; counter-increment: q; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px;
+      padding: 12px 6px; border-radius: 14px; background: var(--s); color: var(--ink); }
+    .quick li.crew { --s: var(--crew-soft); --c: var(--crew); }
+    .quick li.admin { --s: var(--admin-soft); --c: var(--admin); }
+    .quick li.gc { --s: var(--gc-soft); --c: var(--gc); }
+    .quick li .e { font-size: 26px; line-height: 1; }
+    .quick li b { font-size: 14px; color: var(--c); }
+    .quick li small { font-size: 12px; color: #48435a; line-height: 1.4; }
+    .quick li:not(:last-child)::after { content: "›"; position: absolute; right: -9px; top: 50%; transform: translateY(-50%); font-size: 20px; font-weight: 800; color: #b9b3c9; }
+    .quick .back-loop { margin-top: 10px; font-size: 12px; color: var(--muted); text-align: center; }
+    @media (max-width: 620px) {
+      .quick ol { grid-template-columns: 1fr; gap: 14px; }
+      .quick li { flex-direction: row; text-align: left; gap: 12px; padding: 10px 14px; }
+      .quick li .t { display: flex; flex-direction: column; }
+      .quick li:not(:last-child)::after { content: "⌄"; right: auto; left: 50%; top: auto; bottom: -15px; transform: translateX(-50%); font-size: 16px; }
+    }
+
+    /* 右下角作者標記 */
+    .author { position: fixed; right: max(10px, env(safe-area-inset-right, 0px)); bottom: max(8px, env(safe-area-inset-bottom, 0px));
+      padding: 3px 9px; border-radius: 999px; background: rgba(255, 255, 255, .85); border: 1px solid var(--line); color: var(--muted); font-size: 11px; z-index: 5; }
+
+    .note { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; font-size: 14px; }
+    .note ul { margin: 6px 0 0; padding-left: 18px; }
+    .back { align-self: center; display: inline-block; padding: 10px 20px; border-radius: 999px; background: var(--admin); color: #fff; text-decoration: none; font-weight: 700; }
+
+    @media print {
+      body { background: #fff; }
+      header { background: #2f3446; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .step, .use, .note { box-shadow: none; break-inside: avoid; }
+      .back { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="in">
+      <a href="./">‹ 回水電清查</a>
+      <h1>水電清查使用流程</h1>
+      <p>從現場清查、彙整進度、派工給統包，到改善結案與交出報表</p>
+    </div>
+  </header>
+
+  <main>
+    <div class="roles" aria-label="角色">
+      <span class="role crew">👷 同事（現場清查）</span>
+      <span class="role admin">👩‍💼 管理者（彙整、派工）</span>
+      <span class="role gc">🛠 統包（改善）</span>
+    </div>
+
+    <h2>一張圖看懂</h2>
+    <section class="quick" aria-label="簡略流程">
+      <ol>
+        <li class="crew"><span class="e">📱</span><span class="t"><b>現場清查</b><small>逐戶點 ✓△✗—<br>寫原因、拍照</small></span></li>
+        <li class="crew"><span class="e">📤</span><span class="t"><b>交回資料</b><small>匯出備份<br>LINE 傳管理者</small></span></li>
+        <li class="admin"><span class="e">📊</span><span class="t"><b>彙整進度</b><small>匯入合併<br>總覽表看全部</small></span></li>
+        <li class="admin"><span class="e">📝</span><span class="t"><b>派工給統包</b><small>勾選缺失<br>LINE／改善單 Excel</small></span></li>
+        <li class="gc"><span class="e">✅</span><span class="t"><b>改善回傳結案</b><small>填完成日期傳回<br>匯入一次結案</small></span></li>
+      </ol>
+      <div class="back-loop">↻ 沒改完的繼續追蹤；結案後可輸出 PDF（含照片）與 Excel 報表</div>
+    </section>
+
+    <h2>詳細步驟</h2>
+    <section class="flow" aria-label="使用流程">
+      <div class="step crew">
+        <span class="num">1</span>
+        <span class="who">同事・第一次使用</span>
+        <h3>打開網址、加到主畫面</h3>
+        <ul>
+          <li>封面點 <span class="btns">🔌 水電清查</span>，依提示加到主畫面（之後沒網路也能用）</li>
+          <li>填公司、工地名稱和<b>自己的名字</b>（每一戶都會記下是誰填的）</li>
+        </ul>
+      </div>
+      <div class="arrow" aria-hidden="true"></div>
+
+      <div class="step crew">
+        <span class="num">2</span>
+        <span class="who">同事・現場</span>
+        <h3>逐棟、逐層、逐戶點選</h3>
+        <ul>
+          <li>選棟（A～H）→ 選樓層（RF、14F～1F、B1、B2）→ 選戶號（例：14F-07）</li>
+          <li>每項點 <b>✓ 完成</b>、<b>△ 未做</b>、<b>✗ 缺失</b>、<b>— 不適用</b>；點了就自動存在手機</li>
+          <li>△ 寫未做原因（被撞到、等材料…），✗ 寫缺失說明，都可以直接 <span class="btns">📷 拍照</span></li>
+        </ul>
+      </div>
+      <div class="arrow" aria-hidden="true"><span>每天或每清完一棟</span></div>
+
+      <div class="step crew">
+        <span class="num">3</span>
+        <span class="who">同事・交回資料</span>
+        <h3>匯出備份，用 LINE 傳給管理者</h3>
+        <ul>
+          <li>水電清查首頁 <span class="btns">匯出備份</span>，把檔案傳給管理者（照片會一起帶上）</li>
+        </ul>
+      </div>
+      <div class="arrow" aria-hidden="true"></div>
+
+      <div class="step admin">
+        <span class="num">4</span>
+        <span class="who">管理者・彙整</span>
+        <h3>匯入大家的備份，看全部進度</h3>
+        <ul>
+          <li><span class="btns">匯入備份</span>：逐戶合併，不同人填的不同戶不會互相蓋掉</li>
+          <li><span class="btns">總覽</span>：8 棟 × 17 層完成率一張表，誰填了多少一目了然</li>
+        </ul>
+      </div>
+      <div class="arrow" aria-hidden="true"></div>
+
+      <div class="step admin">
+        <span class="num">5</span>
+        <span class="who">管理者・派工</span>
+        <h3>勾選缺失，交給統包</h3>
+        <ul>
+          <li><span class="btns">缺失追蹤</span>：依棟別、工種篩選，填每項的<b>預定改善日期</b>（逾期會標紅）</li>
+          <li>勾選要改的項目 → <span class="btns">傳到 LINE</span>（可附照片）或 <span class="btns">📊 匯出 Excel 給工班</span>（缺失改善單）</li>
+        </ul>
+      </div>
+      <div class="arrow" aria-hidden="true"></div>
+
+      <div class="step gc">
+        <span class="num">6</span>
+        <span class="who">統包・改善</span>
+        <h3>改善後填「改善完成日期」傳回</h3>
+        <ul>
+          <li>在改善單填完成日期、簽名或備註，拍照回傳</li>
+          <li>最後一欄「編號」請勿修改</li>
+        </ul>
+      </div>
+      <div class="arrow" aria-hidden="true"></div>
+
+      <div class="step admin">
+        <span class="num">7</span>
+        <span class="who">管理者・結案</span>
+        <h3>匯入改善單，一次結案</h3>
+        <ul>
+          <li><span class="btns">📥 匯入工班回傳的改善單</span> → 先列出要結案的項目 → 確認後一次改成 ✓，記下完成日期</li>
+          <li>個別項目也可以在缺失追蹤按 <span class="btns">已改善</span></li>
+        </ul>
+      </div>
+      <div class="arrow" aria-hidden="true"></div>
+
+      <div class="step admin">
+        <span class="num">8</span>
+        <span class="who">管理者・交出成果</span>
+        <h3>輸出 PDF、Excel</h3>
+        <ul>
+          <li><span class="btns">PDF</span>：每層一張 A4（比照每層檢查表），附缺失照片頁與版次</li>
+          <li><span class="btns">📊 匯出 Excel</span>：總覽、缺失清單、每層一張工作表</li>
+        </ul>
+      </div>
+      <div class="loop">↻ 還沒改善完的項目，回到第 5 步繼續追蹤；複查時回到第 2 步更新狀態</div>
+    </section>
+
+    <h2>這份資料可以怎麼用</h2>
+    <section class="uses">
+      <div class="use"><span class="ic">📈</span><b>掌握進度</b><p>總覽表看哪棟哪層還沒查、完成率多少；填寫人統計看大家的分工。</p><small>總覽分頁</small></div>
+      <div class="use"><span class="ic">🛠</span><b>派工改善</b><p>缺失依工種、棟別篩選後直接給統包，預定日期與逾期提醒幫你追進度。</p><small>缺失追蹤 → LINE／改善單</small></div>
+      <div class="use"><span class="ic">✅</span><b>改善結案</b><p>統包回傳的改善單匯入就結案，完成日期、工班回覆都留下紀錄。</p><small>匯入改善單</small></div>
+      <div class="use"><span class="ic">📑</span><b>會議與驗收佐證</b><p>每層 PDF 有狀態、說明、照片和版次；修正紀錄記下誰在何時改了什麼。</p><small>PDF、修正紀錄</small></div>
+      <div class="use"><span class="ic">📊</span><b>統計報告</b><p>Excel 可以再做樞紐分析：哪個工種缺失最多、哪棟落後、平均幾天改善。</p><small>匯出 Excel</small></div>
+      <div class="use"><span class="ic">🔁</span><b>交接不中斷</b><p>換人或換手機時，匯出備份給接手的人匯入，資料與照片完整保留。</p><small>匯出／匯入備份</small></div>
+    </section>
+
+    <div class="note">
+      <b>小提醒</b>
+      <ul>
+        <li>資料存在各自的手機，<b>沒有自動上傳</b>；記得定期「匯出備份」傳給管理者。</li>
+        <li>建議由管理者負責匯入、派工與結案，管理者手機上的資料最完整。</li>
+        <li>狀態符號：✓ 完成　△ 未做／施工中　✗ 缺失　— 不適用（不算進完成率）；留白＝還沒查。</li>
+      </ul>
+    </div>
+
+    <a class="back" href="./">回水電清查</a>
+  </main>
+  <div class="author">作者 Yimei・請勿外傳</div>
+</body>
+</html>

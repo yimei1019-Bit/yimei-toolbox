@@ -312,7 +312,7 @@
     h += `<div class="card row" style="padding:10px 14px"><div class="grow" style="font-size:13px;line-height:1.6">
       <div><span class="muted">工地　</span><b>${esc(settings.project)}</b></div><div><span class="muted">公司　</span>${esc(settings.company)}</div>
       <div><span class="muted">填寫人　</span>${esc(me() || '（未填）')}</div></div>
-      <button class="btn sm" data-act="editset">✎ 修改</button></div>`;
+      <div style="display:flex;flex-direction:column;gap:6px"><button class="btn sm" data-act="editset">✎ 修改</button><a class="btn sm" href="guide.html">📖 使用流程</a></div></div>`;
     h += `<nav class="tabs"><a href="#/" aria-current="${tab === 'site' ? 'page' : 'false'}">棟別</a>
       <a href="#/overview" aria-current="${tab === 'overview' ? 'page' : 'false'}">總覽</a>
       <a href="#/defects" aria-current="${tab === 'defects' ? 'page' : 'false'}">缺失追蹤${totalOpen ? `<span class="cnt">${totalOpen}</span>` : ''}</a></nav>`;

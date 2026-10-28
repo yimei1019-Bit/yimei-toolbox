@@ -3,7 +3,7 @@
  * 第一次開啟時把所有檔案存到裝置，之後沒有網路也能開啟。
  * 修改網站後把 VERSION 改成新的值；版本變了手機會換新快取。
  */
-const VERSION = 'yimei-20261028i';
+const VERSION = 'yimei-20261028j';
 const CACHE = `selfcheck-offline-${VERSION}`;
 const FILES = [
   './',
@@ -27,6 +27,7 @@ const FILES = [
   'water/water.js',
   'water/xlsx.js',
   'water/xlsx-read.js',
+  'water/guide.html',
   'icons/icon-192.png',
   'icons/icon-512.png',
   'icons/apple-touch-icon.png',
