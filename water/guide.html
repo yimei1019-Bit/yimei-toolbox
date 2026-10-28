@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#2f3446" />
   <link rel="icon" href="../icons/icon-192.png" />
   <style>
-    /* 使用流程：一欄由上往下的流程圖，三種角色用顏色分（同事＝霧玫瑰、管理者＝深藍灰、統包＝鼠尾草綠） */
+    /* 使用流程：一欄由上往下的流程圖，三種角色用顏色分（工程師＝霧玫瑰、主管＝深藍灰、下包＝鼠尾草綠） */
     :root {
       --bg: #f4f3f7; --card: #ffffff; --ink: #2e2a3a; --muted: #6f6a82; --line: #e3e0ea;
       --crew: #c47a92; --crew-soft: #f6e6eb;
@@ -100,45 +100,45 @@
     <div class="in">
       <a href="./">‹ 回水電清查</a>
       <h1>水電清查使用流程</h1>
-      <p>從現場清查、彙整進度、派工給統包，到改善結案與交出報表</p>
+      <p>查核工程師自己查驗、開改善單給下包、匯入改善、查核，再用 PDF 交給主管</p>
     </div>
   </header>
 
   <main>
     <div class="roles" aria-label="角色">
-      <span class="role crew">👷 同事（現場清查）</span>
-      <span class="role admin">👩‍💼 管理者（彙整、派工）</span>
-      <span class="role gc">🛠 統包（改善）</span>
+      <span class="role crew">👷 查核工程師（查驗、派工、查核、出報告）</span>
+      <span class="role gc">🛠 下包（改善）</span>
+      <span class="role admin">👔 主管（看報告）</span>
     </div>
 
     <h2>一張圖看懂</h2>
     <section class="quick" aria-label="簡略流程">
       <ol>
-        <li class="crew"><span class="e">📱</span><span class="t"><b>現場清查</b><small>逐戶點 ✓△✗—<br>寫原因、拍照</small></span></li>
-        <li class="crew"><span class="e">📤</span><span class="t"><b>交回資料</b><small>匯出備份<br>LINE 傳管理者</small></span></li>
-        <li class="admin"><span class="e">📊</span><span class="t"><b>彙整進度</b><small>匯入合併<br>總覽表看全部</small></span></li>
-        <li class="admin"><span class="e">📝</span><span class="t"><b>派工給統包</b><small>勾選缺失<br>LINE／改善單 Excel</small></span></li>
-        <li class="gc"><span class="e">✅</span><span class="t"><b>改善回傳結案</b><small>填完成日期傳回<br>匯入一次結案</small></span></li>
+        <li class="crew"><span class="e">📱</span><span class="t"><b>現場查驗</b><small>逐戶點 ✓△✗—<br>寫原因、拍照</small></span></li>
+        <li class="crew"><span class="e">📝</span><span class="t"><b>開改善單給下包</b><small>勾選缺失、填預定日期<br>Excel／LINE</small></span></li>
+        <li class="gc"><span class="e">🛠</span><span class="t"><b>下包改善回傳</b><small>填完成日期<br>傳回改善單</small></span></li>
+        <li class="crew"><span class="e">✅</span><span class="t"><b>匯入改善、查核</b><small>一次結案<br>看已改善／未改善</small></span></li>
+        <li class="admin"><span class="e">📄</span><span class="t"><b>PDF 交給主管</b><small>缺失改善報告<br>附照片與日期</small></span></li>
       </ol>
-      <div class="back-loop">↻ 沒改完的繼續追蹤；結案後可輸出 PDF（含照片）與 Excel 報表</div>
+      <div class="back-loop">↻ 沒改完或查核不合格的，再開改善單給下包；每一位工程師負責自己查驗的範圍</div>
     </section>
 
     <h2>詳細步驟</h2>
     <section class="flow" aria-label="使用流程">
       <div class="step crew">
         <span class="num">1</span>
-        <span class="who">同事・第一次使用</span>
+        <span class="who">工程師・第一次使用</span>
         <h3>打開網址、加到主畫面</h3>
         <ul>
           <li>封面點 <span class="btns">🔌 水電清查</span>，依提示加到主畫面（之後沒網路也能用）</li>
-          <li>填公司、工地名稱和<b>自己的名字</b>（每一戶都會記下是誰填的）</li>
+          <li>填公司、工地名稱和<b>自己的名字</b>（報告上的製表人）</li>
         </ul>
       </div>
       <div class="arrow" aria-hidden="true"></div>
 
       <div class="step crew">
         <span class="num">2</span>
-        <span class="who">同事・現場</span>
+        <span class="who">工程師・現場查驗</span>
         <h3>逐棟、逐層、逐戶點選</h3>
         <ul>
           <li>選棟（A～H）→ 選樓層（RF、14F～1F、B1、B2）→ 選戶號（例：14F-07）</li>
@@ -146,89 +146,79 @@
           <li>△ 寫未做原因（被撞到、等材料…），✗ 寫缺失說明，都可以直接 <span class="btns">📷 拍照</span></li>
         </ul>
       </div>
-      <div class="arrow" aria-hidden="true"><span>每天或每清完一棟</span></div>
+      <div class="arrow" aria-hidden="true"></div>
 
       <div class="step crew">
         <span class="num">3</span>
-        <span class="who">同事・交回資料</span>
-        <h3>匯出備份，用 LINE 傳給管理者</h3>
-        <ul>
-          <li>水電清查首頁 <span class="btns">匯出備份</span>，把檔案傳給管理者（照片會一起帶上）</li>
-        </ul>
-      </div>
-      <div class="arrow" aria-hidden="true"></div>
-
-      <div class="step admin">
-        <span class="num">4</span>
-        <span class="who">管理者・彙整</span>
-        <h3>匯入大家的備份，看全部進度</h3>
-        <ul>
-          <li><span class="btns">匯入備份</span>：逐戶合併，不同人填的不同戶不會互相蓋掉</li>
-          <li><span class="btns">總覽</span>：8 棟 × 17 層完成率一張表，誰填了多少一目了然</li>
-        </ul>
-      </div>
-      <div class="arrow" aria-hidden="true"></div>
-
-      <div class="step admin">
-        <span class="num">5</span>
-        <span class="who">管理者・派工</span>
-        <h3>勾選缺失，交給統包</h3>
+        <span class="who">工程師・開改善單</span>
+        <h3>勾選缺失，交給下包</h3>
         <ul>
           <li><span class="btns">缺失追蹤</span>：依棟別、工種篩選，填每項的<b>預定改善日期</b>（逾期會標紅）</li>
-          <li>勾選要改的項目 → <span class="btns">傳到 LINE</span>（可附照片）或 <span class="btns">📊 匯出 Excel 給工班</span>（缺失改善單）</li>
+          <li>勾選要改的項目 → <span class="btns">📊 匯出 Excel 給工班</span>（缺失改善單），或 <span class="btns">傳到 LINE</span>（可附照片）</li>
         </ul>
       </div>
       <div class="arrow" aria-hidden="true"></div>
 
       <div class="step gc">
-        <span class="num">6</span>
-        <span class="who">統包・改善</span>
+        <span class="num">4</span>
+        <span class="who">下包・改善</span>
         <h3>改善後填「改善完成日期」傳回</h3>
         <ul>
-          <li>在改善單填完成日期、簽名或備註，拍照回傳</li>
+          <li>在改善單填完成日期、簽名或備註，傳回給開單的工程師</li>
           <li>最後一欄「編號」請勿修改</li>
+        </ul>
+      </div>
+      <div class="arrow" aria-hidden="true"></div>
+
+      <div class="step crew">
+        <span class="num">5</span>
+        <span class="who">工程師・匯入改善</span>
+        <h3>匯入改善單，一次結案</h3>
+        <ul>
+          <li><span class="btns">📥 匯入工班回傳的改善單</span> → 先列出要結案的項目 → 確認後一次改成 ✓，記下完成日期與下包回覆</li>
+          <li>個別項目也可以在缺失追蹤按 <span class="btns">已改善</span></li>
+        </ul>
+      </div>
+      <div class="arrow" aria-hidden="true"></div>
+
+      <div class="step crew">
+        <span class="num">6</span>
+        <span class="who">工程師・查核</span>
+        <h3>自己看缺失與改善情形</h3>
+        <ul>
+          <li><span class="btns">缺失追蹤</span>：未改善、逾期一目了然；<span class="btns">顯示已改善</span> 看預定與實際完成日期</li>
+          <li>現場複查不合格，就在該戶再點回 ✗，重新開改善單（回到第 3 步）</li>
         </ul>
       </div>
       <div class="arrow" aria-hidden="true"></div>
 
       <div class="step admin">
         <span class="num">7</span>
-        <span class="who">管理者・結案</span>
-        <h3>匯入改善單，一次結案</h3>
+        <span class="who">工程師 → 主管</span>
+        <h3>輸出 PDF 交給主管</h3>
         <ul>
-          <li><span class="btns">📥 匯入工班回傳的改善單</span> → 先列出要結案的項目 → 確認後一次改成 ✓，記下完成日期</li>
-          <li>個別項目也可以在缺失追蹤按 <span class="btns">已改善</span></li>
+          <li><span class="btns">📄 缺失改善報告 PDF</span>：每項缺失的照片、說明、預定改善、改善完成、查核結果，第一頁有總計與改善率</li>
+          <li>需要時再附 <span class="btns">PDF</span> 每層檢查表（比照每層檢查表）或 <span class="btns">📊 匯出 Excel</span></li>
         </ul>
       </div>
-      <div class="arrow" aria-hidden="true"></div>
-
-      <div class="step admin">
-        <span class="num">8</span>
-        <span class="who">管理者・交出成果</span>
-        <h3>輸出 PDF、Excel</h3>
-        <ul>
-          <li><span class="btns">PDF</span>：每層一張 A4（比照每層檢查表），附缺失照片頁與版次</li>
-          <li><span class="btns">📊 匯出 Excel</span>：總覽、缺失清單、每層一張工作表</li>
-        </ul>
-      </div>
-      <div class="loop">↻ 還沒改善完的項目，回到第 5 步繼續追蹤；複查時回到第 2 步更新狀態</div>
+      <div class="loop">↻ 報告依目前篩選的棟別、工種產生；可以每週或每棟出一次</div>
     </section>
 
     <h2>這份資料可以怎麼用</h2>
     <section class="uses">
-      <div class="use"><span class="ic">📈</span><b>掌握進度</b><p>總覽表看哪棟哪層還沒查、完成率多少；填寫人統計看大家的分工。</p><small>總覽分頁</small></div>
-      <div class="use"><span class="ic">🛠</span><b>派工改善</b><p>缺失依工種、棟別篩選後直接給統包，預定日期與逾期提醒幫你追進度。</p><small>缺失追蹤 → LINE／改善單</small></div>
-      <div class="use"><span class="ic">✅</span><b>改善結案</b><p>統包回傳的改善單匯入就結案，完成日期、工班回覆都留下紀錄。</p><small>匯入改善單</small></div>
-      <div class="use"><span class="ic">📑</span><b>會議與驗收佐證</b><p>每層 PDF 有狀態、說明、照片和版次；修正紀錄記下誰在何時改了什麼。</p><small>PDF、修正紀錄</small></div>
-      <div class="use"><span class="ic">📊</span><b>統計報告</b><p>Excel 可以再做樞紐分析：哪個工種缺失最多、哪棟落後、平均幾天改善。</p><small>匯出 Excel</small></div>
+      <div class="use"><span class="ic">🛠</span><b>開單給下包</b><p>缺失依工種、棟別篩選後勾選，匯出改善單或傳 LINE，預定日期與逾期提醒幫忙追進度。</p><small>缺失追蹤 → 改善單／LINE</small></div>
+      <div class="use"><span class="ic">✅</span><b>改善結案</b><p>下包回傳的改善單匯入就結案，完成日期、下包回覆都留下紀錄。</p><small>匯入改善單</small></div>
+      <div class="use"><span class="ic">🔍</span><b>自己查核</b><p>未改善、逾期、已改善分得清楚；修正紀錄記下每一項何時、由誰改了什麼。</p><small>缺失追蹤、修正紀錄</small></div>
+      <div class="use"><span class="ic">📄</span><b>報告給主管</b><p>缺失改善報告 PDF 附照片與日期，總計、改善率一頁看懂，開會或驗收都能用。</p><small>缺失改善報告 PDF</small></div>
+      <div class="use"><span class="ic">📊</span><b>統計分析</b><p>Excel 可以再做樞紐分析：哪個工種缺失最多、哪棟落後、平均幾天改善。</p><small>匯出 Excel</small></div>
       <div class="use"><span class="ic">🔁</span><b>交接不中斷</b><p>換人或換手機時，匯出備份給接手的人匯入，資料與照片完整保留。</p><small>匯出／匯入備份</small></div>
     </section>
 
     <div class="note">
       <b>小提醒</b>
       <ul>
-        <li>資料存在各自的手機，<b>沒有自動上傳</b>；記得定期「匯出備份」傳給管理者。</li>
-        <li>建議由管理者負責匯入、派工與結案，管理者手機上的資料最完整。</li>
+        <li>每位工程師負責<b>自己查驗的範圍</b>：開單、匯入改善單、查核、出報告都在自己的手機做；改善單要傳回給<b>開單的那位工程師</b>。</li>
+        <li>資料存在自己的手機，<b>沒有自動上傳</b>；記得定期「匯出備份」存到雲端或電腦，換手機、交接時才能還原。</li>
         <li>狀態符號：✓ 完成　△ 未做／施工中　✗ 缺失　— 不適用（不算進完成率）；留白＝還沒查。</li>
       </ul>
     </div>

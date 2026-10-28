@@ -406,7 +406,8 @@
       <span class="muted grow">已勾選 ${ui.sel.size} 項</span>
       <button class="btn line" data-act="line" ${ui.sel.size ? '' : 'disabled'}>傳到 LINE</button><button class="btn sm" data-act="copy" ${ui.sel.size ? '' : 'disabled'}>複製文字</button></div>
       <button class="btn pri" data-act="fixsheet" ${ui.sel.size ? '' : 'disabled'}>📊 勾選的 ${ui.sel.size} 項匯出 Excel 給工班</button>
-      <button class="btn" data-act="fiximport">📥 匯入工班回傳的改善單（一次結案）</button></div>`;
+      <button class="btn" data-act="fiximport">📥 匯入工班回傳的改善單（一次結案）</button>
+      <button class="btn" data-act="report">📄 缺失改善報告 PDF（給主管，依目前篩選、含已改善）</button></div>`;
     const list = ui.showFixed ? [...shown, ...fixed.filter(match)] : shown;
     if (!list.length) return h + `<div class="empty"><b>${open.length ? '這個篩選沒有項目' : '目前沒有未改善的項目'}</b>在樓層裡把項目點成 ✗（缺失）或 △（未做／施工中），就會出現在這裡；改善後按「已改善」。</div>`;
     h += `<div class="defs">`;
@@ -624,23 +625,68 @@
   }
   const papers = list => list.map(r => paperHTML(r) + photoPages(r)).join('');
   let pvList = [];
+  // 目前預覽的內容：樓層檢查表（會累加版次）或缺失改善報告
+  const pv = { render: () => papers(pvList), file: () => '', bump: true };
   async function openPreview(list) {
     if (!list.length) return toast('這棟還沒有檢查資料');
     pvList = list;
     await loadPhotosFor(list);
     const first = list[0];
-    const title = list.length > 1 ? `${first.b} 棟（${list.length} 層）` : `${first.b}棟 ${first.f}`;
+    pv.render = () => papers(pvList); pv.bump = true;
+    pv.file = () => (pvList.length > 1 ? `水電清查_${first.b}棟_${pvList.length}層.pdf` : `水電清查_${first.b}棟_${first.f}_第${first.printVer}版.pdf`);
+    showPreview(list.length > 1 ? `${first.b} 棟（${list.length} 層）` : `${first.b}棟 ${first.f}`);
+  }
+  function showPreview(title) {
     $('#pv')?.remove();
     const m = document.createElement('div'); m.className = 'modal'; m.id = 'pv';
     m.innerHTML = `<div class="modal-in" role="dialog" aria-label="列印版預覽"><div class="modal-head"><b>${esc(title)}・A4 橫式</b>
       <button class="btn pri" data-act="save">下載 PDF</button><button class="btn" data-act="print">列印</button><button class="btn" data-act="close">關閉</button></div>
-      <div class="modal-body"><div class="pv" id="pvin">${papers(list)}</div></div></div>`;
+      <div class="modal-body"><div class="pv" id="pvin">${pv.render()}</div></div></div>`;
     document.body.appendChild(m);
-    const body = m.querySelector('.modal-body'), pv = $('#pvin');
+    const body = m.querySelector('.modal-body'), pvBox = $('#pvin');
     const s = Math.min(1, (body.clientWidth - 24) / 1123);
     // 縮小後把多出來的寬度收掉，預覽框才不會出現橫向捲軸
-    pv.style.transform = `scale(${s})`; pv.style.height = `${pv.scrollHeight * s}px`; pv.style.marginRight = `${-1123 * (1 - s)}px`;
+    pvBox.style.transform = `scale(${s})`; pvBox.style.height = `${pvBox.scrollHeight * s}px`; pvBox.style.marginRight = `${-1123 * (1 - s)}px`;
   }
+  /* ---------- 缺失改善報告（給主管）：目前篩選的棟別、工種，含已改善；每項附照片、預定與完成日期 ---------- */
+  function reportDefects() {
+    return allDefects().filter(d => (!ui.fb || d.r.b === ui.fb) && (!ui.fc || CAT[d.k] === ui.fc))
+      .sort((a, b) => a.fixed - b.fixed || a.r.b.localeCompare(b.r.b) || FLOORS.indexOf(a.r.f) - FLOORS.indexOf(b.r.f) || (a.w === 'pub') - (b.w === 'pub') || Number(a.w) - Number(b.w));
+  }
+  // 已改善的項目，從修正紀錄找出改善前是 ✗ 還是 △
+  const origStatus = d => (d.fixed ? (d.r.log.find(l => l.w === d.w && l.k === d.k && l.to === '✓')?.from || '') : d.v);
+  function reportPapers(defs) {
+    const done = defs.filter(d => d.fixed).length, open = defs.length - done, late = defs.filter(overdue).length;
+    const scope = `${ui.fb ? `${ui.fb} 棟` : '全部棟別'}・${ui.fc || '全部工種'}`;
+    const per = 8, pages = Math.max(1, Math.ceil(defs.length / per));
+    let h = '';
+    for (let pg = 0; pg < pages; pg++) {
+      const rows = defs.slice(pg * per, pg * per + per);
+      h += `<div class="paper report"><div class="t1">${esc(settings.company)}　缺失改善報告</div>
+        <div class="t2"><div class="pj">工程名稱：${esc(settings.project)}</div><div>範圍：<span>${esc(scope)}</span></div><div>製表：<span>${esc(me())}</span></div><div>日期：<span>${today()}</span></div><div><span>${pg + 1}／${pages}</span></div></div>
+        ${pg ? '' : `<div class="rsum"><span>總計 <b>${defs.length}</b> 項</span><span class="ok">已改善 <b>${done}</b></span><span class="no">未改善 <b>${open}</b></span>${late ? `<span class="no">逾期 <b>${late}</b></span>` : ''}<span>改善率 <b>${defs.length ? Math.round(done / defs.length * 100) : 0}%</b></span></div>`}
+        <table class="rtab"><colgroup><col style="width:34px"><col style="width:92px"><col style="width:62px"><col style="width:120px"><col style="width:42px"><col style="width:250px"><col style="width:150px"><col style="width:74px"><col style="width:74px"><col style="width:70px"></colgroup>
+        <thead><tr>${['項次', '棟別／戶號', '工種', '項目', '原狀態', '缺失／未做說明・工班回覆', '照片', '預定改善', '改善完成', '查核結果'].map(t => `<th class="gray">${t}</th>`).join('')}</tr></thead><tbody>
+        ${rows.map((d, i) => {
+          const o = origStatus(d), res = d.fixed ? '<b class="r-ok">已改善</b>' : overdue(d) ? '<b class="r-no">逾期未改善</b>' : '<b class="r-no">未改善</b>';
+          const imgs = d.ph.slice(0, 2).map(id => photoCache.get(id)).filter(Boolean).map(p => `<img src="${p.data}" alt="">`).join('');
+          return `<tr><td>${pg * per + i + 1}</td><td>${esc(d.r.b)}棟<br>${esc(label(d.r, d.w))}</td><td>${esc(CAT[d.k])}</td><td class="l2">${esc(NAME[d.k])}</td>
+            <td class="${cls(o)}">${o}</td><td class="l2">${esc(d.note || '')}</td><td class="ph">${imgs}${d.ph.length > 2 ? `<small>＋${d.ph.length - 2}</small>` : ''}</td>
+            <td>${esc(d.due || '')}</td><td>${esc(d.fixed ? d.at : '')}</td><td>${res}</td></tr>`;
+        }).join('')}</tbody></table>
+        <div class="notes">原狀態：✗ 缺失　△ 未做／施工中。查核結果依改善完成日期與現場查核；照片為查驗時拍攝。　　輸出時間：${new Date().toLocaleString('zh-TW', { hour12: false })}</div></div>`;
+    }
+    return h;
+  }
+  async function openReport() {
+    const defs = reportDefects();
+    if (!defs.length) return toast('這個範圍沒有缺失或改善紀錄');
+    await Promise.all(defs.flatMap(d => d.ph.slice(0, 2)).map(id => getPhoto(id).catch(() => null)));
+    pv.render = () => reportPapers(defs); pv.bump = false;
+    pv.file = () => `缺失改善報告_${ui.fb ? `${ui.fb}棟_` : ''}${today().replace(/-/g, '')}.pdf`;
+    showPreview(`缺失改善報告（${defs.length} 項）`);
+  }
+
   // 輸出（下載或列印）＝新的一版：每層版次 +1，記下日期
   function bumpVersions() {
     pvList.forEach(r => { r.printVer = (r.printVer || 0) + 1; r.printedAt = today(); floors.set(r.id, r); });
@@ -664,28 +710,27 @@
     try {
       const html2pdf = await loadHtml2pdf();
       if (document.fonts?.ready) await document.fonts.ready;
-      bumpVersions();
-      host.innerHTML = papers(pvList);
+      if (pv.bump) bumpVersions();
+      host.innerHTML = pv.render();
       host.style.cssText = 'display:block;position:absolute;left:-30000px;top:0';
       const pages = [...host.children];
       const opt = { margin: 5, image: { type: 'jpeg', quality: 0.92 }, html2canvas: { scale: 2, backgroundColor: '#ffffff' }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' } };
       // 一層一頁，逐頁轉圖，避免整棟一次畫成超大圖（手機會失敗）
       let w = html2pdf().set(opt).from(pages[0]).toPdf();
       pages.slice(1).forEach(p => { w = w.get('pdf').then(pdf => { pdf.addPage(); }).from(p).toContainer().toCanvas().toPdf(); });
-      const first = pvList[0];
-      await w.save(pvList.length > 1 ? `水電清查_${first.b}棟_${pvList.length}層.pdf` : `水電清查_${first.b}棟_${first.f}_第${first.printVer}版.pdf`);
+      await w.save(pv.file());
       toast('PDF 已下載');
     } catch (e) {
       toast(e.message || 'PDF 產生失敗，請改按「列印」');
     } finally {
       host.innerHTML = ''; host.style.cssText = '';
       btn.disabled = false; btn.textContent = '下載 PDF';
-      $('#pvin') && ($('#pvin').innerHTML = papers(pvList));
+      $('#pvin') && ($('#pvin').innerHTML = pv.render());
     }
   }
   function printPapers() {
-    bumpVersions();
-    $('#printArea').innerHTML = papers(pvList);
+    if (pv.bump) bumpVersions();
+    $('#printArea').innerHTML = pv.render();
     window.print();
   }
 
@@ -974,6 +1019,7 @@
     else if (act === 'copy') copyText();
     else if (act === 'fixsheet') exportFixSheet();
     else if (act === 'fiximport') $('#fixFile').click();
+    else if (act === 'report') openReport();
     else if (act === 'closeall') closeAll();
     else if (act === 'install') { installEvt?.prompt(); installEvt?.userChoice.finally(() => { installEvt = null; render(); }); }
     else if (act === 'installhide') { ls.set('wc-install-hide', '1'); render(); }
