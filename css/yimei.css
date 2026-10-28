@@ -1,13 +1,6 @@
-/* 機電自檢紀錄表：自己的外觀（載入在 style.css、app.css 之後，覆寫封面、上方列、清單與填表畫面）
-   配色取自封面照片「雲海夕陽」：暮色藍、天藍、夕陽橘、雲白 */
+/*! © 2026 Yimei. All rights reserved. */
 :root {
-  --y-ink: #24364d;     /* 深暮色藍：標題文字 */
-  --y-blue: #3e5878;    /* 暮色藍：主色 */
-  --y-sky: #7d9bbd;     /* 天藍 */
-  --y-sun: #e8813a;     /* 夕陽橘：重點 */
-  --y-peach: #fde6cf;   /* 雲霞粉橘 */
-  --y-cloud: #eef1f6;   /* 雲白 */
-  --y-card: #ffffff;
+  --y-ink: #24364d;     --y-blue: #3e5878;    --y-sky: #7d9bbd;     --y-sun: #e8813a;     --y-peach: #fde6cf;   --y-cloud: #eef1f6;   --y-card: #ffffff;
   --y-line: #e2e7ef;
   --y-radius: 18px;
   --sk-accent: var(--y-blue);
@@ -15,7 +8,6 @@
 }
 body { background: linear-gradient(180deg, #e9eef5 0, #f4f6fa 320px) no-repeat, #f4f6fa; }
 
-/* ========== 封面 ========== */
 .cv { max-width: 560px; padding: 0 0 36px; gap: 0; }
 .cv-hero {
   position: relative; display: block; min-height: 300px; padding: 44px 24px 34px; text-align: left;
@@ -45,7 +37,6 @@ body { background: linear-gradient(180deg, #e9eef5 0, #f4f6fa 320px) no-repeat, 
 .cv-soon { background: var(--y-cloud); box-shadow: none; border: 2px dashed #d3dae5; color: #8a96a8; }
 .cv-soon .cv-tool-ic { background: #fff; }
 .cv-soon:hover { transform: none; box-shadow: none; border: 2px dashed #d3dae5; }
-/* 最新消息：時間軸 */
 .cv-news { padding: 4px 4px 0; background: none; border: 0; }
 .cv-news h2.cv-h { margin: 6px 0 10px; }
 .cv-news-day { position: relative; padding: 0 0 4px 22px; border-left: 2px solid var(--y-line); margin-left: 6px; }
@@ -58,7 +49,6 @@ body { background: linear-gradient(180deg, #e9eef5 0, #f4f6fa 320px) no-repeat, 
 .cv-more { color: var(--y-blue); border-color: var(--y-line); border-radius: 999px; }
 .cv-foot { margin-top: 8px; }
 
-/* ========== 上方列 ========== */
 .ol-bar { background: linear-gradient(90deg, #24364d, #3e5878); border-bottom: 0; color: #fff; box-shadow: 0 2px 12px rgba(20, 32, 50, .2); }
 .ol-brand .ol-title { color: #fff; }
 .ol-brand:hover .ol-title { color: var(--y-peach); }
@@ -70,7 +60,6 @@ body { background: linear-gradient(180deg, #e9eef5 0, #f4f6fa 320px) no-repeat, 
 .ol-bar .ol-btn:hover { color: #fff; background: rgba(255, 255, 255, .22); border-color: rgba(255, 255, 255, .4); }
 .ol-status { color: #fff; background: rgba(120, 200, 140, .3); }
 
-/* ========== 清單頁 ========== */
 .sk-panel { background: transparent; border: 0; padding: 4px 0 12px; }
 .sk-tabs { gap: 10px 12px; padding: 6px 0 4px; border-bottom: 0; }
 .sk-tab { padding: 6px 0; font-size: 22px; color: var(--y-ink); border-bottom: 0; }
@@ -83,7 +72,6 @@ body { background: linear-gradient(180deg, #e9eef5 0, #f4f6fa 320px) no-repeat, 
 .sk-fill.sk-new-btn:hover { background: #d46f2a; }
 .sk-new-btns .sk-btn, .sk-new-btns button:not(.sk-new-btn) { border-radius: 999px; }
 
-/* 類別：可左右滑的膠囊 */
 .sk-chips { flex-wrap: nowrap; overflow-x: auto; gap: 8px; padding: 12px 2px 14px; scrollbar-width: none; }
 .sk-chips::-webkit-scrollbar { display: none; }
 .sk-chip { flex-shrink: 0; padding: 7px 14px; font-size: 13px; border-radius: 999px; border: 0; background: #fff; color: #5b6b80; box-shadow: 0 1px 4px rgba(36, 54, 77, .08); }
@@ -92,7 +80,6 @@ body { background: linear-gradient(180deg, #e9eef5 0, #f4f6fa 320px) no-repeat, 
 .sk-chip-done:not(.active) { color: #2e7d4f; }
 .sk-chip-doing i { background: var(--y-sun); }
 
-/* 條列清單 */
 .sk-table-wrap { background: #fff; border-radius: 16px; box-shadow: 0 3px 12px rgba(36, 54, 77, .07); }
 .sk-table th { color: #6a7f99; font-size: 13px; background: #f4f6fa; }
 .sk-table td { border-top-color: var(--y-line); }
@@ -101,7 +88,6 @@ body { background: linear-gradient(180deg, #e9eef5 0, #f4f6fa 320px) no-repeat, 
 .sk-trade { color: var(--y-blue); border: 0; background: #e6edf6; border-radius: 999px; }
 .sk-table .sk-fill { padding: 5px 12px; border-radius: 999px; background: var(--y-blue); }
 .sk-table .sk-fill:hover { background: var(--y-ink); }
-/* 卡片 */
 .sk-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
 .sk-card {
   position: relative; display: flex; flex-direction: column; gap: 6px; padding: 14px 16px 12px 18px;
@@ -128,7 +114,6 @@ body { background: linear-gradient(180deg, #e9eef5 0, #f4f6fa 320px) no-repeat, 
 .sk-status-done { --c: #3c9a63; color: #2e7d4f; background: #e7f5ec; }
 .sk-status-doing { --c: var(--y-sun); color: #b8591c; background: #fdf0e4; }
 
-/* ========== 填表視窗 ========== */
 .sk-dialog { border-radius: 22px; }
 .sk-dialog::backdrop { background: rgba(20, 32, 50, .55); backdrop-filter: blur(2px); }
 .sk-dlg-head { background: linear-gradient(120deg, #24364d, #3e5878); color: #fff; border-bottom: 0; padding: 16px 18px; }
@@ -166,7 +151,6 @@ body { background: linear-gradient(180deg, #e9eef5 0, #f4f6fa 320px) no-repeat, 
 .sk-section h4 { color: var(--y-blue); }
 .sk-sign-pad { border-radius: 12px; }
 
-/* 手機 */
 @media (max-width: 600px) {
   .cv-hero { min-height: 270px; }
   .cv-hero .cv-name { font-size: 26px; }
@@ -175,25 +159,20 @@ body { background: linear-gradient(180deg, #e9eef5 0, #f4f6fa 320px) no-repeat, 
   .sk-new-btns { width: 100%; margin-left: 0; }
 }
 
-/* 進入時確認工地：選單與輸入框同樣大小 */
 .ol-setup select { padding: 10px 12px; font: inherit; font-size: 16px; color: var(--y-ink); background: #fff; border: 1px solid #d9dde4; border-radius: 10px; }
 .ol-setup .ol-setup-go { background: var(--y-blue); }
 
-/* 填表：分項工程名稱可自行修改（整列寬）；檢查時機單選、檢查結果自己勾 */
 .sk-info > label.sk-subname { grid-column: 1 / -1; }
 .sk-subname-row { display: flex; gap: 8px; }
 .sk-subname-row input { flex: 1; min-width: 0; }
 .sk-subname-row .sk-btn { padding: 5px 12px; font-size: 13px; }
 .sk-check input[type="radio"] { accent-color: var(--y-blue); }
 
-/* 檢查位置下拉選單（管理者在「✎ 工地」設定選項）；與輸入框同樣式 */
 .sk-info select { padding: 6px 10px; font: inherit; font-size: 14px; color: var(--text); border: 1px solid #d9dde4; border-radius: 10px; background: #f7f9fc; }
 .pj-locs textarea { padding: 8px 10px; font: inherit; font-size: 15px; line-height: 1.6; border: 1px solid #d9dde4; border-radius: 10px; resize: vertical; }
 .pj-locs .ac-save { align-self: flex-end; }
-/* 檢視切換（條列／卡片） */
 .sk-view button { white-space: nowrap; }
 
-/* 同事共用（管理者）與同事模式 */
 .pj-share { display: flex; flex-direction: column; gap: 8px; margin: 6px 0 4px; padding: 12px 14px; background: #f4f7fb; border-radius: 14px; }
 .pj-share .pj-sub { margin: 0; }
 .pj-share-go { align-self: flex-start; padding: 8px 14px; font-weight: 700; color: #fff; background: var(--y-sun); border: 0; border-radius: 999px; }

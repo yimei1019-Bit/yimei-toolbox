@@ -1,4 +1,4 @@
-/* 水電清查：手機優先的單欄版面（最寬 720px），配色與封面相同（深藍灰＋霧玫瑰） */
+/*! © 2026 Yimei. All rights reserved. */
 :root {
   --bg: #f4f3f7; --card: #ffffff; --ink: #2e2a3a; --muted: #77728a; --line: #e3e0ea;
   --brand: #4d5675; --brand-ink: #ffffff; --accent: #c47a92; --accent-soft: #f6e6eb;
@@ -50,7 +50,6 @@ label.f { display: flex; flex-direction: column; gap: 4px; font-size: 12px; colo
 label.f input, .note { border: 1px solid var(--line); border-radius: 10px; padding: 9px 10px; background: var(--bg); font-size: 15px; width: 100%; color: var(--ink); }
 .h2 { margin: 4px 2px 0; font-size: 13px; font-weight: 700; letter-spacing: 2px; color: var(--muted); }
 
-/* 棟別：照現場配置 B C／A D／H E／G F 排列 */
 .site { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .bd { display: flex; flex-direction: column; gap: 6px; padding: 14px; border-radius: var(--radius); background: var(--card); text-decoration: none; box-shadow: 0 2px 10px rgba(46,42,58,.07); }
 .bd b { font-size: 26px; line-height: 1.1; }
@@ -60,7 +59,6 @@ label.f input, .note { border: 1px solid var(--line); border-radius: 10px; paddi
 .prog i { display: block; height: 100%; background: var(--ok); border-radius: 999px; }
 .bad-t { color: var(--bad); font-weight: 700; }
 
-/* 樓層列表：由上（RF）到下（B2），像建築剖面 */
 .floors { display: flex; flex-direction: column; gap: 6px; }
 .fl { display: grid; grid-template-columns: 52px minmax(0,1fr); gap: 4px 12px; align-items: center; padding: 10px 14px; border-radius: 12px; background: var(--card); text-decoration: none; }
 .fl .lv { grid-row: span 2; font-size: 19px; font-weight: 700; font-variant-numeric: tabular-nums; }
@@ -117,7 +115,6 @@ details.log summary { cursor: pointer; font-weight: 700; }
 .modal-body { overflow: auto; padding: 12px; background: var(--na-bg); }
 .pv { transform-origin: 0 0; width: 1123px; }
 
-/* ===== 列印版：A4 橫式，比照 Excel「每層檢查表」 ===== */
 #printArea { display: none; }
 .paper { width: 1123px; padding: 22px 26px; background: #fff; color: #000; font-family: var(--font); }
 .pv .paper + .paper { margin-top: 16px; }
@@ -159,7 +156,6 @@ details.log summary { cursor: pointer; font-weight: 700; }
 }
 @media (prefers-reduced-motion: reduce) { #toast { transition: none; } }
 
-/* △ 未做原因：備註欄＋快速原因 */
 .item .why-box { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 6px; }
 .item .note.doing { border-color: var(--doing); }
 .reasons { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -170,11 +166,9 @@ details.log summary { cursor: pointer; font-weight: 700; }
 .tag.doing { background: var(--doing-bg); color: var(--doing); }
 .st[data-v="△"] { font-size: 21px; line-height: 1; }
 
-/* 加到主畫面提醒 */
 .banner.install { background: var(--card); border: 1px solid var(--line); }
 .banner.install .row { flex: 1 1 100%; justify-content: flex-end; }
 
-/* 總覽表：8 棟 × 17 層 */
 .ov-scroll { overflow-x: auto; }
 .ov { border-collapse: separate; border-spacing: 3px; width: 100%; min-width: 320px; font-variant-numeric: tabular-nums; }
 .ov th { font-size: 12px; color: var(--muted); font-weight: 700; padding: 2px; }
@@ -192,14 +186,12 @@ details.log summary { cursor: pointer; font-weight: 700; }
 .who th, .who td { padding: 6px 4px; border-bottom: 1px solid var(--line); text-align: left; }
 .who th { color: var(--muted); font-size: 12px; }
 
-/* 缺失清單：勾選、篩選、傳 LINE */
 select { border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; background: var(--bg); font-size: 14px; color: var(--ink); flex: 1; min-width: 120px; }
 .def-h { display: flex; gap: 10px; align-items: flex-start; min-width: 0; }
 .def-h label { min-width: 0; cursor: pointer; }
 .pick { width: 22px; height: 22px; margin-top: 2px; accent-color: var(--brand); flex: none; }
 .btn.line { background: #06c755; border-color: #06c755; color: #fff; }
 
-/* 照片：縮圖、拍照按鈕、放大 */
 .thumbs { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .thumb { width: 56px; height: 56px; padding: 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--bg); }
 .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -207,24 +199,20 @@ select { border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; 
 .ph-body { display: grid; place-items: center; }
 .ph-body img { max-width: 100%; max-height: 75vh; border-radius: 10px; }
 
-/* PDF 照片頁：每頁 8 張 */
 .paper.photos .pgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 8px; }
 .paper.photos figure { margin: 0; border: 0.8px solid #bfbfbf; padding: 4px; }
 .paper.photos img { width: 100%; height: 190px; object-fit: cover; display: block; }
 .paper.photos figcaption { font-size: 8.5px; line-height: 1.4; margin-top: 3px; }
 
-/* 預定改善日期、逾期 */
 .due { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
 .due input { border: 1px solid var(--line); border-radius: 8px; padding: 5px 8px; background: var(--bg); color: var(--ink); font-size: 14px; }
 .due.late { color: var(--bad); }
 .due.late input { border-color: var(--bad); }
 .def.late { box-shadow: inset 0 0 0 2px var(--bad-bg); }
 
-/* 匯入改善單：結案前確認清單 */
 .close-list { background: var(--card); display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
 .close-row { padding: 8px 10px; border-radius: 10px; background: var(--ok-bg); }
 
-/* 缺失改善報告（給主管） */
 .paper.report .rsum { display: flex; gap: 18px; margin: 4px 0 8px; font-size: 11px; }
 .paper.report .rsum b { font-size: 14px; }
 .paper.report .rsum .ok b { color: #006100; }
@@ -239,7 +227,6 @@ select { border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; 
 .paper.report .r-ok { color: #006100; }
 .paper.report .r-no { color: #9c0006; }
 
-/* 作者標記：每頁 PDF 右下角淡淡的工具名稱、左下角極淡的作者字（幾乎看不到，裁掉頁尾也還在） */
 .paper { position: relative; }
 .paper .sig { position: absolute; right: 16px; bottom: 6px; font-size: 6.5px; color: #c4c4c4; letter-spacing: .5px; }
 .paper .sig-h { position: absolute; left: 16px; bottom: 6px; font-size: 6px; color: rgba(0, 0, 0, .045); }
