@@ -244,3 +244,9 @@ select { border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; 
 .dcnt b { font-size: 17px; }
 .ok-t { color: var(--ok); font-weight: 700; }
 .late-t { padding: 0 8px; border-radius: 999px; background: var(--bad-bg); color: var(--bad); font-weight: 700; font-size: 12px; }
+
+.reasons button.sp { background: var(--card); font-weight: 800; }
+.reasons.bad button { border-color: var(--bad); background: var(--bad-bg); color: var(--bad); }
+.reasons.bad button.sp { background: var(--card); }
+.reasons button.on { background: var(--doing); border-color: var(--doing); color: #fff; }
+.reasons.bad button.on { background: var(--bad); border-color: var(--bad); color: #fff; }
