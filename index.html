@@ -28,17 +28,18 @@
     <div class="cv-body">
       <h2 class="cv-h">我的工具</h2>
       <div class="cv-tools">
-        <a class="cv-tool" href="#/self-check">
+        <a class="cv-tool" href="#/self-check" id="cvSelfCheck">
           <span class="cv-tool-ic" aria-hidden="true">📋</span>
           <b>自主檢查表</b>
           <small>勾選・簽名・PDF</small>
           <span class="cv-tool-go" aria-hidden="true">開始 →</span>
         </a>
-        <div class="cv-tool cv-soon" aria-disabled="true">
-          <span class="cv-tool-ic" aria-hidden="true">🧰</span>
-          <b>更多工具</b>
-          <small>開發中，敬請期待</small>
-        </div>
+        <a class="cv-tool" href="water/">
+          <span class="cv-tool-ic" aria-hidden="true">🔌</span>
+          <b>水電清查</b>
+          <small>A～H 棟逐層逐間・缺失追蹤・PDF</small>
+          <span class="cv-tool-go" aria-hidden="true">開始 →</span>
+        </a>
       </div>
       <section class="cv-news" id="cvNews" hidden>
         <h2 class="cv-h">最新消息</h2>
@@ -46,6 +47,7 @@
         <button class="cv-more" id="cvNewsMore" hidden>查看全部更新</button>
       </section>
       <p class="cv-foot">🔒 資料只存在這台裝置 ・ 換手機前請先備份</p>
+      <button class="cv-more cv-owner" id="cvOwner" type="button" hidden>🔒 管理者</button>
     </div>
     <script>
       (function () {
@@ -91,6 +93,8 @@
     window.PAGES = {};
     function registerPage(id, def) { window.PAGES[id] = def; }
   </script>
+  <script src="js/owner.js"></script>
+  <script src="js/owner-lock.js"></script>
   <script src="offline-store.js"></script>
   <script src="js/pages/self-check-print.js"></script>
   <script src="js/pages/self-check.js"></script>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>水電清查｜機電自檢紀錄表</title>
+  <meta name="theme-color" content="#3e5878" />
+  <link rel="manifest" href="../manifest.webmanifest" />
+  <link rel="icon" href="../icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png" />
+  <link rel="stylesheet" href="water.css" />
+</head>
+<body>
+  <!-- 水電清查（各自使用）：A～H 棟逐層逐間點選，資料只存在這台裝置（IndexedDB），可離線、可輸出 A4 PDF -->
+  <header class="bar"><div class="bar-in" id="bar"></div></header>
+  <main class="wrap" id="app"><div class="empty">載入中…</div></main>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <div id="printArea"></div>
+  <input type="file" id="importFile" accept=".json,application/json" hidden />
+  <script src="water.js"></script>
+</body>
+</html>

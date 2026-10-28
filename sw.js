@@ -3,7 +3,7 @@
  * 第一次開啟時把所有檔案存到裝置，之後沒有網路也能開啟。
  * VERSION 由 tools/build_offline.py 依檔案內容自動更新；版本變了會換新快取。
  */
-const VERSION = 'yimei-20261020k';
+const VERSION = 'yimei-20261028c';
 const CACHE = `selfcheck-offline-${VERSION}`;
 const FILES = [
   './',
@@ -13,12 +13,18 @@ const FILES = [
   'css/style.css',
   'css/app.css',
   'css/yimei.css',
+  'js/owner.js',
+  'js/owner-lock.js',
   'js/app-shell.js',
   'js/pages/self-check.js',
   'js/pages/self-check-print.js',
   'js/vendor/html2pdf.bundle.min.js',
   'data/templates.json',
   'data/updates.json',
+  'water/',
+  'water/index.html',
+  'water/water.css',
+  'water/water.js',
   'icons/icon-192.png',
   'icons/icon-512.png',
   'icons/apple-touch-icon.png',
