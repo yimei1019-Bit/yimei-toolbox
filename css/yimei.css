@@ -199,6 +199,3 @@ body { background: linear-gradient(180deg, #e9eef5 0, #f4f6fa 320px) no-repeat, 
 .pj-share-go { align-self: flex-start; padding: 8px 14px; font-weight: 700; color: #fff; background: var(--y-sun); border: 0; border-radius: 999px; }
 .pj-share-go:disabled { background: #c9d0da; cursor: not-allowed; }
 .ol-bar .ol-lock { background: rgba(232, 129, 58, .35); border-color: rgba(253, 230, 207, .6); }
-/* 自主檢查表只給管理者（js/owner-lock.js）：沒解鎖時藏起自主檢查表，其他工具撐滿整列 */
-#cvSelfCheck[hidden] + .cv-tool { grid-column: 1 / -1; min-height: 120px; }
-.cv-owner { align-self: center; }

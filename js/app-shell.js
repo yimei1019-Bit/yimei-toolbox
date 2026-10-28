@@ -666,32 +666,9 @@
   // 沒有權限的按鈕不顯示（主網站一般使用者、離線版同事模式只能填表）；資料載入後再依身分更新一次
   applyRole();
 
-  /* ---------- 封面「最新更新」（data/updates.json 由 更新紀錄.md 產生） ---------- */
-  const SEEN_KEY = 'ol-seen-update';
-  async function renderNews() {
-    let list;
-    try { list = await (await fetch('data/updates.json')).json(); } catch (e) { return; }
-    if (!Array.isArray(list) || !list.length) return;
-    let seen = null;
-    try { seen = localStorage.getItem(SEEN_KEY); } catch (e) {}
-    const block = u => `
-      <div class="cv-news-day">
-        <div class="cv-news-date">${esc(u.date)}${seen && u.date > seen ? '<span class="cv-new">NEW</span>' : ''}</div>
-        <ul>${u.items.map(i => `<li>${esc(i)}</li>`).join('')}</ul>
-      </div>`;
-    const listEl = document.getElementById('cvNewsList');
-    const more = document.getElementById('cvNewsMore');
-    listEl.innerHTML = list.slice(0, 1).map(block).join('');
-    more.hidden = list.length <= 1;
-    more.onclick = () => { listEl.innerHTML = list.map(block).join(''); more.hidden = true; };
-    document.getElementById('cvNews').hidden = false;
-    try { localStorage.setItem(SEEN_KEY, list[0].date); } catch (e) {} // 下次開啟只標示更新的日期
-  }
-
   /* ---------- 啟動 ---------- */
   // 封面不需要資料庫，先顯示；資料庫載入完成後才可進入工具（或直接回到原本開著的工具）
   route();
-  renderNews();
   (async () => {
     try {
       await O.init();

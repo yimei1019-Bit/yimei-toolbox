@@ -1,0 +1,72 @@
+/* 封面：Yimei 的工地手帳（粉色手帳風）。載入在 style.css、app.css、yimei.css 之後
+   配色：玫瑰粉（主色）、梅子紫（文字）、薰衣草、蜜桃、奶油白 */
+:root {
+  --yc-rose: #d76b91;
+  --yc-rose-deep: #b5507a;
+  --yc-plum: #4b2e45;
+  --yc-muted: #9b7a8f;
+  --yc-blush: #fdf2f5;
+  --yc-lav: #ece4fb;
+  --yc-lav-ink: #7a5fb5;
+  --yc-pink: #ffe3ec;
+  --yc-peach: #ffe6d9;
+  --yc-card: #fffafc;
+  --yc-line: #f3d9e3;
+}
+body { background: var(--yc-blush); }
+
+.yc { max-width: 560px; margin: 0 auto; padding-bottom: calc(36px + env(safe-area-inset-bottom, 0px)); color: var(--yc-plum); }
+
+/* 頁首：粉紫漸層＋雲朵＋小星星，取代照片 */
+.yc-hero {
+  position: relative; overflow: hidden;
+  padding: calc(env(safe-area-inset-top, 0px) + 34px) 26px 64px;
+  border-radius: 0 0 44px 44px;
+  background:
+    radial-gradient(circle at 12% 104%, #fff 0 46px, transparent 47px),
+    radial-gradient(circle at 30% 112%, #fff 0 58px, transparent 59px),
+    radial-gradient(circle at 54% 108%, #fff 0 44px, transparent 45px),
+    radial-gradient(circle at 76% 116%, #fff 0 62px, transparent 63px),
+    radial-gradient(circle at 96% 104%, #fff 0 40px, transparent 41px),
+    radial-gradient(circle at 86% 20%, rgba(255, 255, 255, .7) 0 30px, rgba(255, 255, 255, 0) 31px),
+    linear-gradient(160deg, #ffd5e3 0%, #f7c5dc 45%, #dccbf5 100%);
+}
+.yc-spark { position: absolute; color: #fff; text-shadow: 0 0 10px rgba(255, 255, 255, .9); line-height: 1; pointer-events: none; }
+.yc-s1 { top: 26%; right: 30%; font-size: 18px; }
+.yc-s2 { top: 48%; right: 12%; font-size: 24px; color: #fff7fb; }
+.yc-s3 { top: 62%; right: 34%; font-size: 12px; }
+.yc-date { display: inline-block; margin: 0 0 14px; padding: 4px 12px; font-size: 12px; color: var(--yc-rose-deep); background: rgba(255, 255, 255, .7); border-radius: 999px; }
+.yc-hello { margin: 0 0 6px; font-size: 15px; font-weight: 700; color: var(--yc-rose-deep); }
+.yc-name { margin: 0; font-size: 34px; line-height: 1.2; letter-spacing: 3px; color: var(--yc-plum); }
+.yc-tag { margin: 10px 0 0; font-size: 13px; color: #7d5a72; letter-spacing: 1px; }
+
+/* 工具清單：一列一張圓角卡片 */
+.yc-body { display: flex; flex-direction: column; gap: 14px; margin-top: -26px; padding: 0 16px; position: relative; }
+.yc-h { margin: 6px 6px 0; font-size: 13px; font-weight: 700; letter-spacing: 2px; color: var(--yc-muted); }
+.yc-h::before { content: "♡ "; color: var(--yc-rose); }
+.yc-tools { display: flex; flex-direction: column; gap: 12px; }
+.yc-tool {
+  display: flex; align-items: center; gap: 14px; padding: 16px 18px; border-radius: 24px; text-decoration: none; color: var(--yc-plum);
+  background: var(--yc-card); border: 2px solid var(--yc-line); box-shadow: 0 8px 22px rgba(215, 107, 145, .12);
+  transition: transform .15s, box-shadow .15s;
+}
+.yc-tool:hover, .yc-tool:focus-visible { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(215, 107, 145, .2); }
+.yc-tool[hidden] { display: none; }
+.yc-ic { flex: none; display: grid; place-items: center; width: 52px; height: 52px; font-size: 26px; border-radius: 18px; }
+.yc-lav .yc-ic { background: var(--yc-lav); }
+.yc-pink .yc-ic { background: var(--yc-pink); }
+.yc-txt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.yc-txt b { font-size: 18px; letter-spacing: 1px; }
+.yc-txt small { font-size: 12px; color: var(--yc-muted); }
+.yc-go { flex: none; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; font-size: 22px; line-height: 1; color: #fff; background: var(--yc-rose); }
+.yc-lav .yc-go { background: var(--yc-lav-ink); }
+
+.yc-foot { margin: 8px 0 0; text-align: center; font-size: 12px; color: var(--yc-muted); }
+.yc-owner { align-self: center; padding: 6px 16px; font-size: 13px; color: var(--yc-rose-deep); background: #fff; border: 1.5px solid var(--yc-line); border-radius: 999px; cursor: pointer; }
+.yc-owner:hover { border-color: var(--yc-rose); }
+
+/* 自主檢查表頁面的上方列與重點色，跟封面同一套粉色 */
+/* 上方列的按鈕、選單是白字，所以用深一點的玫瑰紫漸層 */
+.ol-bar { background: linear-gradient(120deg, #b5507a, #7f62bd); }
+
+@media (prefers-reduced-motion: reduce) { .yc-tool { transition: none; } }
