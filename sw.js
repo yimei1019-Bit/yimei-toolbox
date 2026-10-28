@@ -3,7 +3,7 @@
  * 第一次開啟時把所有檔案存到裝置，之後沒有網路也能開啟。
  * VERSION 由 tools/build_offline.py 依檔案內容自動更新；版本變了會換新快取。
  */
-const VERSION = 'yimei-20261028d';
+const VERSION = 'yimei-20261028f';
 const CACHE = `selfcheck-offline-${VERSION}`;
 const FILES = [
   './',
@@ -29,6 +29,7 @@ const FILES = [
   'icons/icon-512.png',
   'icons/apple-touch-icon.png',
   'icons/brand.png',
+  'icons/cover.jpg',
   'fonts/tw-kai-subset.woff2',
 ];
 

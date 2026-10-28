@@ -1,12 +1,12 @@
-/* 水電清查：手機優先的單欄版面（最寬 720px），配色與封面相同（玫瑰粉＋梅子紫＋薰衣草） */
+/* 水電清查：手機優先的單欄版面（最寬 720px），配色與封面相同（深藍灰＋霧玫瑰） */
 :root {
-  --bg: #fdf2f5; --card: #fffafc; --ink: #4b2e45; --muted: #8f6f84; --line: #f1d8e2;
-  --brand: #c25a85; --brand-ink: #ffffff; --accent: #d76b91; --accent-soft: #ffe3ec;
-  --bar: linear-gradient(120deg, #f7c5dc, #dccbf5); --bar-ink: #4b2e45;
+  --bg: #f4f3f7; --card: #ffffff; --ink: #2e2a3a; --muted: #77728a; --line: #e3e0ea;
+  --brand: #4d5675; --brand-ink: #ffffff; --accent: #c47a92; --accent-soft: #f6e6eb;
+  --bar: linear-gradient(120deg, #2f3446, #5e4f6e); --bar-ink: #ffffff;
   --ok: #1f7a4d; --ok-bg: #d6efdf; --doing: #94590a; --doing-bg: #fcebc6;
   --bad: #b3261e; --bad-bg: #fbdcd8; --na: #667080; --na-bg: #e5e9ef;
   --t-elec: #dcebf8; --t-weak: #e7e1f1; --t-fire: #fbe4d6; --t-water: #d9eff6;
-  --t-air: #e1efd9; --t-gas: #fff0c4; --t-bath: #ebebeb; --t-pub: #c55a11;
+  --t-air: #e1efd9; --t-gas: #fff0c4; --t-bath: #ebebeb; --t-pub: #c55a11; --t-area: #e9e5f1;
   --font: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", "Heiti TC", system-ui, sans-serif;
   --radius: 14px;
   color-scheme: light;
@@ -14,7 +14,7 @@
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 15px; line-height: 1.5; }
-body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: #f7c5dc; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: #2f3446; }
 button, input, select { font: inherit; color: inherit; }
 button { cursor: pointer; }
 a { color: inherit; }
@@ -26,11 +26,11 @@ a { color: inherit; }
 .bar-in { max-width: 720px; margin: 0 auto; display: flex; align-items: center; gap: 10px; min-height: 40px; }
 .bar h1 { margin: 0; font-size: 18px; font-weight: 700; flex: 1; min-width: 0; }
 .bar h1 small { display: block; font-size: 12px; font-weight: 400; opacity: .85; }
-.bar .ib { border: 0; background: rgba(255,255,255,.6); color: inherit; border-radius: 10px; padding: 8px 12px; font-size: 14px; font-weight: 700; white-space: nowrap; text-decoration: none; }
-.bar .ib:active { background: rgba(255,255,255,.85); }
+.bar .ib { border: 0; background: rgba(255,255,255,.16); color: inherit; border-radius: 10px; padding: 8px 12px; font-size: 14px; font-weight: 700; white-space: nowrap; text-decoration: none; }
+.bar .ib:active { background: rgba(255,255,255,.28); }
 
 .wrap { max-width: 720px; margin: 0 auto; padding: 14px max(16px, env(safe-area-inset-right, 0px)) calc(40px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); display: flex; flex-direction: column; gap: 14px; }
-.card { background: var(--card); border-radius: 20px; padding: 14px; box-shadow: 0 6px 18px rgba(215,107,145,.08); }
+.card { background: var(--card); border-radius: 20px; padding: 14px; box-shadow: 0 6px 18px rgba(46,42,58,.07); }
 .muted { color: var(--muted); font-size: 13px; }
 .banner { border-radius: 12px; padding: 10px 12px; font-size: 13px; background: var(--accent-soft); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .banner span { flex: 1; min-width: 180px; }
@@ -52,7 +52,7 @@ label.f input, .note { border: 1px solid var(--line); border-radius: 10px; paddi
 
 /* 棟別：照現場配置 B C／A D／H E／G F 排列 */
 .site { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.bd { display: flex; flex-direction: column; gap: 6px; padding: 14px; border-radius: var(--radius); background: var(--card); text-decoration: none; box-shadow: 0 2px 10px rgba(215,107,145,.08); }
+.bd { display: flex; flex-direction: column; gap: 6px; padding: 14px; border-radius: var(--radius); background: var(--card); text-decoration: none; box-shadow: 0 2px 10px rgba(46,42,58,.07); }
 .bd b { font-size: 26px; line-height: 1.1; }
 .bd b small { font-size: 14px; font-weight: 400; color: var(--muted); margin-left: 4px; }
 .meta { display: flex; justify-content: space-between; gap: 6px; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
@@ -76,7 +76,7 @@ label.f input, .note { border: 1px solid var(--line); border-radius: 10px; paddi
 .chip.pubc { padding: 0 12px; color: var(--t-pub); border-color: var(--t-pub); }
 .chip.pubc[aria-current="true"] { background: var(--t-pub); color: #fff; }
 
-.grp { border-radius: var(--radius); overflow: hidden; background: var(--card); box-shadow: 0 2px 10px rgba(215,107,145,.08); }
+.grp { border-radius: var(--radius); overflow: hidden; background: var(--card); box-shadow: 0 2px 10px rgba(46,42,58,.07); }
 .grp > h3 { margin: 0; padding: 8px 14px; font-size: 13px; letter-spacing: 1px; }
 .item { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 6px 10px; align-items: center; padding: 8px 10px 8px 14px; border-top: 1px solid var(--line); }
 .iname { font-size: 15px; min-width: 0; }
@@ -146,6 +146,7 @@ details.log summary { cursor: pointer; font-weight: 700; }
 .paper .key .g span { border-radius: 3px; }
 .paper .key .g .me { background: #1f4e78; color: #fff; }
 .paper .udef { margin-top: 6px; font-size: 7.6px; line-height: 1.5; }
+.paper table.area tbody td { height: 24px; }
 .paper .notes { margin-top: 6px; font-size: 7.6px; color: #595959; line-height: 1.6; }
 
 @media print {

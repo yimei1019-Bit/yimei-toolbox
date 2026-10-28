@@ -2,7 +2,8 @@
  * 水電清查（各自使用版）
  * A～H 棟 × 樓層（RF、14F～1F、B1、B2）；2F～14F 逐間＋公共區域點選 ✓ △ ✗ —，
  * 項目與版面比照「1151028-清風安居_水電施工自主檢查未做表.xlsx」的「每層檢查表」。
- * 1F、RF、B1、B2 的項目待定（PENDING_FLOORS），先顯示「項目待定」。
+ * RF（R樓屋頂層）、1F（1樓大公區）、B1／B2（BF地下層）沒有分間，整層一份清單（AREA_DEF），存在 pub 欄位。
+ * 還沒有項目的樓層放在 PENDING_FLOORS，會顯示「項目待定」。
  *
  * 資料只存在這台裝置（IndexedDB：water-check / floors），一層一筆：
  *   { id: 'A-5F', b, f, date, inspector,
@@ -38,6 +39,7 @@
   const UG = keyed(UNIT_GROUPS, 'u'), PG = keyed(PUB_GROUPS, 'p');
   const UI = UG.flatMap(g => g.items), PI = PG.flatMap(g => g.items);
   const NAME = Object.fromEntries([...UI, ...PI].map(i => [i.k, i.name]));
+  const pad = n => String(n).padStart(2, '0');
   const SOS = UI.find(i => i.name.startsWith('緊急求救鈴')).k;
   const STATES = ['✓', '△', '✗', '—'];
   const ST_LABEL = { '✓': '完成', '△': '施工中', '✗': '缺失', '—': '不適用' };
@@ -47,8 +49,22 @@
   const SITE = [['B', 'C'], ['A', 'D'], ['H', 'E'], ['G', 'F']]; // 現場配置
   const UNITS = { B: 16, C: 16, F: 16, G: 16, A: 15, D: 15, H: 15, E: 15 };
   const FLOORS = ['RF', ...Array.from({ length: 13 }, (_, i) => `${14 - i}F`), '1F', 'B1', 'B2'];
-  const PENDING_FLOORS = ['RF', '1F', 'B1', 'B2']; // 項目待定
-  const TYPICAL = FLOORS.filter(f => !PENDING_FLOORS.includes(f));
+  // 屋頂、1 樓大公區、地下層：沒有分間，整層一份清單（B1、B2 用同一份地下層項目）
+  const BF = ['排水', '雨水', '給水', '消防', '發電機室', '進排風機房', '汽排', '弱電', '動力'];
+  const AREA_DEF = {
+    RF: ['R樓屋頂層', 'r', ['排水', '景觀', '雨水', '給水', '瓦斯', '消防', '弱電', '動力']],
+    '1F': ['1樓大公區', 'g', ['排水', '景觀', '雨水', '給水', '瓦斯', '消防', '空調', '中控室', '電氣設備室', '弱電', '動力', '陰井']],
+    B1: ['BF地下層', 'b', BF],
+    B2: ['BF地下層', 'b', BF],
+  };
+  const AREA = Object.fromEntries(Object.entries(AREA_DEF).map(([f, [title, p, its]]) => [f, { title, items: its.map((n, i) => ({ k: p + pad(i + 1), name: n })) }]));
+  const PENDING_FLOORS = []; // 項目待定的樓層（顯示「項目待定」）
+  const ACTIVE = FLOORS.filter(f => !PENDING_FLOORS.includes(f));
+  const isArea = f => !!AREA[f];
+  const pubItems = f => (isArea(f) ? AREA[f].items : PI);
+  const pubGroups = f => (isArea(f) ? [{ name: '檢查項目', tone: 'area', items: AREA[f].items }] : PG);
+  const unitsOf = r => (isArea(r.f) ? 0 : UNITS[r.b]);
+  Object.values(AREA).forEach(a => a.items.forEach(i => { NAME[i.k] = i.name; }));
   // 公司名稱、工地名稱：第一次進入時確認（預設帶入清豐安居），印在 PDF 表頭
   const DEFAULT_SETTINGS = { company: '群光電能科技股份有限公司', project: '高雄市楠梓區『清豐安居』社會住宅新建統包工程', confirmed: false };
   let settings = { ...DEFAULT_SETTINGS };
@@ -57,7 +73,6 @@
   /* ---------- 小工具 ---------- */
   const $ = s => document.querySelector(s);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const pad = n => String(n).padStart(2, '0');
   const today = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };
   const stamp = t => { const d = new Date(t); return `${d.getMonth() + 1}/${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())}`; };
   const pct = r => (r == null ? '—' : Math.round(r * 100) + '%');
@@ -151,15 +166,22 @@
     return { done, na, filled, bad };
   }
   function unitInfo(u) { const i = info(u?.s, UI); i.rate = i.filled ? (UI.length - i.na ? i.done / (UI.length - i.na) : null) : null; return i; }
-  function pubInfo(p) { const i = info(p?.s, PI); i.rate = i.filled - i.na > 0 ? i.done / (i.filled - i.na) : null; return i; }
+  // f：樓層（屋頂、1F、地下層用各自的清單，其他樓層用公共區域 14 項）
+  function pubInfo(p, f) {
+    const items = pubItems(f), i = info(p?.s, items);
+    i.total = items.length - i.na;
+    i.rate = i.filled - i.na > 0 ? i.done / (i.filled - i.na) : null;
+    return i;
+  }
   function floorInfo(r) {
     const rates = []; let bad = 0, started = 0;
-    for (let i = 1; i <= UNITS[r.b]; i++) { const ui = unitInfo(r.units[i]); if (ui.rate != null) rates.push(ui.rate); if (ui.filled) started++; bad += ui.bad; }
-    const pi = pubInfo(r.pub); bad += pi.bad;
-    return { rate: rates.length ? rates.reduce((a, c) => a + c, 0) / rates.length : null, started, pub: pi, bad, touched: started > 0 || pi.filled > 0 };
+    for (let i = 1; i <= unitsOf(r); i++) { const ui = unitInfo(r.units[i]); if (ui.rate != null) rates.push(ui.rate); if (ui.filled) started++; bad += ui.bad; }
+    const pi = pubInfo(r.pub, r.f); bad += pi.bad;
+    const rate = isArea(r.f) ? pi.rate : rates.length ? rates.reduce((a, c) => a + c, 0) / rates.length : null;
+    return { rate, started, pub: pi, bad, touched: started > 0 || pi.filled > 0 };
   }
   function buildingInfo(b) {
-    const rs = TYPICAL.map(f => floors.get(fid(b, f))).filter(Boolean).map(floorInfo).filter(x => x.touched);
+    const rs = ACTIVE.map(f => floors.get(fid(b, f))).filter(Boolean).map(floorInfo).filter(x => x.touched);
     const rates = rs.map(x => x.rate).filter(x => x != null);
     return { floorsDone: rs.length, rate: rates.length ? rates.reduce((a, c) => a + c, 0) / rates.length : null, bad: rs.reduce((n, x) => n + x.bad, 0) };
   }
@@ -180,8 +202,9 @@
   function render() {
     if (!settings.confirmed || !me() || editingSettings) return renderSetup();
     const [v, b, f] = parse();
-    if (v === 'f' && UNITS[b] && TYPICAL.includes(f)) {
+    if (v === 'f' && UNITS[b] && ACTIVE.includes(f)) {
       if (ui.floor !== fid(b, f)) { ui.floor = fid(b, f); ui.unit = '1'; }
+      if (isArea(f)) ui.unit = 'pub'; // 整層一份清單，沒有分間
       return renderFloor(b, f);
     }
     ui.floor = null;
@@ -232,7 +255,7 @@
       h += `<a class="bd" href="#/b/${b}"><b>${b}<small>棟</small></b>
         <div class="prog" aria-hidden="true"><i style="width:${Math.round((bi.rate || 0) * 100)}%"></i></div>
         <div class="meta"><span>每層 ${UNITS[b]} 間</span><span>${pct(bi.rate)}</span></div>
-        <div class="meta"><span>已查 ${bi.floorsDone}/${TYPICAL.length} 層</span>${bi.bad ? `<span class="bad-t">✗ ${bi.bad}</span>` : ''}</div></a>`;
+        <div class="meta"><span>已查 ${bi.floorsDone}/${ACTIVE.length} 層</span>${bi.bad ? `<span class="bad-t">✗ ${bi.bad}</span>` : ''}</div></a>`;
     }
     h += `</div><div class="muted" style="text-align:center">棟別依現場配置排列；B、C、F、G 棟每層 16 間，A、D、H、E 棟每層 15 間</div>`;
     h += `<div class="card" style="display:flex;flex-direction:column;gap:8px"><b>💾 備份與交接</b>
@@ -250,8 +273,8 @@
           else if (fx && v === '✓') out.push({ r, w, k: it.k, note: n?.[it.k], fixed: true, at: fx });
         }
       };
-      for (let i = 1; i <= UNITS[r.b]; i++) add(String(i), r.units[i]?.s, r.units[i]?.n, UI);
-      add('pub', r.pub.s, r.pub.n, PI);
+      for (let i = 1; i <= unitsOf(r); i++) add(String(i), r.units[i]?.s, r.units[i]?.n, UI);
+      add('pub', r.pub.s, r.pub.n, pubItems(r.f));
     }
     const fo = f => FLOORS.indexOf(f);
     return out.sort((a, b) => a.r.b.localeCompare(b.r.b) || fo(b.r.f) - fo(a.r.f) || (a.w === 'pub') - (b.w === 'pub') || Number(a.w) - Number(b.w));
@@ -264,7 +287,7 @@
     if (!list.length) return h + `<div class="empty"><b>${open.length ? '' : '目前沒有未改善的項目'}</b>在樓層裡把項目點成 ✗（缺失）或 △（未做／施工中），就會出現在這裡；改善後按「已改善」。</div>`;
     h += `<div class="defs">`;
     for (const d of list) {
-      const where = `${d.r.b}棟 ${d.r.f}・${d.w === 'pub' ? '公共區域' : `第 ${d.w} 間`}`;
+      const where = `${d.r.b}棟 ${d.r.f}・${d.w === 'pub' ? (isArea(d.r.f) ? AREA[d.r.f].title : '公共區域') : `第 ${d.w} 間`}`;
       const tag = d.fixed ? '' : d.v === '△' ? '<span class="tag doing">△ 未做</span>' : '<span class="tag bad">✗ 缺失</span>';
       h += `<div class="def ${d.fixed ? 'fixed' : d.v === '△' ? 'doing' : ''}"><div><div class="where">${where}</div><div class="what">${tag}${esc(NAME[d.k])}</div></div>
         ${d.fixed ? `<span class="muted">✓ ${esc(d.at)} 已改善</span>` : `<button class="btn" data-act="fix" data-aid="${esc(`fix:${d.r.id}:${d.w}:${d.k}`)}">已改善</button>`}
@@ -276,7 +299,7 @@
 
   function renderBuilding(b) {
     const bi = buildingInfo(b);
-    $('#bar').innerHTML = `<a class="ib" href="#/" aria-label="回棟別">‹ 棟別</a><h1>${b} 棟<small>每層 ${UNITS[b]} 間・已查 ${bi.floorsDone}/${TYPICAL.length} 層・${pct(bi.rate)}</small></h1>
+    $('#bar').innerHTML = `<a class="ib" href="#/" aria-label="回棟別">‹ 棟別</a><h1>${b} 棟<small>每層 ${UNITS[b]} 間・已查 ${bi.floorsDone}/${ACTIVE.length} 層・${pct(bi.rate)}</small></h1>
       <button class="ib" data-act="pdfb" data-b="${b}">PDF</button>`;
     let h = `<div class="floors">`;
     for (const f of FLOORS) {
@@ -287,20 +310,21 @@
       const r = floors.get(fid(b, f)), fi = r ? floorInfo(r) : null;
       h += `<a class="fl" href="#/f/${b}/${f}"><span class="lv">${f}</span>
         <div class="prog" aria-hidden="true"><i style="width:${Math.round((fi?.rate || 0) * 100)}%"></i></div>
-        <div class="meta"><span>${fi?.touched ? `戶內 ${pct(fi.rate)}・${fi.started}/${UNITS[b]} 間・公共 ${fi.pub.done}/${PI.length - fi.pub.na}` : '尚未檢查'}</span>${fi?.bad ? `<span class="bad-t">✗ ${fi.bad}</span>` : `<span>${esc(r?.date || '')}</span>`}</div></a>`;
+        <div class="meta"><span>${isArea(f) ? `${AREA[f].title}・` : ''}${!fi?.touched ? '尚未檢查' : isArea(f) ? `完成 ${fi.pub.done}/${fi.pub.total}・${pct(fi.rate)}` : `戶內 ${pct(fi.rate)}・${fi.started}/${UNITS[b]} 間・公共 ${fi.pub.done}/${fi.pub.total}`}</span>${fi?.bad ? `<span class="bad-t">✗ ${fi.bad}</span>` : `<span>${esc(r?.date || '')}</span>`}</div></a>`;
     }
     $('#app').innerHTML = h + `</div>`;
   }
 
   function renderFloor(b, f) {
-    const r = rec(b, f), fi = floorInfo(r), n = UNITS[b];
+    const r = rec(b, f), fi = floorInfo(r), n = unitsOf(r), area = isArea(f);
     $('#bar').innerHTML = `<a class="ib" href="#/b/${b}" aria-label="回 ${b} 棟">‹ ${b}棟</a>
-      <h1>${b}棟 ${f}<small>戶內 ${pct(fi.rate)}・公共 ${fi.pub.done}/${PI.length - fi.pub.na}${fi.bad ? `・✗ ${fi.bad}` : ''}</small></h1>
+      <h1>${b}棟 ${f}<small>${area ? `${AREA[f].title}・完成 ${fi.pub.done}/${fi.pub.total}` : `戶內 ${pct(fi.rate)}・公共 ${fi.pub.done}/${fi.pub.total}`}${fi.bad ? `・✗ ${fi.bad}` : ''}</small></h1>
       <button class="ib" data-act="pdf">PDF</button>`;
     let h = `<div class="card"><div class="row">
       <label class="f">檢查日期<input type="date" id="f-date" data-f="date" value="${esc(r.date || today())}"></label>
       <label class="f">檢查人<input id="f-insp" data-f="inspector" value="${esc(r.inspector || ls.get('wc-inspector') || '')}" placeholder="姓名"></label></div>
       ${r.updatedAt ? `<div class="muted" style="margin-top:6px">最後修改 ${stamp(r.updatedAt)}${r.printVer ? `・已輸出第 ${r.printVer} 版（${esc(r.printedAt || '')}）` : ''}</div>` : ''}</div>`;
+    if (area) { $('#app').innerHTML = h + pubPanel(r) + logHTML(r); return; }
     h += `<div class="chips" role="tablist" aria-label="選擇第幾間">`;
     for (let i = 1; i <= n; i++) {
       const u = unitInfo(r.units[i]);
@@ -345,9 +369,9 @@
       <button class="btn" data-act="fillok" data-aid="fill:${r.id}:${u}">其餘未填的設為 ✓</button></div>` + itemsHTML(UG, d.s, d.n, `n${u}`);
   }
   function pubPanel(r) {
-    const i = pubInfo(r.pub);
-    return `<div class="card row"><b style="font-size:17px;color:var(--t-pub)">公共區域</b><span class="muted grow">本層檢查一次；這層沒有的設施點 —</span>
-      <span class="sum"><span>完成 <b>${i.done}</b>/${PI.length - i.na}</span><span><b>${pct(i.rate)}</b></span></span></div>` + itemsHTML(PG, r.pub.s, r.pub.n, 'pn');
+    const i = pubInfo(r.pub, r.f), title = isArea(r.f) ? AREA[r.f].title : '公共區域';
+    return `<div class="card row"><b style="font-size:17px;color:var(--t-pub)">${title}</b><span class="muted grow">整層檢查一次；這層沒有的項目點 —</span>
+      <span class="sum"><span>完成 <b>${i.done}</b>/${i.total}</span><span><b>${pct(i.rate)}</b></span></span></div>` + itemsHTML(pubGroups(r.f), r.pub.s, r.pub.n, 'pn');
   }
   function logHTML(r) {
     if (!r.log.length) return '';
@@ -357,7 +381,28 @@
 
   /* ---------- 列印版（A4 橫式，比照 Excel「每層檢查表」） ---------- */
   const cls = v => ({ '✓': 's1', '△': 's2', '✗': 's3', '—': 's4' }[v] || '');
+  // 屋頂、1F、地下層：整層一份清單（項次、項目、狀態、說明、最後填寫）
+  function paperAreaHTML(r) {
+    const items = pubItems(r.f), p = r.pub, pi = pubInfo(p, r.f);
+    let h = `<div class="paper"><div class="t1">${esc(settings.company)}</div>
+      <div class="t2"><div class="pj">工程名稱：${esc(settings.project)}</div><div>棟別：<span>${r.b} 棟</span></div><div>樓層：<span>${r.f}</span></div>
+      <div>檢查日期：<span>${esc(r.date || '')}</span></div><div>檢查人：<span>${esc(r.inspector || '')}</span></div><div>第 <span>${r.printVer || 1}</span> 版</div></div>
+      <div class="lower"><table class="area" style="width:820px"><colgroup><col style="width:44px"><col style="width:150px"><col style="width:64px"><col style="width:430px"><col style="width:132px"></colgroup>
+      <tr><th colspan="5" class="zone" style="background:#5E4F6E">${esc(AREA[r.f].title)}（${r.f}，整層一次檢查）</th></tr>
+      <tr><th class="gray gh">項次</th><th class="gray gh">項目</th><th class="gray gh">狀態</th><th class="gray gh">缺失／未做說明</th><th class="gray gh">最後填寫</th></tr><tbody>`;
+    items.forEach((it, i) => {
+      const v = p.s?.[it.k] || '', at = p.at?.[it.k];
+      h += `<tr><td>${i + 1}</td><td style="text-align:left;padding-left:8px;font-size:10px">${esc(it.name)}</td><td class="${cls(v)}">${v}</td>
+        <td class="l" style="font-size:8.5px;vertical-align:middle">${esc(p.n?.[it.k] || '')}</td><td style="font-size:8px">${at ? `${esc(p.by?.[it.k] || '')} ${stamp(at)}` : ''}</td></tr>`;
+    });
+    h += `<tr class="tot"><td colspan="2">完成項數／完成率</td><td>${pi.done} / ${pi.total}</td><td>${pi.rate == null ? '' : pct(pi.rate)}</td><td></td></tr></tbody></table>
+      <div class="key"><div class="g">${SITE.map(row => row.map(x => `<span class="${x === r.b ? 'me' : ''}">${x}</span>`).join('')).join('')}</div>B-C-F-G 為 16 間<br>A-D-H-E 為 15 間</div></div>
+      <div class="notes">填寫說明：狀態 ✓ 完成　△ 施工中／未做（寫原因）　✗ 未施工／有缺失（寫缺失說明）　— 不適用（不計入完成率）；留白＝尚未檢查。<br>
+      已完成項目也要看有無被後續工班污損。　　輸出時間：${new Date().toLocaleString('zh-TW', { hour12: false })}</div></div>`;
+    return h;
+  }
   function paperHTML(r) {
+    if (isArea(r.f)) return paperAreaHTML(r);
     const n = UNITS[r.b], W = { no: 24, ty: 38, it: 31.5, d: 40, rt: 40 };
     let h = `<div class="paper"><div class="t1">${esc(settings.company)}</div>
       <div class="t2"><div class="pj">工程名稱：${esc(settings.project)}</div><div>棟別：<span>${r.b} 棟</span></div><div>樓層：<span>${r.f}</span></div>
@@ -378,13 +423,13 @@
     }
     const avg = rates.length ? rates.reduce((a, c) => a + c, 0) / rates.length : null;
     h += `<tr class="tot"><td colspan="2">完成間數</td>${colDone.map(c => `<td>${c}</td>`).join('')}<td>${sumDone}</td><td>${avg == null ? '' : pct(avg)}</td></tr></tbody></table>`;
-    const p = r.pub, pi = pubInfo(p);
+    const p = r.pub, pi = pubInfo(p, r.f);
     h += `<div class="lower"><table style="width:${62 + PI.length * W.it + 112}px"><colgroup><col style="width:62px">${PI.map(() => `<col style="width:${W.it}px">`).join('')}<col style="width:56px"><col style="width:56px"></colgroup>
       <tr><th colspan="${PI.length + 3}" class="zone" style="background:#C55A11">公共區域項目（本層一次檢查，非每間都有）</th></tr>
       <tr><th class="gray gh">分類</th>${PG.map(g => `<th colspan="${g.items.length}" class="gh" style="background:${PRINT_TONE[g.tone]}">${g.name}</th>`).join('')}<th rowspan="2" class="gray">公共<br>完成項數</th><th rowspan="2" class="gray">公共<br>完成率</th></tr>
       <tr><th class="gray ih">項目</th>${PG.map(g => g.items.map(it => `<th class="ih" style="background:${PRINT_TONE[g.tone]}">${esc(it.name)}</th>`).join('')).join('')}</tr>
       <tr><th class="gray" style="height:18px">狀態</th>${PI.map(it => { const v = p.s?.[it.k] || ''; return `<td class="${cls(v)}" style="font-size:9.5px">${v}</td>`; }).join('')}
-        <td rowspan="2" class="lt" style="font-size:9.5px">${pi.done} / ${PI.length - pi.na}</td><td rowspan="2" class="lt" style="font-size:9.5px">${pi.rate == null ? '' : pct(pi.rate)}</td></tr>
+        <td rowspan="2" class="lt" style="font-size:9.5px">${pi.done} / ${pi.total}</td><td rowspan="2" class="lt" style="font-size:9.5px">${pi.rate == null ? '' : pct(pi.rate)}</td></tr>
       <tr><th class="gray" style="height:40px">缺失／<br>未做說明</th>${PI.map(it => `<td class="l">${esc(p.n?.[it.k] || '')}</td>`).join('')}</tr></table>
       <div class="key"><div class="g">${SITE.map(row => row.map(x => `<span class="${x === r.b ? 'me' : ''}">${x}</span>`).join('')).join('')}</div>B-C-F-G 為 16 間<br>A-D-H-E 為 15 間</div></div>`;
     if (udef.length) h += `<div class="udef"><b>戶內缺失／未做說明：</b>${esc(udef.join('；'))}</div>`;
@@ -482,7 +527,7 @@
     }
     const xp = x.pub || {}, mp = mine.pub || {};
     const pick = { s: { ...(mp.s || {}) }, n: { ...(mp.n || {}) }, at: { ...(mp.at || {}) }, by: { ...(mp.by || {}) } };
-    for (const it of PI) {
+    for (const it of pubItems(mine.f)) {
       const tx = xp.at?.[it.k] || (xp.s?.[it.k] ? x.updatedAt || 0 : 0), tm = mp.at?.[it.k] || (mp.s?.[it.k] ? mine.updatedAt || 0 : 0);
       if (tx > tm) { pick.s[it.k] = xp.s?.[it.k] || ''; pick.n[it.k] = xp.n?.[it.k] || ''; pick.at[it.k] = tx; pick.by[it.k] = xp.by?.[it.k] || ''; changed++; }
     }
@@ -549,7 +594,7 @@
       if (x) { setStatus(x, w, k, '✓'); toast('已標記改善'); }
     } else if (act === 'togfix') { ui.showFixed = !ui.showFixed; render(); }
     else if (act === 'pdf') openPreview([rec(bd, fl)]);
-    else if (act === 'pdfb') openPreview(TYPICAL.map(f => floors.get(fid(b.dataset.b, f))).filter(x => x && floorInfo(x).touched));
+    else if (act === 'pdfb') openPreview(ACTIVE.map(f => floors.get(fid(b.dataset.b, f))).filter(x => x && floorInfo(x).touched));
     else if (act === 'save') savePdf(b);
     else if (act === 'print') printPapers();
     else if (act === 'close') $('#pv')?.remove();
