@@ -238,3 +238,8 @@ select { border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; 
 .paper.report .rtab td.ph small { font-size: 8px; color: #595959; }
 .paper.report .r-ok { color: #006100; }
 .paper.report .r-no { color: #9c0006; }
+
+/* 作者標記：每頁 PDF 右下角淡淡的工具名稱、左下角極淡的作者字（幾乎看不到，裁掉頁尾也還在） */
+.paper { position: relative; }
+.paper .sig { position: absolute; right: 16px; bottom: 6px; font-size: 6.5px; color: #c4c4c4; letter-spacing: .5px; }
+.paper .sig-h { position: absolute; left: 16px; bottom: 6px; font-size: 6px; color: rgba(0, 0, 0, .045); }

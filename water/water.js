@@ -1,5 +1,6 @@
 /**
- * 水電清查（各自使用版）
+ * 水電清查（各自使用版）　作者：Yimei
+ * 輸出的 PDF、Excel、備份檔都會標上作者（AUTHOR）。
  * A～H 棟 × 樓層（RF、14F～1F、B1、B2）；2F～14F 逐間＋公共區域點選 ✓ △ ✗ —，
  * 項目與版面比照「1151028-清風安居_水電施工自主檢查未做表.xlsx」的「每層檢查表」。
  * RF（R樓屋頂層）、1F（1樓大公區）、B1／B2（BF地下層）沒有分間，整層一份清單（AREA_DEF），存在 pub 欄位。
@@ -68,6 +69,13 @@
   const pubGroups = f => (isArea(f) ? [{ name: '檢查項目', tone: 'area', items: AREA[f].items }] : PG);
   const unitsOf = r => (isArea(r.f) ? 0 : UNITS[r.b]);
   Object.values(AREA).forEach(a => a.items.forEach(i => { NAME[i.k] = i.name; }));
+  // 這套工具的作者：PDF 右下角印工具名稱（像系統名，不像署名）、左下角極淡的作者字，
+  // PDF／Excel 檔案內容的作者欄、備份檔都會帶上
+  const AUTHOR = 'Yimei';
+  const APP_NAME = 'Yimei 工地手帳';
+  const SIGN = `<span class="sig">${APP_NAME}</span><span class="sig-h">作者 ${AUTHOR}・${APP_NAME}</span>`;
+  const sign = html => html.replace(/<div class="paper[^"]*">/g, m => m + SIGN);
+
   // 公司名稱、工地名稱：第一次進入時確認（預設帶入清豐安居），印在 PDF 表頭
   const DEFAULT_SETTINGS = { company: '群光電能科技股份有限公司', project: '高雄市楠梓區『清豐安居』社會住宅新建統包工程', confirmed: false };
   let settings = { ...DEFAULT_SETTINGS };
@@ -641,7 +649,7 @@
     const m = document.createElement('div'); m.className = 'modal'; m.id = 'pv';
     m.innerHTML = `<div class="modal-in" role="dialog" aria-label="列印版預覽"><div class="modal-head"><b>${esc(title)}・A4 橫式</b>
       <button class="btn pri" data-act="save">下載 PDF</button><button class="btn" data-act="print">列印</button><button class="btn" data-act="close">關閉</button></div>
-      <div class="modal-body"><div class="pv" id="pvin">${pv.render()}</div></div></div>`;
+      <div class="modal-body"><div class="pv" id="pvin">${sign(pv.render())}</div></div></div>`;
     document.body.appendChild(m);
     const body = m.querySelector('.modal-body'), pvBox = $('#pvin');
     const s = Math.min(1, (body.clientWidth - 24) / 1123);
@@ -711,13 +719,15 @@
       const html2pdf = await loadHtml2pdf();
       if (document.fonts?.ready) await document.fonts.ready;
       if (pv.bump) bumpVersions();
-      host.innerHTML = pv.render();
+      host.innerHTML = sign(pv.render());
       host.style.cssText = 'display:block;position:absolute;left:-30000px;top:0';
       const pages = [...host.children];
       const opt = { margin: 5, image: { type: 'jpeg', quality: 0.92 }, html2canvas: { scale: 2, backgroundColor: '#ffffff' }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' } };
       // 一層一頁，逐頁轉圖，避免整棟一次畫成超大圖（手機會失敗）
       let w = html2pdf().set(opt).from(pages[0]).toPdf();
       pages.slice(1).forEach(p => { w = w.get('pdf').then(pdf => { pdf.addPage(); }).from(p).toContainer().toCanvas().toPdf(); });
+      // PDF 的檔案內容（作者、建立程式）寫上作者
+      w = w.get('pdf').then(pdf => { pdf.setProperties({ title: pv.file().replace(/\.pdf$/, ''), author: AUTHOR, creator: `${APP_NAME}（作者 ${AUTHOR}）`, subject: settings.project, keywords: `${AUTHOR}, 水電清查` }); });
       await w.save(pv.file());
       toast('PDF 已下載');
     } catch (e) {
@@ -725,12 +735,12 @@
     } finally {
       host.innerHTML = ''; host.style.cssText = '';
       btn.disabled = false; btn.textContent = '下載 PDF';
-      $('#pvin') && ($('#pvin').innerHTML = pv.render());
+      $('#pvin') && ($('#pvin').innerHTML = sign(pv.render()));
     }
   }
   function printPapers() {
     if (pv.bump) bumpVersions();
-    $('#printArea').innerHTML = pv.render();
+    $('#printArea').innerHTML = sign(pv.render());
     window.print();
   }
 
@@ -776,7 +786,7 @@
     const dl = [[{ v: '缺失／未完成清單', s: 'title' }], [], ['棟別', '戶號／區域', '工種', '項目', '狀態', '缺失／未做說明', '照片', '預定改善日期', '改善完成日期', '最後填寫'].map(v => ({ v, s: 'head' })),
       ...defs.map(d => [{ v: `${d.r.b} 棟`, s: 'cell' }, { v: label(d.r, d.w), s: 'cell' }, { v: CAT[d.k], s: 'cell' }, { v: NAME[d.k], s: 'left' }, stCell(d.v), { v: d.note || '', s: 'wrap' },
         { v: d.ph.length || '', s: 'cell' }, { v: d.due || '', s: 'cell' }, { v: '', s: 'cell' }, d.w === 'pub' ? byCell(d.r.pub.by?.[d.k], d.r.pub.at?.[d.k]) : byCell(d.r.units[d.w]?.by, d.r.units[d.w]?.at)])];
-    const blob = window.XLSXLite.build([{ name: '總覽', cols: [8, ...bs.map(() => 9)], rows: ov }, { name: '缺失清單', cols: [8, 12, 12, 22, 7, 40, 6, 13, 13, 16], rows: dl }, ...list.map(floorSheet)]);
+    const blob = window.XLSXLite.build({ author: AUTHOR, footer: APP_NAME }, [{ name: '總覽', cols: [8, ...bs.map(() => 9)], rows: ov }, { name: '缺失清單', cols: [8, 12, 12, 22, 7, 40, 6, 13, 13, 16], rows: dl }, ...list.map(floorSheet)]);
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = `水電清查_${onlyB ? `${onlyB}棟_` : ''}${today().replace(/-/g, '')}.xlsx`;
@@ -797,7 +807,7 @@
         { v: NAME[d.k], s: 'left' }, stCell(d.v), { v: d.note || '', s: 'wrap' }, { v: d.ph.length ? `${d.ph.length} 張` : '', s: 'cell' },
         { v: d.due || '', s: 'cell' }, { v: d.fixed ? d.at : '', s: 'cell' }, { v: '', s: 'wrap' }, { v: defKey(d), s: 'cell' }]),
       [], ['說明：改善完成後請填「改善完成日期」（例：2026/11/3）並簽名，拍照回傳；狀態 ✗ 缺失、△ 未完成。最後一欄「編號」請勿修改。']];
-    const blob = window.XLSXLite.build([{ name: '缺失改善單', cols: [6, 7, 12, 11, 20, 6, 36, 7, 13, 13, 18, 14], rows, merges: ['A1:L1', 'A2:L2', 'A3:L3', `A${rows.length}:L${rows.length}`] }]);
+    const blob = window.XLSXLite.build({ author: AUTHOR, footer: APP_NAME }, [{ name: '缺失改善單', cols: [6, 7, 12, 11, 20, 6, 36, 7, 13, 13, 18, 14], rows, merges: ['A1:L1', 'A2:L2', 'A3:L3', `A${rows.length}:L${rows.length}`] }]);
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = `缺失改善單_${today().replace(/-/g, '')}_${list.length}項.xlsx`;
@@ -904,7 +914,7 @@
   /* ---------- 備份 ---------- */
   async function exportBackup() {
     const photos = await allPhotos().catch(() => []);
-    const data = { app: 'water-check', format: 1, exportedAt: new Date().toISOString(), settings: { company: settings.company, project: settings.project }, floors: [...floors.values()], photos };
+    const data = { app: 'water-check', format: 1, author: AUTHOR, exportedAt: new Date().toISOString(), settings: { company: settings.company, project: settings.project }, floors: [...floors.values()], photos };
     const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
