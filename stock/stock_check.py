@@ -18,6 +18,7 @@
 """
 
 import sys
+import time
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -49,11 +50,16 @@ def resolve_ticker(code):
         candidates = [f"{code}.TW", f"{code}.TWO"]
     else:
         candidates = [code]
-    for symbol in candidates:
-        t = yf.Ticker(symbol)
-        hist = t.history(period="2y", auto_adjust=True)
-        if len(hist) > 60:
-            return symbol, t, hist
+    for attempt in range(3):  # Yahoo 偶爾會暫時擋掉，稍等再試
+        for symbol in candidates:
+            t = yf.Ticker(symbol)
+            try:
+                hist = t.history(period="2y", auto_adjust=True)
+            except Exception:
+                continue
+            if len(hist) > 60:
+                return symbol, t, hist
+        time.sleep(3 * (attempt + 1))
     return None, None, None
 
 
