@@ -1,0 +1,39 @@
+# 每個交易日台灣時間 14:40 自動更新股票網頁（GitHub 的排程用 UTC 時間，06:40 UTC = 台灣 14:40）
+# 這個檔案在儲存庫裡的位置是 .github/workflows/stock-update.yml，程式都在 stock/ 資料夾
+name: 每日更新股票網頁
+
+on:
+  schedule:
+    - cron: "40 6 * * 1-5"
+  workflow_dispatch:  # 也可以在 GitHub 的 Actions 頁面手動按「Run workflow」
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: stock
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 安裝套件
+        run: pip install -r requirements.txt
+
+      - name: 產生網頁
+        run: python build_site.py
+
+      - name: 存回 GitHub
+        run: |
+          git config user.name "stock-bot"
+          git config user.email "stock-bot@users.noreply.github.com"
+          git add index.html output/score_history.csv
+          git diff --cached --quiet || git commit -m "股票網頁每日更新 $(TZ=Asia/Taipei date +%Y-%m-%d)"
+          git pull --rebase
+          git push
