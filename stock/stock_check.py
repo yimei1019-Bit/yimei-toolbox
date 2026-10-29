@@ -43,8 +43,9 @@ logging.getLogger("yfinance").setLevel(logging.CRITICAL)
 
 # ---------- 資料抓取 ----------
 
-def resolve_ticker(code):
-    """台股只打數字時，自動判斷是上市(.TW)還是上櫃(.TWO)。"""
+def resolve_ticker(code, period="2y", auto_adjust=True):
+    """台股只打數字時，自動判斷是上市(.TW)還是上櫃(.TWO)。
+    auto_adjust=False 時保留實際成交價（給看盤用），另附 Adj Close 給計分用。"""
     code = code.strip().upper()
     if "." not in code and code[0].isdigit():
         candidates = [f"{code}.TW", f"{code}.TWO"]
@@ -54,7 +55,7 @@ def resolve_ticker(code):
         for symbol in candidates:
             t = yf.Ticker(symbol)
             try:
-                hist = t.history(period="2y", auto_adjust=True)
+                hist = t.history(period=period, auto_adjust=auto_adjust)
             except Exception:
                 continue
             if len(hist) > 60:
@@ -114,7 +115,7 @@ class Scorecard:
 
 
 def evaluate(symbol, hist, info):
-    close = hist["Close"]
+    close = hist["Adj Close"] if "Adj Close" in hist.columns else hist["Close"]
     price = close.iloc[-1]
     ma20, ma60 = close.rolling(20).mean().iloc[-1], close.rolling(60).mean().iloc[-1]
     ma200 = close.rolling(200).mean().iloc[-1] if len(close) >= 200 else None

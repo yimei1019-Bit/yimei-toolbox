@@ -59,6 +59,35 @@ def get_news(code, name, limit=4):
     rows.sort(key=lambda r: r["published"], reverse=True)
     return rows[:limit]
 
+def daily_bars(hist):
+    """每日 [日期, 開, 高, 低, 收, 成交張數]（實際成交價，不含除權息調整）。"""
+    bars = []
+    for d, r in hist.iterrows():
+        if r["Close"] != r["Close"]:  # NaN
+            continue
+        bars.append([d.strftime("%Y-%m-%d"), round(float(r["Open"]), 2), round(float(r["High"]), 2),
+                     round(float(r["Low"]), 2), round(float(r["Close"]), 2), int(r["Volume"] // 1000)])
+    return bars
+
+
+def yearly_range(hist):
+    """每一年的最高價、最低價（和發生的日期）以及全年漲跌。"""
+    rows = []
+    for year, g in hist.groupby(hist.index.year):
+        g = g.dropna(subset=["Close"])
+        if g.empty:
+            continue
+        hi_day, lo_day = g["High"].idxmax(), g["Low"].idxmin()
+        rows.append({
+            "year": int(year),
+            "high": round(float(g["High"].max()), 2), "high_date": hi_day.strftime("%m/%d"),
+            "low": round(float(g["Low"].min()), 2), "low_date": lo_day.strftime("%m/%d"),
+            "open": round(float(g["Open"].iloc[0]), 2), "close": round(float(g["Close"].iloc[-1]), 2),
+            "days": len(g),
+        })
+    return sorted(rows, key=lambda r: -r["year"])
+
+
 def load_history():
     path = os.path.join(OUT, "score_history.csv")
     if not os.path.exists(path):
@@ -79,9 +108,9 @@ def main():
     today = datetime.now(TW).strftime("%Y-%m-%d")
     history = [h for h in load_history() if h["date"] != today]
 
-    stocks, news, prices = [], [], []
+    stocks, news, ohlc, yearly = [], [], {}, {}
     for code, note in read_watchlist():
-        symbol, ticker, hist = resolve_ticker(code)
+        symbol, ticker, hist = resolve_ticker(code, period="5y", auto_adjust=False)
         if symbol is None:
             print(f"找不到 {code}，略過")
             continue
@@ -109,12 +138,14 @@ def main():
             "stop_price": round(float(x["stop"]), 2),
             "last_trade": close.index[-1].strftime("%Y-%m-%d"),
         }
-        for name, got, full, _ in sc.sections:
+        row["details"] = []
+        for name, got, full, notes in sc.sections:
             row[SECTION_KEYS[name]] = round(got / full * 100) if full else None
+            row["details"].append({"section": name, "got": got, "full": full, "notes": notes})
         stocks.append(row)
 
-        for d, v in close.iloc[-60:].items():
-            prices.append({"code": code, "date": d.strftime("%Y-%m-%d"), "close": round(float(v), 2)})
+        ohlc[code] = daily_bars(hist.iloc[-250:])
+        yearly[code] = yearly_range(hist)
         news.extend(get_news(code, row["name"]))
         history.append({"date": today, "code": code, "score": score, "price": row["price"]})
         print(f"{code} {row['name']}: {score} 分，今日 {row['chg_1d']:+.2f}%")
@@ -122,7 +153,7 @@ def main():
     stocks.sort(key=lambda r: -r["score"])
     news.sort(key=lambda r: r["published"], reverse=True)
     save_history(history)
-    for fname, rows in (("stocks.json", stocks), ("news.json", news), ("prices.json", prices)):
+    for fname, rows in (("stocks.json", stocks), ("news.json", news), ("ohlc.json", ohlc), ("yearly.json", yearly)):
         with open(os.path.join(OUT, fname), "w", encoding="utf-8") as f:
             json.dump(rows, f, ensure_ascii=False)
     print(f"\n完成：{len(stocks)} 檔股票、{len(news)} 則新聞，檔案在 {OUT}")

@@ -35,7 +35,8 @@ def main():
         "generated": datetime.now(daily_report.TW).strftime("%Y-%m-%d %H:%M"),
         "stocks": load("stocks.json"),
         "news": load("news.json"),
-        "prices": load("prices.json"),
+        "ohlc": load("ohlc.json"),
+        "yearly": load("yearly.json"),
         "sectors": analyze_sectors(),
     }
     # 避免新聞標題裡的 </script> 之類文字提早結束 script 區塊
