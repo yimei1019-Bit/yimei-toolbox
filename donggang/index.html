@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>機電清查｜機電自檢紀錄表</title>
+  <meta name="theme-color" content="#2f3446" />
+  <meta name="author" content="Yimei" />
+  <meta name="copyright" content="© 2026 Yimei. All rights reserved." />
+  <script src="../js/guard.js"></script>
+  <link rel="manifest" href="../manifest.webmanifest" />
+  <link rel="icon" href="../icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png" />
+  <link rel="stylesheet" href="dg.css" />
+</head>
+<body>
+  <header class="bar"><div class="bar-in" id="bar"></div></header>
+  <main class="wrap" id="app"><div class="empty">載入中…</div></main>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <div id="printArea"></div>
+  <input type="file" id="importFile" accept=".json,application/json" hidden />
+  <input type="file" id="fixFile" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden />
+  <script src="dg-data.enc.js"></script>
+  <script src="../js/site-lock.js" data-site="donggang" data-name="機電清查" data-global="DG_DATA"
+    data-scripts="../water/xlsx.js ../water/xlsx-read.js dg-issues.js dg.js"></script>
+</body>
+</html>
