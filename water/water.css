@@ -250,3 +250,7 @@ select { border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; 
 .reasons.bad button.sp { background: var(--card); }
 .reasons button.on { background: var(--doing); border-color: var(--doing); color: #fff; }
 .reasons.bad button.on { background: var(--bad); border-color: var(--bad); color: #fff; }
+
+.copyrow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.copyrow select { flex: 1 1 140px; min-width: 0; }
+.grp.seal > h3 { background: #e9e6f3; }
