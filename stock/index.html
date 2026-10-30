@@ -1,0 +1,683 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#16233a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="台股健檢">
+<title>台股每日健檢</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600&display=swap">
+<style>
+  /* 版面：像看盤 App —— 深藍頂欄＋搜尋＋四個分頁（自選／排行／類股／新聞），點股票進個股頁 */
+  :root {
+    --bg: #f3f4f1; --panel: #ffffff; --fg: #1a2230; --muted: #6b7380; --line: #e4e5e1;
+    --ink: #16233a; --ink-fg: #f2f4f8; --ink-muted: #a9b3c4;
+    --up: #d6322a; --down: #179150; --up-soft: #fbe9e7; --down-soft: #e3f4ea;
+    --accent: #2f6db5; --chip: #eceee9; --warn: #b26a00; --gold: #c9971c;
+    --ma20: #e09a1d; --ma60: #3a74c4;
+    --sans: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+    --serif: "Noto Serif TC", "PMingLiU", Georgia, serif;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #0f1420; --panel: #182030; --fg: #e8ecf2; --muted: #8f99a8; --line: #273143;
+      --ink: #0b101a; --ink-fg: #e8ecf2; --ink-muted: #8f99a8;
+      --up: #ff5f55; --down: #3ccf7f; --up-soft: #3a1f22; --down-soft: #16301f;
+      --accent: #78aef0; --chip: #222c3d; --warn: #e8a43c; --gold: #e2b84a;
+      --ma20: #f2b24a; --ma60: #78aef0; color-scheme: dark; }
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; }
+  body { background: var(--bg); color: var(--fg); font: 15px/1.55 var(--sans); font-variant-numeric: tabular-nums; -webkit-text-size-adjust: 100%; }
+  button { font: inherit; color: inherit; }
+  button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .gutter { padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+  .inner { max-width: 46rem; margin: 0 auto; }
+  .muted { color: var(--muted); font-size: .8rem; margin: 0; }
+  .up { color: var(--up); } .down { color: var(--down); } .flat { color: var(--muted); } .bad { color: var(--warn); }
+
+  /* 頂欄 */
+  .appbar { background: var(--ink); color: var(--ink-fg); position: sticky; top: 0; z-index: 20; padding-top: env(safe-area-inset-top, 0px); }
+  .appbar .inner { padding-block: 12px 10px; display: grid; gap: 10px; }
+  .brand { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+  .brand h1 { margin: 0; font-family: var(--serif); font-weight: 600; font-size: 1.3rem; letter-spacing: .02em; }
+  .brand span { font-size: .74rem; color: var(--ink-muted); }
+  .search { position: relative; }
+  .search input { width: 100%; font: inherit; font-size: 16px; border: 0; border-radius: 10px; padding: 9px 12px 9px 36px; background: rgba(255,255,255,.12); color: var(--ink-fg); }
+  .search input::placeholder { color: var(--ink-muted); }
+  .search svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; stroke: var(--ink-muted); fill: none; stroke-width: 2; }
+  .results { position: absolute; left: 0; right: 0; top: calc(100% + 6px); background: var(--panel); color: var(--fg); border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,.25); overflow: hidden; max-height: 60vh; overflow-y: auto; }
+  .results button { display: flex; width: 100%; justify-content: space-between; gap: 8px; padding: 11px 14px; border: 0; border-bottom: 1px solid var(--line); background: none; text-align: left; cursor: pointer; }
+  .results button:hover, .results button.on { background: var(--chip); }
+  .tabs { display: flex; gap: 2px; }
+  .tabs button { flex: 1; border: 0; background: none; color: var(--ink-muted); padding: 6px 0 8px; font-size: .92rem; cursor: pointer; border-bottom: 2px solid transparent; }
+  .tabs button[aria-selected="true"] { color: var(--ink-fg); font-weight: 700; border-bottom-color: var(--gold); }
+
+  main .inner { padding-block: 14px 40px; display: grid; gap: 14px; }
+  .summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .stat { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; display: grid; }
+  .stat span { font-size: .74rem; color: var(--muted); }
+  .stat b { font-family: var(--serif); font-size: 1.25rem; font-weight: 600; }
+  .bar-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .bar-row h2 { margin: 0; font-size: 1.02rem; }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .chips button { border: 1px solid var(--line); background: var(--panel); border-radius: 999px; padding: 3px 12px; font-size: .8rem; cursor: pointer; color: var(--muted); }
+  .chips button[aria-pressed="true"] { background: var(--ink); color: var(--ink-fg); border-color: var(--ink); }
+
+  /* 股票列 */
+  .rows { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .srow { display: grid; grid-template-columns: 2.4rem minmax(0, 1fr) 4.5rem 5.4rem; gap: 10px; align-items: center; width: 100%; padding: 11px 14px; border: 0; border-bottom: 1px solid var(--line); background: none; text-align: left; cursor: pointer; }
+  .srow:last-child { border-bottom: 0; }
+  .srow:hover { background: var(--chip); }
+  .ring { width: 2.3rem; height: 2.3rem; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: .9rem;
+    background: conic-gradient(var(--c) calc(var(--p) * 1%), var(--line) 0); position: relative; }
+  .ring::before { content: ""; position: absolute; inset: 3px; border-radius: 50%; background: var(--panel); }
+  .ring span { position: relative; }
+  .sname { min-width: 0; }
+  .sname b { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sname small { color: var(--muted); font-size: .74rem; }
+  .spark { width: 100%; height: 28px; display: block; }
+  .sprice { text-align: right; display: grid; justify-items: end; gap: 2px; }
+  .sprice b { font-size: .98rem; }
+  .pill { display: inline-block; min-width: 4.6rem; text-align: center; border-radius: 6px; padding: 1px 6px; font-size: .8rem; font-weight: 700; color: #fff; }
+  .pill.up { background: var(--up); color: #fff; } .pill.down { background: var(--down); color: #fff; } .pill.flat { background: var(--muted); color: #fff; }
+  .empty { padding: 20px; text-align: center; color: var(--muted); font-size: .88rem; }
+
+  /* 類股 */
+  details.sector { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; }
+  details.sector > summary { list-style: none; cursor: pointer; padding: 12px 14px; display: grid; grid-template-columns: 6rem 1fr 4.6rem; gap: 10px; align-items: center; }
+  details.sector > summary::-webkit-details-marker { display: none; }
+  .s-sub { display: block; font-size: .72rem; color: var(--muted); font-weight: 400; }
+  .hbar { position: relative; height: 10px; }
+  .hbar::before { content: ""; position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: var(--line); }
+  .hbar i { position: absolute; top: 0; height: 100%; border-radius: 3px; }
+  .s-body { padding: 0 14px 14px; display: grid; gap: 12px; }
+  .why { background: var(--chip); border-radius: 10px; padding: 10px 12px; font-size: .86rem; display: grid; gap: 6px; }
+  .kw { display: flex; flex-wrap: wrap; gap: 6px; }
+  .kw span { background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 0 10px; font-size: .78rem; }
+  .linkish { border: 0; background: none; padding: 0; color: var(--accent); cursor: pointer; text-align: left; }
+
+  /* 表格 */
+  .tbl-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+  th, td { padding: 7px 4px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th:first-child, td:first-child { text-align: left; }
+  th { color: var(--muted); font-weight: 500; font-size: .74rem; }
+  td small { color: var(--muted); font-size: .7rem; margin-left: 3px; }
+
+  /* 新聞 */
+  .news { list-style: none; margin: 0; padding: 0; display: grid; }
+  .news li { padding: 11px 0; border-bottom: 1px solid var(--line); display: grid; gap: 4px; min-width: 0; }
+  .news li:last-child { border-bottom: 0; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; display: grid; gap: 10px; min-width: 0; }
+  .card h3 { margin: 0; font-size: .96rem; }
+  .n-title { font-weight: 500; overflow-wrap: anywhere; }
+  .n-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 10px; font-size: .76rem; color: var(--muted); }
+  .n-src { font-weight: 700; color: var(--fg); }
+  .n-read { color: var(--accent); text-decoration: none; font-weight: 500; margin-left: auto; white-space: nowrap; }
+  .tag { display: inline-block; font-size: .7rem; padding: 0 6px; margin-right: 6px; border-radius: 4px; background: var(--chip); color: var(--muted); vertical-align: 1px; }
+
+  /* 個股頁 */
+  .d-top { display: flex; align-items: center; gap: 10px; }
+  .iconbtn { border: 0; background: rgba(255,255,255,.12); color: var(--ink-fg); border-radius: 999px; padding: 5px 14px; cursor: pointer; font-size: .88rem; white-space: nowrap; }
+  .iconbtn.on { background: var(--gold); color: #1a1a1a; font-weight: 700; }
+  .d-top b { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hero { background: var(--ink); color: var(--ink-fg); }
+  .hero .inner { padding-block: 4px 18px; display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+  .d-price { font-family: var(--serif); font-size: 2.4rem; line-height: 1.1; }
+  .hero .up { color: #ff8a80; } .hero .down { color: #5fe39a; }
+  .hero .muted { color: var(--ink-muted); }
+  .hero .ring::before { background: var(--ink); }
+  .hero .ring { width: 3rem; height: 3rem; font-size: 1.05rem; }
+  .score-line { display: flex; align-items: center; gap: 10px; }
+  .ohlc { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px 12px; }
+  .ohlc div { display: grid; }
+  .ohlc span { font-size: .72rem; color: var(--muted); }
+  .ohlc b { font-weight: 500; }
+  .legend { display: flex; flex-wrap: wrap; gap: 2px 12px; font-size: .78rem; min-height: 2.6em; align-items: baseline; }
+  .legend .k { color: var(--muted); margin-right: 2px; }
+  .chart { height: 340px; width: 100%; }
+  .keys { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: .74rem; color: var(--muted); }
+  .keys i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: 3px; margin-right: 4px; }
+  .range { position: relative; height: 8px; border-radius: 4px; background: linear-gradient(90deg, var(--down), var(--line) 50%, var(--up)); margin: 6px 0 2px; }
+  .range i { position: absolute; top: -4px; width: 4px; height: 16px; border-radius: 2px; background: var(--fg); transform: translateX(-2px); }
+  .range-lbl { display: flex; justify-content: space-between; font-size: .76rem; color: var(--muted); }
+  .sc-sec { display: grid; gap: 2px; padding-block: 6px; border-bottom: 1px solid var(--line); }
+  .sc-sec:last-child { border-bottom: 0; }
+  .sc-sec ul { margin: 0; padding: 0; list-style: none; font-size: .84rem; }
+  .row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .small { font-size: .82rem; margin: 0; }
+  .loading { height: 120px; border-radius: 12px; background: linear-gradient(90deg, var(--chip), var(--panel), var(--chip)); background-size: 200% 100%; }
+  @media (prefers-reduced-motion: no-preference) { .loading { animation: shimmer 1.2s linear infinite; } @keyframes shimmer { to { background-position: -200% 0; } } }
+  .foot { font-size: .78rem; color: var(--muted); display: grid; gap: 4px; }
+  .foot a { color: var(--muted); }
+  @media (max-width: 380px) { .srow { grid-template-columns: 2.2rem minmax(0, 1fr) 3.2rem 5rem; gap: 8px; padding-inline: 10px; } }
+  @media (max-width: 330px) { .srow { grid-template-columns: 2.2rem minmax(0, 1fr) 5rem; } .srow .spark { display: none; } .summary { grid-template-columns: 1fr 1fr; } .summary .stat:last-child { grid-column: span 2; } }
+</style>
+</head>
+<body>
+
+<!-- 總覽 -->
+<div id="home">
+  <header class="appbar gutter">
+    <div class="inner">
+      <div class="brand"><h1>台股每日健檢</h1><span id="updated"></span></div>
+      <div class="search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="search" placeholder="搜尋股票代號或名稱，例如 2330、聯發科" autocomplete="off" aria-label="搜尋股票">
+        <div class="results" id="results" hidden></div>
+      </div>
+      <nav class="tabs" role="tablist">
+        <button role="tab" data-tab="mine" aria-selected="true">自選</button>
+        <button role="tab" data-tab="rank" aria-selected="false">排行</button>
+        <button role="tab" data-tab="sector" aria-selected="false">類股</button>
+        <button role="tab" data-tab="news" aria-selected="false">新聞</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="gutter">
+    <div class="inner">
+      <section id="tab-mine">
+        <div class="summary" id="mine-summary"></div>
+        <div class="bar-row" style="margin-top:14px">
+          <h2>我的自選股</h2>
+          <div class="chips" id="mine-sort">
+            <button data-k="score" aria-pressed="true">分數</button>
+            <button data-k="chg_1d" aria-pressed="false">漲跌</button>
+          </div>
+        </div>
+        <p class="muted" style="margin:4px 0 8px">用上方搜尋找任何一檔，進去後按「☆ 加入自選」。自選清單存在這支手機上。</p>
+        <div class="rows" id="mine-list"></div>
+      </section>
+
+      <section id="tab-rank" hidden>
+        <div class="bar-row">
+          <h2>全部 <span id="rank-count"></span> 檔排行</h2>
+        </div>
+        <div class="chips" id="rank-sort" style="margin:8px 0">
+          <button data-k="score" aria-pressed="true">健檢分數</button>
+          <button data-k="up" aria-pressed="false">今日漲幅</button>
+          <button data-k="down" aria-pressed="false">今日跌幅</button>
+          <button data-k="chg_5d" aria-pressed="false">5 日漲幅</button>
+          <button data-k="score_change" aria-pressed="false">分數變化</button>
+        </div>
+        <div class="rows" id="rank-list"></div>
+      </section>
+
+      <section id="tab-sector" hidden>
+        <div class="bar-row">
+          <h2>類股熱度</h2>
+          <div class="chips" id="sec-sort">
+            <button data-k="chg_1d" aria-pressed="false">今日</button>
+            <button data-k="chg_5d" aria-pressed="true">5 日</button>
+            <button data-k="chg_20d" aria-pressed="false">20 日</button>
+          </div>
+        </div>
+        <p class="muted" style="margin:4px 0 8px">每個類股取幾檔代表股的平均漲跌。點類股看成分股，以及最近新聞在談的原因。</p>
+        <div style="display:grid;gap:8px" id="sector-list"></div>
+      </section>
+
+      <section id="tab-news" hidden>
+        <div class="bar-row">
+          <h2>最新新聞</h2>
+          <div class="chips" id="news-scope">
+            <button data-k="mine" aria-pressed="true">我的自選</button>
+            <button data-k="all" aria-pressed="false">全部</button>
+          </div>
+        </div>
+        <p class="muted" style="margin:4px 0 8px">新聞由 Google 新聞從各大新聞網站整理而來，每則都標出原始來源。點「閱讀原文」會開啟那家新聞網站。</p>
+        <div class="card"><ul class="news" id="news-list"><li class="loading"></li></ul></div>
+      </section>
+
+      <footer class="foot">
+        <span>K 線圖：紅棒上漲、綠棒下跌，上下細線是當天最高、最低價。分數高代表條件比較好，不代表一定會漲。</span>
+        <span>資料來自 Yahoo Finance 與 Google 新聞，可能延遲或有誤，僅供學習參考，不構成投資建議。圖表使用 <a href="https://www.tradingview.com/lightweight-charts/" target="_blank" rel="noopener">TradingView Lightweight Charts</a>。</span>
+      </footer>
+    </div>
+  </main>
+</div>
+
+<!-- 個股頁 -->
+<div id="detail" hidden>
+  <header class="appbar gutter">
+    <div class="inner" style="padding-bottom:6px">
+      <div class="d-top">
+        <button class="iconbtn" id="back" type="button">‹ 返回</button>
+        <b id="d-title"></b>
+        <button class="iconbtn" id="star" type="button">☆ 加入自選</button>
+      </div>
+    </div>
+  </header>
+  <div class="hero gutter">
+    <div class="inner">
+      <div>
+        <div class="muted" id="d-sub"></div>
+        <div class="d-price" id="d-price"></div>
+        <div id="d-chg"></div>
+      </div>
+      <div class="score-line" id="d-score"></div>
+    </div>
+  </div>
+  <main class="gutter">
+    <div class="inner" id="d-body">
+      <div class="card">
+        <h3 id="d-day-title">最新一天</h3>
+        <div class="ohlc" id="d-ohlc"></div>
+      </div>
+      <div class="card">
+        <div class="bar-row">
+          <h3>K 線圖</h3>
+          <div class="chips" id="k-range">
+            <button data-n="22" aria-pressed="false">1月</button>
+            <button data-n="66" aria-pressed="true">3月</button>
+            <button data-n="132" aria-pressed="false">6月</button>
+            <button data-n="250" aria-pressed="false">1年</button>
+          </div>
+        </div>
+        <div class="legend" id="k-legend"></div>
+        <div class="chart" id="k-chart"></div>
+        <div class="keys">
+          <span><i style="background:var(--ma20)"></i>20 日均線（月線）</span>
+          <span><i style="background:var(--ma60)"></i>60 日均線（季線）</span>
+          <span>下方柱狀是成交量（張）。手指按住圖左右滑看每一天，兩指可縮放。</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>近一年價格區間</h3>
+        <div id="d-range"></div>
+      </div>
+      <div class="card">
+        <h3>歷年最高、最低</h3>
+        <div class="tbl-wrap"><table id="d-years"></table></div>
+        <p class="muted">今年是到最新交易日為止；股價是實際成交價，沒有扣除配息。</p>
+      </div>
+      <div class="card">
+        <h3>健檢分數怎麼來的</h3>
+        <div id="d-detail"></div>
+        <p class="small bad" id="d-warn"></p>
+        <p class="small" id="d-stop"></p>
+      </div>
+      <div class="card">
+        <h3>相關新聞</h3>
+        <ul class="news" id="d-news"></ul>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
+<script id="data" type="application/json">{"generated":"2026-10-30 08:33","stocks":[{"code":"2006","name":"東和鋼鐵","sector":"鋼鐵","default":false,"price":92.3,"chg_1d":-1.39,"chg_5d":-1.07,"chg_1y":53.7,"score":96,"score_change":null,"grade":"★★★ 條件良好","spark":[80.8,81.2,82.7,82.6,81.6,80.8,81.9,82.0,81.2,82.5,82.1,80.9,81.1,82.5,87.6,85.5,86.1,85.8,87.8,85.4,85.4,84.6,86.6,85.8,86.6,85.9,85.3,86.8,88.2,89.5,90.1,92.1,92.2,90.7,93.3,93.2,93.2,92.9,93.6,92.3],"trend":100,"momentum":100,"valuation":100,"quality":100,"risk":73},{"code":"00919","name":"群益台灣精選高息","sector":"高股息 ETF","default":false,"price":32.9,"chg_1d":0.46,"chg_5d":2.52,"chg_1y":74.6,"score":94,"score_change":null,"grade":"★★★ 條件良好","spark":[31.44,31.96,32.31,32.35,32.52,33.02,32.91,32.71,32.58,32.55,32.48,32.89,32.74,31.99,32.11,31.96,32.27,32.16,32.06,31.83,31.88,31.88,31.63,31.55,31.63,31.8,31.94,31.65,32.23,32.4,32.49,32.38,32.74,32.45,32.09,32.53,32.42,32.42,32.75,32.9],"trend":100,"momentum":100,"valuation":73,"quality":null,"risk":100},{"code":"00713","name":"元大台灣高息低波","sector":"","default":false,"price":65.9,"chg_1d":-0.68,"chg_5d":1.62,"chg_1y":36.8,"score":94,"score_change":null,"grade":"★★★ 條件良好","spark":[61.55,61.9,62.35,62.8,63.1,63.45,63.45,63.65,63.65,63.65,63.85,64.35,64.25,64.4,64.95,65.1,63.75,63.7,63.65,63.2,62.9,63.0,62.85,62.7,62.85,62.95,63.25,63.25,63.6,64.2,64.8,65.5,65.8,65.5,64.85,65.3,65.9,65.9,66.35,65.9],"trend":100,"momentum":100,"valuation":73,"quality":null,"risk":100},{"code":"2603","name":"長榮","sector":"航運","default":false,"price":261.0,"chg_1d":-0.76,"chg_5d":1.36,"chg_1y":50.9,"score":92,"score_change":null,"grade":"★★★ 條件良好","spark":[233.5,238.0,234.5,239.0,233.0,233.0,229.0,234.0,231.0,234.5,237.0,233.5,239.0,242.5,240.5,242.0,242.5,243.0,243.0,238.0,239.5,238.0,240.0,234.5,236.5,232.5,232.5,255.5,264.0,263.0,257.0,265.5,262.0,259.5,257.5,260.0,260.0,261.5,263.0,261.0],"trend":100,"momentum":100,"valuation":100,"quality":84,"risk":73},{"code":"2027","name":"大成鋼","sector":"鋼鐵","default":false,"price":50.4,"chg_1d":-1.18,"chg_5d":1.0,"chg_1y":35.4,"score":92,"score_change":null,"grade":"★★★ 條件良好","spark":[48.8,49.8,49.55,50.2,50.2,49.1,49.35,48.6,48.2,46.5,45.75,45.0,46.55,47.1,47.35,46.65,46.5,46.6,47.6,47.15,47.45,48.05,48.05,47.9,47.7,47.75,48.25,48.25,48.8,50.0,49.3,50.9,51.0,49.95,49.9,50.6,50.6,51.0,51.0,50.4],"trend":100,"momentum":100,"valuation":90,"quality":92,"risk":73},{"code":"00940","name":"元大台灣價值高息","sector":"","default":false,"price":13.47,"chg_1d":0.52,"chg_5d":1.89,"chg_1y":49.9,"score":90,"score_change":null,"grade":"★★★ 條件良好","spark":[12.69,12.78,12.93,12.9,12.78,13.01,12.99,12.82,12.94,12.85,12.79,12.84,12.74,12.89,12.99,13.11,13.1,13.13,13.12,13.1,13.08,13.12,13.18,13.17,13.26,13.3,13.28,13.21,13.34,13.36,13.5,13.38,13.48,13.34,13.22,13.38,13.3,13.3,13.4,13.47],"trend":100,"momentum":53,"valuation":100,"quality":null,"risk":100},{"code":"5880","name":"合庫金","sector":"金融","default":false,"price":28.9,"chg_1d":1.58,"chg_5d":3.21,"chg_1y":26.6,"score":89,"score_change":null,"grade":"★★★ 條件良好","spark":[25.55,25.6,26.3,26.7,26.65,26.5,26.85,26.85,26.85,27.2,27.45,27.0,27.35,27.55,27.3,27.2,27.05,26.75,26.45,26.05,26.1,26.0,26.15,25.9,25.95,26.55,26.45,26.8,27.2,27.15,27.5,28.15,28.05,27.45,28.0,28.2,28.2,28.8,28.45,28.9],"trend":100,"momentum":100,"valuation":70,"quality":80,"risk":100},{"code":"2886","name":"兆豐金","sector":"金融","default":false,"price":54.8,"chg_1d":1.67,"chg_5d":2.24,"chg_1y":36.8,"score":87,"score_change":null,"grade":"★★★ 條件良好","spark":[48.55,48.5,49.0,50.4,49.55,50.2,50.6,50.3,49.9,51.7,52.5,51.8,50.9,51.9,51.1,51.1,50.5,50.0,49.6,49.1,49.15,48.85,48.85,48.55,49.3,49.8,49.3,50.0,50.9,51.1,52.5,53.7,53.9,53.2,53.6,55.2,55.2,55.0,53.9,54.8],"trend":100,"momentum":100,"valuation":60,"quality":80,"risk":100},{"code":"1216","name":"統一","sector":"","default":false,"price":79.0,"chg_1d":0.38,"chg_5d":0.64,"chg_1y":5.1,"score":87,"score_change":null,"grade":"★★★ 條件良好","spark":[76.2,76.2,76.6,75.6,75.6,75.2,76.7,76.0,75.6,75.0,74.6,74.5,74.5,75.5,75.0,74.7,74.6,75.4,74.5,73.9,74.2,73.9,72.7,72.7,73.7,75.5,75.6,76.0,77.1,78.2,79.5,79.6,79.6,78.4,78.5,79.6,79.6,80.2,78.7,79.0],"trend":100,"momentum":100,"valuation":60,"quality":80,"risk":100},{"code":"2890","name":"永豐金","sector":"","default":false,"price":46.45,"chg_1d":0.32,"chg_5d":2.31,"chg_1y":86.7,"score":87,"score_change":null,"grade":"★★★ 條件良好","spark":[41.1,41.5,42.15,42.6,42.85,42.6,43.45,43.2,42.9,43.7,44.8,44.55,45.3,45.95,45.25,45.7,45.4,45.05,45.15,43.57,43.92,43.32,43.72,43.72,45.06,44.65,44.05,45.2,44.75,44.05,45.6,45.75,45.25,44.25,45.4,46.35,46.35,46.25,46.3,46.45],"trend":100,"momentum":100,"valuation":60,"quality":100,"risk":73},{"code":"4904","name":"遠傳","sector":"電信","default":false,"price":113.0,"chg_1d":0.89,"chg_5d":0.89,"chg_1y":26.9,"score":86,"score_change":null,"grade":"★★★ 條件良好","spark":[101.0,101.0,102.5,103.5,104.0,102.0,104.0,104.0,104.5,105.5,106.0,106.5,105.0,106.5,107.0,106.0,105.5,105.5,105.5,104.5,103.5,105.0,106.0,105.5,104.5,106.0,106.0,105.5,107.5,108.0,113.0,113.5,112.5,112.0,112.0,115.0,115.0,114.0,112.0,113.0],"trend":100,"momentum":100,"valuation":30,"quality":100,"risk":100},{"code":"2912","name":"統一超","sector":"","default":false,"price":222.0,"chg_1d":-0.89,"chg_5d":-1.11,"chg_1y":-4.3,"score":86,"score_change":null,"grade":"★★★ 條件良好","spark":[216.5,216.0,217.0,216.5,216.0,215.0,217.0,217.5,218.5,216.5,216.5,215.5,215.0,217.5,216.5,215.0,214.0,213.0,212.5,212.0,212.5,212.5,210.5,211.0,210.5,213.5,213.0,216.0,216.0,219.5,224.0,224.0,228.5,227.0,224.5,226.0,226.0,225.5,224.0,222.0],"trend":100,"momentum":100,"valuation":55,"quality":80,"risk":100},{"code":"3034","name":"聯詠","sector":"半導體","default":false,"price":596.0,"chg_1d":-0.33,"chg_5d":1.02,"chg_1y":53.5,"score":85,"score_change":null,"grade":"★★★ 條件良好","spark":[540.0,552.0,543.0,527.0,524.0,540.0,534.0,543.0,545.0,547.0,556.0,541.0,548.0,545.0,558.0,548.0,557.0,545.0,543.0,540.0,546.0,547.0,537.0,543.0,537.0,529.0,531.0,529.0,546.0,560.0,565.0,577.0,585.0,568.0,590.0,583.0,583.0,599.0,598.0,596.0],"trend":100,"momentum":100,"valuation":45,"quality":100,"risk":73},{"code":"0056","name":"元大高股息","sector":"高股息 ETF","default":true,"price":57.25,"chg_1d":1.24,"chg_5d":-0.35,"chg_1y":74.8,"score":84,"score_change":0,"grade":"★★★ 條件良好","spark":[53.85,54.6,54.85,55.1,54.5,55.4,55.85,55.75,55.75,55.7,55.3,55.4,55.0,55.55,56.3,56.85,57.15,56.85,56.6,56.65,56.55,56.95,56.85,57.05,57.85,58.1,58.45,58.3,58.6,58.55,59.6,58.25,58.75,58.0,57.45,58.75,56.3,56.3,56.55,57.25],"trend":100,"momentum":53,"valuation":73,"quality":null,"risk":100},{"code":"00878","name":"國泰永續高股息","sector":"高股息 ETF","default":true,"price":35.65,"chg_1d":0.71,"chg_5d":2.21,"chg_1y":82.9,"score":84,"score_change":0,"grade":"★★★ 條件良好","spark":[33.0,33.18,33.76,33.65,33.58,34.11,34.39,34.07,34.13,34.15,34.0,34.23,34.2,34.47,34.73,34.83,35.11,35.21,35.09,34.88,34.83,34.9,34.89,34.89,35.11,35.17,35.22,34.99,35.24,35.34,35.47,35.09,35.53,35.15,34.88,35.39,35.27,35.27,35.4,35.65],"trend":100,"momentum":53,"valuation":73,"quality":null,"risk":100},{"code":"3045","name":"台灣大","sector":"電信","default":false,"price":134.5,"chg_1d":1.51,"chg_5d":3.07,"chg_1y":25.9,"score":84,"score_change":null,"grade":"★★★ 條件良好","spark":[116.0,115.5,116.0,118.0,118.0,117.0,118.0,119.5,120.0,121.0,121.5,124.0,124.5,124.0,124.0,124.5,123.0,123.0,122.5,121.0,119.5,122.0,122.0,122.5,123.0,122.5,124.0,121.5,125.0,126.5,131.0,130.5,130.5,130.5,130.5,133.0,133.0,134.5,132.5,134.5],"trend":100,"momentum":100,"valuation":30,"quality":92,"risk":100},{"code":"2892","name":"第一金","sector":"","default":false,"price":44.45,"chg_1d":3.86,"chg_5d":7.63,"chg_1y":58.7,"score":84,"score_change":null,"grade":"★★★ 條件良好","spark":[35.3,35.9,36.25,36.85,37.3,37.3,37.85,37.8,38.0,38.9,39.85,39.55,40.0,40.75,39.8,39.75,39.9,39.85,39.5,38.6,38.65,38.7,38.55,38.05,38.55,38.9,38.65,39.7,40.5,40.65,41.6,41.5,41.1,40.75,41.3,42.35,42.35,43.15,42.8,44.45],"trend":100,"momentum":60,"valuation":60,"quality":100,"risk":100},{"code":"2882","name":"國泰金","sector":"金融","default":true,"price":116.5,"chg_1d":0.87,"chg_5d":2.19,"chg_1y":85.1,"score":83,"score_change":0,"grade":"★★★ 條件良好","spark":[110.5,111.0,109.0,112.5,115.0,114.5,113.5,110.5,110.5,110.5,112.5,110.0,112.5,112.0,110.5,113.0,112.0,111.5,110.5,111.5,111.0,110.5,111.5,111.5,112.0,113.0,110.0,113.0,114.5,114.0,113.5,116.0,114.5,110.0,114.0,113.5,113.5,114.0,115.5,116.5],"trend":100,"momentum":100,"valuation":70,"quality":71,"risk":73},{"code":"2618","name":"長榮航","sector":"航運","default":false,"price":42.75,"chg_1d":0.83,"chg_5d":1.66,"chg_1y":17.0,"score":83,"score_change":null,"grade":"★★★ 條件良好","spark":[42.0,42.4,42.15,42.8,42.5,42.1,42.45,42.55,41.8,42.35,42.05,41.2,41.3,42.05,41.75,41.95,42.5,42.85,42.0,41.5,42.85,42.2,42.35,41.9,41.55,41.95,41.4,42.0,43.0,43.4,43.45,43.7,42.7,42.35,42.05,42.2,42.2,42.95,42.4,42.75],"trend":100,"momentum":53,"valuation":100,"quality":76,"risk":73},{"code":"2615","name":"萬海","sector":"航運","default":false,"price":115.0,"chg_1d":-2.95,"chg_5d":-1.29,"chg_1y":48.8,"score":82,"score_change":null,"grade":"★★★ 條件良好","spark":[114.0,114.5,112.0,115.5,115.0,114.5,112.0,116.0,110.5,112.0,113.0,112.0,115.0,120.5,120.5,117.0,116.5,113.5,115.5,111.0,114.0,112.5,113.0,110.5,111.5,111.5,111.5,121.0,121.5,125.0,119.0,122.5,118.5,117.0,116.5,119.5,119.5,116.5,118.5,115.0],"trend":80,"momentum":53,"valuation":90,"quality":100,"risk":73},{"code":"2542","name":"興富發","sector":"營建","default":false,"price":39.45,"chg_1d":1.54,"chg_5d":-1.62,"chg_1y":12.6,"score":82,"score_change":null,"grade":"★★★ 條件良好","spark":[46.65,47.9,47.95,48.65,48.55,48.0,47.7,48.2,46.5,46.5,45.7,45.25,45.9,46.85,47.8,46.45,45.45,39.55,39.5,38.6,38.65,38.4,38.75,38.05,38.2,38.8,39.05,40.1,39.6,39.7,39.35,39.65,39.95,40.15,40.1,40.0,40.0,40.15,38.85,39.45],"trend":48,"momentum":100,"valuation":100,"quality":80,"risk":100},{"code":"2891","name":"中信金","sector":"金融","default":false,"price":75.3,"chg_1d":1.48,"chg_5d":0.67,"chg_1y":83.7,"score":81,"score_change":null,"grade":"★★★ 條件良好","spark":[64.7,66.5,66.6,67.5,68.4,67.4,68.2,66.6,67.3,67.1,68.1,69.7,70.8,71.2,69.5,70.4,69.6,68.9,68.5,68.7,68.4,67.9,67.3,67.4,68.4,68.7,67.3,69.8,71.6,71.4,72.9,73.6,73.4,71.6,74.8,74.9,74.9,75.0,74.2,75.3],"trend":100,"momentum":100,"valuation":60,"quality":71,"risk":73},{"code":"2887","name":"台新金","sector":"","default":false,"price":42.4,"chg_1d":0.95,"chg_5d":1.07,"chg_1y":127.3,"score":81,"score_change":null,"grade":"★★★ 條件良好","spark":[38.55,40.3,41.2,41.45,41.5,41.1,42.8,42.4,42.15,42.65,43.55,43.4,44.4,44.05,44.4,43.8,42.9,42.95,42.5,41.8,41.95,41.25,40.55,40.85,41.45,42.15,41.0,43.0,43.0,42.65,41.6,42.45,42.35,41.0,41.95,42.1,42.1,42.2,42.0,42.4],"trend":100,"momentum":53,"valuation":70,"quality":100,"risk":73},{"code":"1477","name":"聚陽","sector":"紡織","default":false,"price":206.5,"chg_1d":-0.72,"chg_5d":-1.2,"chg_1y":-22.6,"score":80,"score_change":null,"grade":"★★★ 條件良好","spark":[194.5,195.5,196.0,194.0,196.5,195.0,198.0,197.5,197.5,196.5,194.5,192.0,191.0,194.0,194.0,191.5,190.5,192.5,191.0,190.0,192.0,190.5,192.0,197.5,203.5,202.5,204.0,205.5,206.0,206.0,208.5,211.0,207.5,207.5,209.0,209.0,209.0,207.0,208.0,206.5],"trend":72,"momentum":100,"valuation":90,"quality":100,"risk":27},{"code":"2884","name":"玉山金","sector":"金融","default":false,"price":49.0,"chg_1d":1.34,"chg_5d":-0.41,"chg_1y":56.9,"score":80,"score_change":null,"grade":"★★★ 條件良好","spark":[39.75,39.9,40.5,43.2,43.55,43.55,45.55,44.25,44.95,46.3,46.35,45.65,46.45,47.3,46.4,46.2,46.05,45.6,45.6,44.9,44.85,45.35,45.35,44.8,45.45,45.75,45.0,46.0,46.5,47.3,48.8,49.15,49.35,48.35,49.2,49.75,49.75,49.45,48.35,49.0],"trend":100,"momentum":53,"valuation":60,"quality":80,"risk":100},{"code":"2207","name":"和泰車","sector":"","default":false,"price":532.0,"chg_1d":-0.56,"chg_5d":1.14,"chg_1y":-4.0,"score":80,"score_change":null,"grade":"★★★ 條件良好","spark":[513.0,518.0,517.0,521.0,539.0,539.0,535.0,530.0,528.0,530.0,538.0,530.0,520.0,532.0,537.0,523.0,521.0,520.0,510.0,506.0,509.0,515.0,513.0,510.0,515.0,526.0,518.0,527.0,533.0,542.0,546.0,548.0,540.0,532.0,526.0,530.0,530.0,551.0,535.0,532.0],"trend":100,"momentum":100,"valuation":60,"quality":80,"risk":53},{"code":"2885","name":"元大金","sector":"","default":false,"price":73.4,"chg_1d":0.55,"chg_5d":2.95,"chg_1y":131.5,"score":80,"score_change":null,"grade":"★★★ 條件良好","spark":[65.4,66.7,66.7,68.5,69.8,70.2,70.6,69.7,69.7,70.0,70.8,68.3,69.4,69.0,70.0,70.4,70.6,69.6,69.2,68.7,68.5,67.4,66.8,68.2,69.3,70.0,68.3,70.1,70.6,72.2,72.7,72.9,71.7,70.5,71.3,72.4,72.4,73.2,73.0,73.4],"trend":100,"momentum":100,"valuation":45,"quality":80,"risk":73},{"code":"2412","name":"中華電","sector":"電信","default":true,"price":158.0,"chg_1d":0.96,"chg_5d":2.6,"chg_1y":23.4,"score":79,"score_change":0,"grade":"★★★ 條件良好","spark":[136.0,136.0,137.5,138.0,137.5,138.0,139.0,139.5,139.5,140.5,142.5,143.5,143.5,145.0,145.5,144.5,145.0,145.5,145.0,144.0,143.5,145.5,146.0,145.5,145.5,145.5,146.5,146.5,148.0,148.5,152.5,153.0,154.5,154.5,154.0,158.0,158.0,158.0,156.5,158.0],"trend":100,"momentum":60,"valuation":45,"quality":84,"risk":100},{"code":"2880","name":"華南金","sector":"","default":false,"price":50.1,"chg_1d":1.62,"chg_5d":0.6,"chg_1y":75.6,"score":77,"score_change":null,"grade":"★★★ 條件良好","spark":[41.35,41.95,43.0,43.45,44.0,44.35,45.15,44.35,44.8,45.85,46.3,46.9,47.35,47.9,47.65,46.65,46.55,45.8,45.75,44.9,45.35,45.25,44.85,44.6,45.45,46.9,45.8,47.65,49.35,48.9,49.65,48.9,48.7,48.1,49.8,50.3,50.3,50.1,49.3,50.1],"trend":100,"momentum":100,"valuation":45,"quality":80,"risk":53},{"code":"2881","name":"富邦金","sector":"金融","default":true,"price":162.0,"chg_1d":0.62,"chg_5d":2.21,"chg_1y":87.1,"score":76,"score_change":0,"grade":"★★★ 條件良好","spark":[144.0,145.0,143.5,147.0,150.5,149.5,149.0,147.0,148.5,148.5,154.0,151.0,153.0,151.5,150.5,154.5,154.5,153.0,150.0,151.5,151.0,150.5,150.5,152.0,154.5,155.5,153.0,158.5,160.0,160.5,159.5,161.5,158.5,153.5,158.5,158.5,158.5,162.0,161.0,162.0],"trend":100,"momentum":53,"valuation":70,"quality":71,"risk":73},{"code":"3231","name":"緯創","sector":"AI 伺服器","default":false,"price":188.5,"chg_1d":-3.08,"chg_5d":-3.33,"chg_1y":43.2,"score":76,"score_change":null,"grade":"★★★ 條件良好","spark":[178.0,182.0,185.5,188.5,198.0,197.0,186.5,189.0,185.0,185.5,181.0,182.5,183.0,186.5,186.5,186.5,180.5,180.0,184.5,185.5,184.5,190.5,186.5,189.5,189.5,185.0,188.5,189.5,187.0,187.0,176.0,182.5,180.0,189.0,195.0,190.0,190.0,190.5,194.5,188.5],"trend":100,"momentum":100,"valuation":60,"quality":80,"risk":27},{"code":"2609","name":"陽明","sector":"航運","default":false,"price":62.0,"chg_1d":-1.43,"chg_5d":-0.16,"chg_1y":19.4,"score":76,"score_change":null,"grade":"★★★ 條件良好","spark":[59.5,57.6,57.5,57.8,58.2,58.1,57.3,58.5,58.0,59.4,59.3,58.8,60.2,62.0,61.0,61.1,60.8,59.9,59.6,58.4,59.4,58.8,59.7,58.7,59.2,59.1,59.7,63.6,64.5,65.0,63.3,64.7,63.5,62.2,62.1,61.9,61.9,63.0,62.9,62.0],"trend":100,"momentum":53,"valuation":90,"quality":68,"risk":53},{"code":"1476","name":"儒鴻","sector":"紡織","default":false,"price":322.0,"chg_1d":1.42,"chg_5d":-0.92,"chg_1y":-22.4,"score":75,"score_change":null,"grade":"★★★ 條件良好","spark":[309.0,314.5,314.0,313.5,313.0,306.0,300.0,295.5,290.0,288.5,288.0,285.0,284.0,284.0,282.0,279.0,274.0,281.0,276.5,273.0,274.0,274.5,278.0,278.5,290.0,297.0,310.0,312.0,311.5,314.0,324.0,329.5,321.0,325.5,325.0,324.5,324.5,323.0,317.5,322.0],"trend":52,"momentum":100,"valuation":90,"quality":100,"risk":27},{"code":"2357","name":"華碩","sector":"","default":false,"price":950.0,"chg_1d":-3.85,"chg_5d":-3.26,"chg_1y":47.5,"score":75,"score_change":null,"grade":"★★★ 條件良好","spark":[999.0,1010.0,1010.0,971.0,1025.0,999.0,968.0,979.0,989.0,924.0,934.0,928.0,939.0,948.0,960.0,946.0,953.0,958.0,953.0,963.0,961.0,965.0,962.0,995.0,1000.0,989.0,996.0,977.0,966.0,990.0,975.0,994.0,970.0,981.0,982.0,946.0,946.0,967.0,988.0,950.0],"trend":80,"momentum":53,"valuation":90,"quality":100,"risk":27},{"code":"1402","name":"遠東新","sector":"紡織","default":false,"price":28.35,"chg_1d":0.71,"chg_5d":-0.87,"chg_1y":9.3,"score":74,"score_change":null,"grade":"★★☆ 條件尚可","spark":[28.35,29.4,29.1,29.1,29.15,28.7,28.65,28.7,28.65,28.65,28.1,27.8,27.4,28.1,28.1,27.85,27.85,27.9,28.15,27.75,28.25,27.95,28.05,27.75,27.9,28.6,28.4,28.7,28.6,29.65,29.4,29.4,28.85,28.5,28.6,28.9,28.9,28.8,28.15,28.35],"trend":80,"momentum":53,"valuation":100,"quality":60,"risk":73},{"code":"5871","name":"中租-KY","sector":"","default":false,"price":107.0,"chg_1d":-0.47,"chg_5d":-0.47,"chg_1y":8.3,"score":74,"score_change":null,"grade":"★★☆ 條件尚可","spark":[117.0,114.0,113.0,111.5,111.5,112.5,115.0,112.0,112.5,111.5,113.5,111.5,112.5,112.0,112.0,110.5,108.0,108.0,107.0,107.0,107.0,107.5,106.0,105.5,105.0,106.0,105.5,105.0,106.0,108.5,108.5,108.0,106.5,106.5,107.5,106.0,106.0,108.0,107.5,107.0],"trend":48,"momentum":100,"valuation":100,"quality":64,"risk":73},{"code":"2883","name":"凱基金","sector":"","default":false,"price":38.5,"chg_1d":-0.13,"chg_5d":0.65,"chg_1y":153.0,"score":73,"score_change":null,"grade":"★★☆ 條件尚可","spark":[33.85,34.95,35.5,35.9,36.7,36.95,37.3,36.75,37.2,37.85,38.8,38.15,39.15,39.65,39.3,40.45,39.3,39.35,38.95,38.95,38.85,36.9,37.35,37.3,37.65,38.5,37.55,38.8,38.75,38.65,38.4,39.1,38.2,37.25,38.25,37.75,37.75,38.45,38.55,38.5],"trend":100,"momentum":53,"valuation":70,"quality":57,"risk":73},{"code":"2379","name":"瑞昱","sector":"半導體","default":false,"price":794.0,"chg_1d":0.38,"chg_5d":0.25,"chg_1y":54.3,"score":71,"score_change":null,"grade":"★★☆ 條件尚可","spark":[721.0,744.0,744.0,707.0,713.0,729.0,692.0,705.0,696.0,704.0,713.0,703.0,720.0,715.0,727.0,740.0,755.0,761.0,749.0,760.0,760.0,762.0,754.0,755.0,755.0,741.0,749.0,746.0,758.0,778.0,764.0,778.0,779.0,774.0,792.0,772.0,772.0,793.0,791.0,794.0],"trend":100,"momentum":100,"valuation":30,"quality":84,"risk":27},{"code":"2002","name":"中鋼","sector":"鋼鐵","default":false,"price":19.45,"chg_1d":-1.52,"chg_5d":-0.77,"chg_1y":2.9,"score":71,"score_change":null,"grade":"★★☆ 條件尚可","spark":[18.95,19.05,19.05,19.0,19.1,19.0,19.1,19.25,19.1,18.9,18.8,18.65,18.65,18.7,18.75,18.65,18.65,18.65,18.65,18.8,19.2,18.95,19.0,18.9,18.95,18.95,18.95,19.2,19.15,19.5,19.25,19.55,19.5,19.6,19.6,19.55,19.55,19.75,19.75,19.45],"trend":100,"momentum":100,"valuation":30,"quality":33,"risk":100},{"code":"00929","name":"復華台灣科技優息","sector":"高股息 ETF","default":false,"price":29.15,"chg_1d":1.18,"chg_5d":-0.38,"chg_1y":74.4,"score":71,"score_change":null,"grade":"★★☆ 條件尚可","spark":[29.13,29.15,29.46,29.43,28.89,29.4,29.38,28.89,29.12,29.0,28.62,28.6,28.46,28.84,28.56,29.03,29.06,29.13,29.14,29.18,29.16,29.35,29.59,29.73,30.05,30.15,30.14,30.03,30.08,29.86,30.2,29.72,29.84,29.35,29.26,29.29,28.8,28.8,28.81,29.15],"trend":80,"momentum":53,"valuation":73,"quality":null,"risk":73},{"code":"9910","name":"豐泰","sector":"","default":false,"price":69.7,"chg_1d":-0.71,"chg_5d":2.5,"chg_1y":-43.0,"score":71,"score_change":null,"grade":"★★☆ 條件尚可","spark":[67.7,68.3,68.0,67.7,68.9,69.8,71.8,68.6,68.5,67.8,67.8,68.4,67.5,69.1,68.4,68.4,68.6,70.0,69.4,69.1,68.8,68.8,67.8,66.7,66.3,66.3,66.3,67.4,67.4,67.5,68.1,69.8,68.3,68.7,68.0,67.7,67.7,72.2,70.2,69.7],"trend":52,"momentum":100,"valuation":90,"quality":84,"risk":27},{"code":"5522","name":"遠雄","sector":"營建","default":false,"price":61.1,"chg_1d":-4.68,"chg_5d":-1.13,"chg_1y":23.4,"score":70,"score_change":null,"grade":"★★☆ 條件尚可","spark":[61.7,62.4,63.2,63.8,64.0,63.3,63.6,63.5,62.7,62.6,61.1,60.7,60.0,60.7,62.2,61.5,61.9,60.9,60.7,60.7,61.0,60.8,60.5,60.1,60.0,61.2,60.8,62.4,62.1,61.6,61.5,61.8,62.0,62.1,61.8,62.1,62.1,65.2,64.1,61.1],"trend":20,"momentum":100,"valuation":100,"quality":90,"risk":53},{"code":"1101","name":"台泥","sector":"","default":false,"price":28.2,"chg_1d":0.71,"chg_5d":5.22,"chg_1y":24.9,"score":70,"score_change":null,"grade":"★★☆ 條件尚可","spark":[24.4,25.3,24.8,24.45,24.6,24.3,24.3,24.75,24.8,24.5,23.9,23.8,24.05,24.45,24.35,24.15,24.55,25.65,25.25,25.3,26.3,25.55,25.35,25.0,25.2,25.5,25.7,27.0,26.35,27.05,26.8,27.3,27.15,26.8,26.8,27.95,27.95,28.1,28.0,28.2],"trend":100,"momentum":100,"valuation":40,"quality":44,"risk":73},{"code":"2317","name":"鴻海","sector":"AI 伺服器","default":true,"price":248.0,"chg_1d":-1.39,"chg_5d":-0.8,"chg_1y":12.8,"score":68,"score_change":0,"grade":"★★☆ 條件尚可","spark":[250.0,256.0,251.0,247.5,256.0,256.0,251.5,252.0,251.0,248.0,248.5,246.5,248.0,250.5,250.5,250.0,253.0,256.0,250.5,250.5,251.5,254.0,251.0,254.0,256.0,252.0,249.0,244.5,240.0,243.0,239.5,244.0,239.5,241.5,250.0,245.0,245.0,247.5,251.5,248.0],"trend":48,"momentum":100,"valuation":70,"quality":76,"risk":53},{"code":"2382","name":"廣達","sector":"AI 伺服器","default":true,"price":318.0,"chg_1d":-3.64,"chg_5d":-3.2,"chg_1y":14.9,"score":65,"score_change":0,"grade":"★★☆ 條件尚可","spark":[338.5,342.0,337.0,335.0,345.0,347.5,328.0,342.0,336.0,336.5,332.5,333.0,340.5,344.0,343.0,344.5,342.0,341.5,338.5,336.5,333.5,334.0,332.0,331.0,333.5,335.0,325.5,322.0,323.0,323.0,316.5,322.0,314.5,320.5,328.5,322.0,322.0,327.5,330.0,318.0],"trend":28,"momentum":100,"valuation":75,"quality":80,"risk":53},{"code":"1434","name":"福懋","sector":"紡織","default":false,"price":19.05,"chg_1d":-0.52,"chg_5d":-2.31,"chg_1y":28.2,"score":65,"score_change":null,"grade":"★★☆ 條件尚可","spark":[18.15,18.35,18.25,18.1,18.2,18.1,17.8,18.15,18.0,17.8,17.65,17.5,17.5,17.85,17.8,18.0,17.95,17.9,17.95,18.0,18.15,17.95,18.2,17.85,18.0,18.95,19.45,19.45,20.0,20.7,20.1,20.4,19.9,19.7,19.5,19.3,19.3,19.2,19.15,19.05],"trend":80,"momentum":53,"valuation":70,"quality":43,"risk":73},{"code":"3533","name":"嘉澤","sector":"","default":false,"price":1900.0,"chg_1d":-2.81,"chg_5d":4.4,"chg_1y":39.6,"score":65,"score_change":null,"grade":"★★☆ 條件尚可","spark":[1690.0,1745.0,1705.0,1670.0,1685.0,1695.0,1620.0,1625.0,1575.0,1580.0,1590.0,1520.0,1510.0,1555.0,1585.0,1590.0,1745.0,1690.0,1690.0,1710.0,1770.0,1855.0,1855.0,1875.0,1865.0,1825.0,1915.0,1880.0,1860.0,1935.0,1815.0,1805.0,1815.0,1805.0,1820.0,1795.0,1795.0,1925.0,1955.0,1900.0],"trend":72,"momentum":100,"valuation":35,"quality":100,"risk":0},{"code":"6505","name":"台塑化","sector":"塑化","default":false,"price":98.6,"chg_1d":-4.27,"chg_5d":-9.95,"chg_1y":130.5,"score":64,"score_change":null,"grade":"★★☆ 條件尚可","spark":[73.5,76.7,78.7,76.5,78.1,79.7,79.6,87.5,86.2,83.6,82.8,82.9,80.5,86.2,86.5,88.5,87.2,87.3,87.2,94.3,97.3,94.2,100.0,98.6,101.5,107.0,110.5,108.5,119.0,119.5,111.5,122.5,116.0,106.5,109.5,106.5,106.5,106.0,103.0,98.6],"trend":80,"momentum":53,"valuation":60,"quality":81,"risk":27},{"code":"006208","name":"富邦台50","sector":"","default":false,"price":249.05,"chg_1d":1.82,"chg_5d":1.53,"chg_1y":76.5,"score":64,"score_change":null,"grade":"★★☆ 條件尚可","spark":[245.1,242.9,248.35,245.2,243.8,247.25,251.65,250.05,250.3,249.55,246.1,244.65,243.5,244.6,247.4,251.2,254.7,255.7,257.0,256.85,255.2,256.3,258.25,258.3,265.35,265.9,265.6,263.4,263.15,257.85,258.7,250.1,250.35,247.9,245.3,247.6,244.85,244.85,244.6,249.05],"trend":80,"momentum":53,"valuation":40,"quality":null,"risk":73},{"code":"2330","name":"台積電","sector":"半導體","default":true,"price":2415.0,"chg_1d":-0.41,"chg_5d":-0.21,"chg_1y":68.6,"score":63,"score_change":0,"grade":"★★☆ 條件尚可","spark":[2405.0,2440.0,2385.0,2390.0,2410.0,2460.0,2470.0,2465.0,2450.0,2410.0,2380.0,2385.0,2380.0,2425.0,2460.0,2480.0,2460.0,2500.0,2475.0,2475.0,2480.0,2510.0,2500.0,2575.0,2585.0,2585.0,2550.0,2540.0,2490.0,2490.0,2440.0,2420.0,2420.0,2405.0,2420.0,2385.0,2385.0,2400.0,2425.0,2415.0],"trend":48,"momentum":53,"valuation":35,"quality":100,"risk":73},{"code":"2356","name":"英業達","sector":"AI 伺服器","default":false,"price":61.4,"chg_1d":-3.76,"chg_5d":0.16,"chg_1y":44.6,"score":63,"score_change":null,"grade":"★★☆ 條件尚可","spark":[66.7,66.6,66.6,65.0,67.5,66.1,64.0,64.3,62.6,62.0,61.7,60.5,61.7,61.5,61.7,61.8,61.2,61.0,59.9,59.2,59.5,59.7,59.0,58.3,58.6,58.1,57.5,58.1,57.3,58.3,57.6,59.0,59.1,60.0,61.3,60.5,60.5,63.0,63.8,61.4],"trend":48,"momentum":100,"valuation":60,"quality":80,"risk":27},{"code":"6415","name":"矽力-KY","sector":"","default":false,"price":524.0,"chg_1d":-0.19,"chg_5d":6.94,"chg_1y":130.8,"score":62,"score_change":null,"grade":"★★☆ 條件尚可","spark":[412.5,418.5,426.0,411.0,428.5,418.0,410.0,417.0,405.0,401.0,414.0,406.0,418.5,411.0,437.5,427.5,430.0,426.0,425.5,409.0,409.0,413.0,425.0,442.0,449.5,456.5,462.5,440.0,428.5,471.0,466.5,489.0,475.5,462.5,490.0,472.0,472.0,478.0,525.0,524.0],"trend":100,"momentum":100,"valuation":5,"quality":84,"risk":0},{"code":"0050","name":"元大台灣50","sector":"","default":true,"price":108.65,"chg_1d":1.92,"chg_5d":1.31,"chg_1y":76.0,"score":61,"score_change":11,"grade":"★★☆ 條件尚可","spark":[106.95,106.25,108.45,106.8,106.2,107.9,109.9,109.65,109.65,109.15,107.7,106.9,106.25,106.9,108.05,109.85,111.35,111.85,112.45,112.4,111.3,112.05,112.9,112.8,115.95,116.5,116.05,114.95,114.8,112.4,113.0,108.9,109.0,108.15,107.25,108.15,106.9,106.9,106.6,108.65],"trend":80,"momentum":53,"valuation":27,"quality":null,"risk":73},{"code":"2376","name":"技嘉","sector":"AI 伺服器","default":false,"price":343.0,"chg_1d":-5.38,"chg_5d":-4.32,"chg_1y":27.7,"score":60,"score_change":null,"grade":"★★☆ 條件尚可","spark":[358.0,359.0,361.5,350.5,361.0,364.5,357.0,349.5,351.5,349.0,344.0,343.0,350.0,355.0,356.0,368.0,366.5,365.0,361.5,362.0,358.5,368.5,373.5,388.5,380.0,365.5,363.0,356.0,355.5,356.0,347.0,357.5,352.0,355.0,358.5,349.0,349.0,357.5,362.5,343.0],"trend":48,"momentum":53,"valuation":80,"quality":80,"risk":27},{"code":"2548","name":"華固","sector":"營建","default":false,"price":92.0,"chg_1d":0.22,"chg_5d":-0.54,"chg_1y":-1.1,"score":60,"score_change":null,"grade":"★★☆ 條件尚可","spark":[92.9,93.2,93.4,93.5,94.6,94.2,94.6,95.6,94.4,94.9,92.9,91.6,91.9,93.6,96.5,93.7,94.3,93.4,93.2,92.2,91.6,91.8,92.5,91.5,91.2,91.2,91.8,92.1,91.1,91.3,91.2,91.7,91.9,92.4,92.5,92.4,92.4,91.0,91.8,92.0],"trend":20,"momentum":100,"valuation":100,"quality":48,"risk":53},{"code":"1440","name":"南紡","sector":"紡織","default":false,"price":13.7,"chg_1d":-1.44,"chg_5d":-0.36,"chg_1y":9.0,"score":57,"score_change":null,"grade":"★☆☆ 條件普通","spark":[13.9,13.85,14.2,14.2,13.9,13.5,13.6,13.75,13.5,13.4,13.25,13.05,12.9,13.45,13.45,13.4,13.25,13.25,13.5,13.3,13.65,13.4,13.3,13.4,13.5,13.95,14.35,14.15,14.1,14.5,14.1,14.15,14.05,13.8,13.75,13.9,13.9,13.95,13.9,13.7],"trend":80,"momentum":53,"valuation":40,"quality":52,"risk":53},{"code":"6446","name":"藥華藥","sector":"生技醫療","default":false,"price":1240.0,"chg_1d":3.33,"chg_5d":5.53,"chg_1y":166.9,"score":57,"score_change":null,"grade":"★☆☆ 條件普通","spark":[1395.0,1310.0,1305.0,1350.0,1310.0,1325.0,1405.0,1345.0,1320.0,1280.0,1190.0,1205.0,1205.0,1195.0,1180.0,1150.0,1160.0,1175.0,1155.0,1195.0,1215.0,1170.0,1165.0,1190.0,1175.0,1205.0,1195.0,1185.0,1165.0,1190.0,1205.0,1245.0,1175.0,1155.0,1175.0,1160.0,1160.0,1190.0,1200.0,1240.0],"trend":48,"momentum":100,"valuation":5,"quality":100,"risk":27},{"code":"1605","name":"華新","sector":"","default":false,"price":37.25,"chg_1d":-0.8,"chg_5d":-0.13,"chg_1y":30.1,"score":57,"score_change":null,"grade":"★☆☆ 條件普通","spark":[39.2,38.75,38.2,37.6,38.4,37.9,38.1,38.35,37.8,37.4,37.0,36.35,36.75,37.15,37.1,37.1,37.0,36.65,36.65,36.35,38.4,38.55,38.75,38.4,38.75,39.9,39.1,40.15,38.55,40.7,37.7,38.5,37.55,37.0,37.3,37.0,37.0,37.05,37.55,37.25],"trend":48,"momentum":53,"valuation":80,"quality":68,"risk":27},{"code":"2344","name":"華邦電","sector":"","default":false,"price":170.5,"chg_1d":-0.87,"chg_5d":6.9,"chg_1y":290.0,"score":57,"score_change":null,"grade":"★☆☆ 條件普通","spark":[182.5,176.0,179.0,169.0,174.0,180.0,188.0,183.0,179.5,171.5,160.0,159.5,169.0,170.0,179.5,174.0,171.0,172.5,171.5,174.0,179.5,180.0,179.0,181.0,177.5,179.5,177.0,174.0,161.5,165.0,155.0,161.5,155.5,152.5,159.5,154.5,154.5,163.0,172.0,170.5],"trend":48,"momentum":100,"valuation":35,"quality":100,"risk":0},{"code":"1409","name":"新纖","sector":"紡織","default":false,"price":24.75,"chg_1d":-1.79,"chg_5d":-1.98,"chg_1y":93.1,"score":56,"score_change":null,"grade":"★☆☆ 條件普通","spark":[24.6,25.65,25.35,24.6,24.55,24.35,24.45,26.85,25.15,24.45,24.35,23.9,23.95,24.8,24.5,24.45,24.1,24.1,24.3,24.35,24.9,24.4,24.95,25.3,25.35,26.15,26.05,26.1,25.75,27.3,25.5,25.75,25.5,25.05,25.25,24.9,24.9,24.75,25.2,24.75],"trend":80,"momentum":53,"valuation":70,"quality":57,"risk":0},{"code":"3711","name":"日月光投控","sector":"半導體","default":false,"price":683.0,"chg_1d":-1.73,"chg_5d":-0.15,"chg_1y":251.7,"score":56,"score_change":null,"grade":"★☆☆ 條件普通","spark":[584.0,610.0,589.0,589.0,588.0,621.0,618.0,640.0,650.0,618.0,612.0,592.0,605.0,614.0,638.0,663.0,693.0,693.0,699.0,687.0,703.0,710.0,713.0,742.0,744.0,732.0,744.0,762.0,740.0,747.0,673.0,671.0,670.0,660.0,684.0,654.0,654.0,651.0,695.0,683.0],"trend":80,"momentum":53,"valuation":5,"quality":92,"risk":27},{"code":"1301","name":"台塑","sector":"塑化","default":false,"price":73.9,"chg_1d":-1.99,"chg_5d":-4.03,"chg_1y":91.8,"score":56,"score_change":null,"grade":"★☆☆ 條件普通","spark":[66.2,67.8,66.8,65.7,66.0,66.6,65.1,66.7,65.6,64.6,62.9,62.0,62.4,64.6,65.0,65.2,64.6,63.1,64.1,64.6,68.1,66.8,68.3,68.5,68.6,75.4,81.3,80.7,80.9,88.9,81.7,82.1,78.2,74.9,77.0,73.8,73.8,74.4,75.4,73.9],"trend":80,"momentum":53,"valuation":30,"quality":62,"risk":47},{"code":"1326","name":"台化","sector":"塑化","default":false,"price":74.4,"chg_1d":-1.46,"chg_5d":-2.36,"chg_1y":151.3,"score":56,"score_change":null,"grade":"★☆☆ 條件普通","spark":[68.3,74.3,72.8,69.7,69.8,71.9,70.6,71.8,71.3,70.2,67.6,65.8,65.8,68.6,68.1,67.8,66.5,65.4,67.0,67.5,69.7,67.7,71.7,71.6,73.0,75.8,77.6,76.8,77.8,85.5,77.0,78.7,75.5,73.8,76.2,73.0,73.0,74.4,75.5,74.4],"trend":80,"momentum":53,"valuation":45,"quality":62,"risk":27},{"code":"2610","name":"華航","sector":"航運","default":false,"price":20.25,"chg_1d":0.0,"chg_5d":-0.49,"chg_1y":0.0,"score":55,"score_change":null,"grade":"★☆☆ 條件普通","spark":[20.25,20.35,20.45,20.55,20.45,20.45,20.6,20.45,20.2,20.4,20.2,19.9,19.95,20.35,20.15,20.25,20.5,20.45,20.3,20.1,20.45,20.3,20.35,20.1,20.1,20.35,20.15,20.4,20.5,20.65,20.55,21.05,20.55,20.4,20.35,20.5,20.5,20.45,20.25,20.25],"trend":28,"momentum":53,"valuation":100,"quality":48,"risk":53},{"code":"2368","name":"金像電","sector":"","default":false,"price":1115.0,"chg_1d":-5.91,"chg_5d":-6.69,"chg_1y":177.9,"score":54,"score_change":null,"grade":"★☆☆ 條件普通","spark":[1165.0,1225.0,1175.0,1100.0,1045.0,1120.0,1075.0,1100.0,1045.0,1030.0,1020.0,972.0,992.0,950.0,1020.0,1045.0,1040.0,1140.0,1105.0,1120.0,1120.0,1095.0,1105.0,1215.0,1260.0,1245.0,1285.0,1235.0,1170.0,1260.0,1190.0,1245.0,1250.0,1185.0,1195.0,1115.0,1115.0,1080.0,1185.0,1115.0],"trend":80,"momentum":53,"valuation":5,"quality":100,"risk":0},{"code":"3443","name":"創意","sector":"","default":false,"price":7640.0,"chg_1d":-6.49,"chg_5d":-4.5,"chg_1y":413.4,"score":54,"score_change":null,"grade":"★☆☆ 條件普通","spark":[6100.0,5995.0,5895.0,5800.0,5810.0,5935.0,5960.0,5925.0,6225.0,6120.0,6400.0,6035.0,6170.0,6500.0,7150.0,7615.0,8375.0,8385.0,8525.0,7925.0,8040.0,7900.0,7900.0,8600.0,8375.0,8460.0,8360.0,8100.0,8095.0,8245.0,7670.0,7480.0,7830.0,7745.0,8000.0,7585.0,7585.0,7430.0,8170.0,7640.0],"trend":80,"momentum":53,"valuation":5,"quality":100,"risk":0},{"code":"3653","name":"健策","sector":"","default":false,"price":6405.0,"chg_1d":0.47,"chg_5d":-1.99,"chg_1y":188.4,"score":54,"score_change":null,"grade":"★☆☆ 條件普通","spark":[5990.0,5885.0,5770.0,5615.0,5875.0,5655.0,5550.0,5760.0,5790.0,5765.0,5820.0,5310.0,5240.0,5355.0,5525.0,5790.0,5830.0,6410.0,6920.0,6895.0,6800.0,6875.0,6800.0,7205.0,7080.0,6805.0,7165.0,7160.0,6990.0,7070.0,6765.0,6730.0,6560.0,6650.0,6535.0,6070.0,6070.0,5860.0,6375.0,6405.0],"trend":80,"momentum":53,"valuation":5,"quality":100,"risk":0},{"code":"1303","name":"南亞","sector":"塑化","default":false,"price":312.0,"chg_1d":-2.19,"chg_5d":-2.65,"chg_1y":647.3,"score":53,"score_change":null,"grade":"★☆☆ 條件普通","spark":[242.5,234.5,237.5,221.0,225.5,230.5,235.0,236.5,244.0,234.5,234.0,221.5,224.0,236.0,238.0,239.5,231.5,227.5,238.0,247.0,255.5,254.0,260.0,286.0,293.0,314.0,310.0,303.0,319.0,349.0,314.5,307.0,303.5,296.0,320.5,301.0,301.0,297.5,319.0,312.0],"trend":100,"momentum":53,"valuation":5,"quality":81,"risk":0},{"code":"1590","name":"亞德客-KY","sector":"","default":false,"price":1150.0,"chg_1d":0.88,"chg_5d":2.68,"chg_1y":34.4,"score":53,"score_change":null,"grade":"★☆☆ 條件普通","spark":[1425.0,1445.0,1395.0,1375.0,1395.0,1370.0,1335.0,1330.0,1305.0,1285.0,1270.0,1280.0,1240.0,1245.0,1220.0,1240.0,1260.0,1230.0,1210.0,1210.0,1200.0,1185.0,1180.0,1180.0,1195.0,1230.0,1205.0,1210.0,1170.0,1185.0,1155.0,1155.0,1165.0,1110.0,1120.0,1100.0,1100.0,1140.0,1140.0,1150.0],"trend":0,"momentum":100,"valuation":45,"quality":100,"risk":27},{"code":"2395","name":"研華","sector":"","default":false,"price":673.0,"chg_1d":-2.32,"chg_5d":-1.46,"chg_1y":111.5,"score":53,"score_change":null,"grade":"★☆☆ 條件普通","spark":[677.0,711.0,692.0,674.0,711.0,680.0,657.0,653.0,659.0,674.0,670.0,685.0,695.0,686.0,690.0,706.0,703.0,701.0,722.0,730.0,726.0,723.0,716.0,740.0,738.0,733.0,727.0,721.0,718.0,714.0,698.0,685.0,679.0,684.0,683.0,670.0,670.0,687.0,689.0,673.0],"trend":48,"momentum":53,"valuation":5,"quality":100,"risk":47},{"code":"2303","name":"聯電","sector":"半導體","default":false,"price":115.5,"chg_1d":-9.77,"chg_5d":-9.77,"chg_1y":156.8,"score":52,"score_change":null,"grade":"★☆☆ 條件普通","spark":[129.0,132.5,126.0,125.0,130.0,143.0,137.0,141.5,142.5,140.5,142.5,138.5,142.0,147.5,156.0,157.0,160.0,160.0,154.0,153.5,154.5,161.5,161.5,152.5,147.5,148.5,147.5,145.5,141.5,142.0,133.5,133.0,131.5,127.0,128.0,125.5,125.5,122.5,128.0,115.5],"trend":48,"momentum":20,"valuation":60,"quality":100,"risk":0},{"code":"3008","name":"大立光","sector":"","default":false,"price":5815.0,"chg_1d":-8.21,"chg_5d":-5.75,"chg_1y":171.3,"score":52,"score_change":null,"grade":"★☆☆ 條件普通","spark":[7650.0,7580.0,7810.0,7150.0,7400.0,6660.0,6500.0,6870.0,6720.0,6660.0,5995.0,6055.0,6225.0,6020.0,6430.0,6400.0,6405.0,6190.0,6245.0,6020.0,5945.0,6205.0,6290.0,6730.0,6855.0,6845.0,6660.0,7325.0,7275.0,6880.0,6605.0,6400.0,6245.0,5975.0,6170.0,6175.0,6175.0,6000.0,6335.0,5815.0],"trend":48,"momentum":53,"valuation":35,"quality":84,"risk":27},{"code":"2501","name":"國建","sector":"營建","default":false,"price":20.35,"chg_1d":0.25,"chg_5d":-0.25,"chg_1y":-9.9,"score":51,"score_change":null,"grade":"★☆☆ 條件普通","spark":[22.35,22.5,22.5,22.5,22.55,22.3,22.4,22.4,22.25,22.15,21.85,21.3,21.15,21.4,21.8,21.7,21.45,21.2,21.1,21.15,21.1,21.05,20.85,20.35,20.2,20.6,20.65,20.5,20.35,20.4,20.65,20.7,20.35,20.3,20.4,20.45,20.45,19.8,20.3,20.35],"trend":0,"momentum":100,"valuation":100,"quality":32,"risk":53},{"code":"3017","name":"奇鋐","sector":"","default":false,"price":3105.0,"chg_1d":-3.42,"chg_5d":-4.02,"chg_1y":171.6,"score":50,"score_change":null,"grade":"★☆☆ 條件普通","spark":[3425.0,3410.0,3310.0,3300.0,3570.0,3420.0,3285.0,3380.0,3460.0,3370.0,3310.0,3115.0,3175.0,3185.0,3430.0,3415.0,3390.0,3470.0,3555.0,3400.0,3435.0,3510.0,3440.0,3585.0,3685.0,3545.0,3440.0,3385.0,3280.0,3315.0,3085.0,3315.0,3320.0,3325.0,3235.0,3145.0,3145.0,3130.0,3215.0,3105.0],"trend":48,"momentum":53,"valuation":5,"quality":100,"risk":27},{"code":"1513","name":"中興電","sector":"重電","default":false,"price":157.0,"chg_1d":-1.26,"chg_5d":-3.09,"chg_1y":3.6,"score":49,"score_change":null,"grade":"★☆☆ 條件普通","spark":[164.0,166.0,165.0,162.5,165.5,167.0,165.0,167.0,165.5,165.0,163.5,162.0,162.5,165.0,167.0,166.5,166.0,165.5,166.0,167.0,168.0,166.5,167.5,166.5,167.0,168.0,167.0,169.0,165.5,168.5,165.0,165.0,162.0,161.0,162.0,160.0,160.0,159.0,159.0,157.0],"trend":0,"momentum":27,"valuation":60,"quality":100,"risk":53},{"code":"1760","name":"寶齡富錦","sector":"生技醫療","default":false,"price":51.8,"chg_1d":-0.38,"chg_5d":-1.33,"chg_1y":-19.6,"score":49,"score_change":null,"grade":"★☆☆ 條件普通","spark":[58.0,58.0,57.2,56.3,56.3,56.4,56.0,55.9,55.0,54.1,53.9,53.8,53.6,54.4,53.6,54.0,53.6,53.9,53.7,53.9,54.6,54.6,54.6,53.9,53.7,54.3,55.7,55.2,54.0,54.0,53.8,54.1,53.2,52.8,52.5,51.7,51.7,51.9,52.0,51.8],"trend":0,"momentum":27,"valuation":60,"quality":84,"risk":80},{"code":"2449","name":"京元電子","sector":"","default":false,"price":269.5,"chg_1d":-2.88,"chg_5d":-3.06,"chg_1y":62.3,"score":48,"score_change":null,"grade":"★☆☆ 條件普通","spark":[257.0,279.0,270.5,261.0,262.0,273.0,268.5,270.0,271.5,263.0,261.5,257.0,261.5,265.0,291.5,301.5,317.0,304.0,311.0,294.5,294.5,296.0,295.5,294.0,298.0,299.5,304.5,300.0,305.0,296.5,272.0,275.0,263.5,259.5,278.0,262.5,262.5,269.0,277.5,269.5],"trend":52,"momentum":53,"valuation":20,"quality":92,"risk":0},{"code":"8046","name":"南電","sector":"","default":false,"price":1250.0,"chg_1d":-3.85,"chg_5d":-6.72,"chg_1y":346.6,"score":48,"score_change":null,"grade":"★☆☆ 條件普通","spark":[1230.0,1225.0,1200.0,1080.0,1055.0,1050.0,1025.0,1110.0,1070.0,1080.0,1055.0,1085.0,1105.0,1065.0,1100.0,1060.0,1165.0,1210.0,1240.0,1270.0,1340.0,1420.0,1460.0,1495.0,1505.0,1480.0,1475.0,1440.0,1440.0,1430.0,1345.0,1355.0,1380.0,1305.0,1340.0,1265.0,1265.0,1255.0,1300.0,1250.0],"trend":80,"momentum":53,"valuation":5,"quality":81,"risk":0},{"code":"2301","name":"光寶科","sector":"","default":false,"price":252.0,"chg_1d":-3.63,"chg_5d":-4.36,"chg_1y":56.4,"score":46,"score_change":null,"grade":"★☆☆ 條件普通","spark":[305.0,300.5,315.0,299.0,308.0,299.0,291.0,292.5,291.0,277.0,277.5,274.0,277.0,278.0,282.0,288.5,284.5,283.5,287.0,281.0,279.5,284.5,281.5,298.0,299.0,300.0,297.5,288.0,276.0,283.0,268.0,264.5,264.0,262.0,263.5,255.5,255.5,252.5,261.5,252.0],"trend":28,"momentum":27,"valuation":30,"quality":100,"risk":27},{"code":"3037","name":"欣興","sector":"","default":false,"price":1040.0,"chg_1d":-5.45,"chg_5d":-5.45,"chg_1y":549.3,"score":46,"score_change":null,"grade":"★☆☆ 條件普通","spark":[999.0,971.0,973.0,923.0,902.0,949.0,954.0,993.0,994.0,977.0,970.0,951.0,961.0,940.0,981.0,1020.0,1120.0,1160.0,1185.0,1165.0,1175.0,1215.0,1305.0,1325.0,1310.0,1305.0,1270.0,1255.0,1180.0,1185.0,1075.0,1090.0,1120.0,1055.0,1100.0,1085.0,1085.0,1060.0,1100.0,1040.0],"trend":48,"momentum":53,"valuation":5,"quality":100,"risk":0},{"code":"6669","name":"緯穎","sector":"AI 伺服器","default":false,"price":1885.0,"chg_1d":-3.33,"chg_5d":0.27,"chg_1y":52.9,"score":44,"score_change":null,"grade":"☆☆☆ 條件偏弱","spark":[2378.64,2615.0,2610.0,2475.0,2565.0,2490.0,2340.0,2325.0,2345.0,2310.0,2270.0,2315.0,2165.0,2135.0,2140.0,2150.0,2115.0,2105.0,2115.0,2100.0,2090.0,2110.0,2085.0,2150.0,2290.0,2240.0,2240.0,2275.0,2195.0,2115.0,1905.0,1845.0,1885.0,1925.0,1880.0,1840.0,1840.0,1950.0,1950.0,1885.0],"trend":28,"momentum":27,"valuation":45,"quality":80,"risk":27},{"code":"1504","name":"東元","sector":"重電","default":false,"price":69.5,"chg_1d":-1.0,"chg_5d":-1.56,"chg_1y":-34.4,"score":44,"score_change":null,"grade":"☆☆☆ 條件偏弱","spark":[72.5,73.5,72.6,71.0,72.2,71.7,70.4,70.9,70.6,69.5,70.3,69.0,70.2,70.9,69.5,69.1,68.6,68.6,68.5,68.5,69.1,69.1,69.7,69.0,71.1,73.3,71.7,71.7,69.7,70.9,69.2,69.7,69.3,68.3,70.6,69.7,69.7,69.0,70.2,69.5],"trend":20,"momentum":53,"valuation":70,"quality":68,"risk":0},{"code":"2327","name":"國巨","sector":"","default":false,"price":543.0,"chg_1d":-0.73,"chg_5d":0.18,"chg_1y":196.4,"score":44,"score_change":null,"grade":"☆☆☆ 條件偏弱","spark":[545.0,568.0,540.0,511.0,562.0,589.0,567.0,565.0,572.0,544.0,545.0,537.0,536.0,529.0,550.0,557.0,571.0,573.0,580.0,548.0,548.0,602.0,626.0,626.0,625.0,647.0,635.0,636.0,599.0,627.0,573.0,567.0,534.0,523.0,542.0,507.0,507.0,521.0,547.0,543.0],"trend":48,"momentum":53,"valuation":20,"quality":80,"risk":0},{"code":"2454","name":"聯發科","sector":"半導體","default":true,"price":4045.0,"chg_1d":-4.49,"chg_5d":-2.29,"chg_1y":211.9,"score":42,"score_change":0,"grade":"☆☆☆ 條件偏弱","spark":[3925.0,4315.0,4275.0,4340.0,4415.0,4760.0,4710.0,4625.0,4720.0,4585.0,4560.0,4430.0,4530.0,4500.0,4710.0,5010.0,5180.0,5185.0,5285.0,4910.0,4920.0,4980.0,4950.0,5165.0,4920.0,4835.0,4690.0,4625.0,4525.0,4475.0,4165.0,4250.0,4205.0,4150.0,4140.0,4010.0,4010.0,3960.0,4235.0,4045.0],"trend":48,"momentum":27,"valuation":5,"quality":84,"risk":27},{"code":"2408","name":"南亞科","sector":"","default":false,"price":477.0,"chg_1d":0.0,"chg_5d":9.28,"chg_1y":360.1,"score":42,"score_change":null,"grade":"☆☆☆ 條件偏弱","spark":[543.0,518.0,518.0,477.5,496.0,517.0,531.0,523.0,515.0,493.0,473.0,465.5,492.5,488.0,525.0,516.0,497.0,515.0,503.0,506.0,519.0,519.0,526.0,530.0,525.0,514.0,532.0,527.0,488.0,480.5,439.5,447.5,436.0,422.0,436.5,414.0,414.0,441.0,477.0,477.0],"trend":28,"momentum":53,"valuation":35,"quality":100,"risk":0},{"code":"2059","name":"川湖","sector":"","default":false,"price":9880.0,"chg_1d":-2.66,"chg_5d":-1.98,"chg_1y":163.7,"score":41,"score_change":null,"grade":"☆☆☆ 條件偏弱","spark":[14180.0,14150.0,13865.0,13450.0,13860.0,13905.0,12520.0,12400.0,12600.0,12080.0,11990.0,11715.0,12045.0,12295.0,12495.0,12800.0,12670.0,12390.0,12350.0,12115.0,12055.0,11835.0,12145.0,13355.0,13100.0,11790.0,10615.0,10580.0,10060.0,10005.0,9720.0,9955.0,9920.0,10100.0,10080.0,9755.0,9755.0,9810.0,10150.0,9880.0],"trend":28,"momentum":27,"valuation":5,"quality":100,"risk":27},{"code":"2360","name":"致茂","sector":"","default":false,"price":1945.0,"chg_1d":-4.42,"chg_5d":-3.23,"chg_1y":196.3,"score":41,"score_change":null,"grade":"☆☆☆ 條件偏弱","spark":[1960.0,2030.0,1975.0,2015.0,2030.0,2230.0,2265.0,2335.0,2180.0,2160.0,2140.0,2080.0,2090.0,2085.0,2290.0,2375.0,2440.0,2325.0,2295.0,2185.0,2135.0,2080.0,2190.0,2325.0,2350.0,2400.0,2330.0,2365.0,2200.0,2250.0,2025.0,2000.0,2005.0,2000.0,2010.0,1980.0,1980.0,1955.0,2035.0,1945.0],"trend":28,"momentum":27,"valuation":5,"quality":100,"risk":27},{"code":"4743","name":"合一","sector":"生技醫療","default":false,"price":47.0,"chg_1d":0.32,"chg_5d":-2.89,"chg_1y":-26.0,"score":39,"score_change":null,"grade":"☆☆☆ 條件偏弱","spark":[46.5,46.45,46.65,44.75,44.65,45.6,46.95,45.8,45.55,43.9,43.45,43.5,44.2,44.6,44.0,44.75,44.4,45.15,44.75,45.7,47.15,45.85,47.15,47.1,48.1,47.1,48.1,49.25,47.55,48.1,48.1,49.5,48.45,48.15,48.4,48.15,48.15,47.65,46.85,47.0],"trend":52,"momentum":53,"valuation":15,"quality":62,"risk":0},{"code":"1503","name":"士電","sector":"重電","default":false,"price":188.0,"chg_1d":-1.57,"chg_5d":-2.08,"chg_1y":8.8,"score":38,"score_change":null,"grade":"☆☆☆ 條件偏弱","spark":[200.0,208.5,206.0,201.0,207.5,207.5,204.5,206.0,205.0,202.0,197.0,195.0,195.5,197.5,199.5,198.5,197.0,196.5,196.0,194.0,197.5,197.5,197.0,196.0,197.0,199.5,197.0,204.0,198.5,203.0,197.0,198.5,194.0,191.0,192.0,192.0,192.0,191.5,191.0,188.0],"trend":0,"momentum":27,"valuation":45,"quality":84,"risk":27},{"code":"2014","name":"中鴻","sector":"鋼鐵","default":false,"price":16.85,"chg_1d":-0.88,"chg_5d":-0.59,"chg_1y":6.0,"score":34,"score_change":null,"grade":"☆☆☆ 條件偏弱","spark":[17.05,17.05,16.95,16.9,17.0,17.0,17.0,17.05,16.9,16.65,16.5,16.25,16.35,16.55,16.55,16.55,16.6,16.65,16.9,16.8,17.4,17.1,17.1,16.85,16.95,16.9,16.95,16.95,16.85,17.2,16.85,17.15,17.05,16.9,16.95,16.95,16.95,17.05,17.0,16.85],"trend":20,"momentum":53,"valuation":25,"quality":19,"risk":73},{"code":"2345","name":"智邦","sector":"","default":false,"price":1755.0,"chg_1d":-3.31,"chg_5d":-3.31,"chg_1y":85.0,"score":33,"score_change":null,"grade":"☆☆☆ 條件偏弱","spark":[2035.0,2205.0,2140.0,2090.0,2100.0,2100.0,1955.0,2015.0,1965.0,1885.0,1875.0,1840.0,1840.0,1800.0,1855.0,1840.0,1915.0,1890.0,1895.0,1810.0,1775.0,1900.0,1965.0,2075.0,2050.0,2015.0,2070.0,2130.0,2040.0,2050.0,1950.0,1980.0,2005.0,1970.0,1815.0,1775.0,1775.0,1760.0,1815.0,1755.0],"trend":0,"momentum":27,"valuation":20,"quality":100,"risk":0},{"code":"3661","name":"世芯-KY","sector":"","default":false,"price":3680.0,"chg_1d":-3.16,"chg_5d":-0.81,"chg_1y":20.2,"score":31,"score_change":null,"grade":"☆☆☆ 條件偏弱","spark":[4075.0,4275.0,4200.0,4050.0,4220.0,4040.0,4030.0,3905.0,4055.0,3650.0,3590.0,3355.0,3345.0,3295.0,3540.0,3665.0,3715.0,3760.0,3770.0,3685.0,3740.0,3765.0,3810.0,3950.0,4180.0,4190.0,4345.0,4395.0,4055.0,3940.0,3705.0,3685.0,3715.0,3640.0,3710.0,3495.0,3495.0,3495.0,3800.0,3680.0],"trend":20,"momentum":53,"valuation":5,"quality":68,"risk":0},{"code":"2308","name":"台達電","sector":"","default":true,"price":1480.0,"chg_1d":-4.52,"chg_5d":-8.92,"chg_1y":48.9,"score":30,"score_change":0,"grade":"☆☆☆ 條件偏弱","spark":[1840.0,1865.0,1730.0,1760.0,1825.0,1850.0,1805.0,1795.0,1675.0,1620.0,1620.0,1670.0,1710.0,1685.0,1735.0,1875.0,1900.0,1900.0,1910.0,1835.0,1890.0,1905.0,1885.0,2005.0,2050.0,1990.0,1965.0,1900.0,1775.0,1785.0,1630.0,1635.0,1640.0,1605.0,1625.0,1560.0,1560.0,1510.0,1550.0,1480.0],"trend":0,"momentum":27,"valuation":5,"quality":100,"risk":0},{"code":"1519","name":"華城","sector":"重電","default":false,"price":563.0,"chg_1d":-4.9,"chg_5d":-10.06,"chg_1y":5.9,"score":25,"score_change":null,"grade":"☆☆☆ 條件偏弱","spark":[729.0,761.0,741.0,722.0,746.0,739.0,728.0,735.0,718.0,712.0,697.0,694.0,706.0,705.0,721.0,718.0,712.0,704.0,699.0,688.0,693.0,688.0,692.0,691.0,696.0,702.0,692.0,724.0,663.0,690.0,649.0,656.0,644.0,631.0,626.0,615.0,615.0,585.0,592.0,563.0],"trend":0,"momentum":20,"valuation":5,"quality":84,"risk":0},{"code":"6472","name":"保瑞","sector":"生技醫療","default":false,"price":392.0,"chg_1d":-1.01,"chg_5d":-5.2,"chg_1y":-37.7,"score":25,"score_change":null,"grade":"☆☆☆ 條件偏弱","spark":[433.0,420.0,422.5,411.5,416.0,416.0,412.5,407.5,405.5,399.0,403.5,411.0,412.0,425.0,444.5,420.5,420.0,436.0,421.5,422.5,424.0,429.5,420.5,420.5,416.5,428.0,421.0,422.5,420.0,424.5,424.0,425.5,412.5,413.0,413.5,403.0,403.0,398.5,396.0,392.0],"trend":0,"momentum":27,"valuation":45,"quality":48,"risk":0},{"code":"1447","name":"力鵬","sector":"紡織","default":false,"price":6.2,"chg_1d":-0.48,"chg_5d":-2.82,"chg_1y":9.7,"score":24,"score_change":null,"grade":"☆☆☆ 條件偏弱","spark":[6.84,6.9,6.88,6.75,6.71,6.68,6.69,6.71,6.69,6.49,6.43,6.31,6.32,6.63,6.47,6.49,6.4,6.42,6.39,6.5,6.77,6.51,6.54,6.41,6.39,6.62,6.6,6.57,6.45,6.6,6.55,6.46,6.45,6.44,6.38,6.22,6.22,6.15,6.23,6.2],"trend":28,"momentum":27,"valuation":25,"quality":33,"risk":0}],"sectors":[{"sector":"電信","chg_1d":1.12,"chg_5d":2.19,"chg_20d":9.67,"up_count":3,"stocks":[{"code":"3045","name":"台灣大","price":134.5,"chg_1d":1.51,"chg_5d":3.07,"chg_20d":11.16},{"code":"2412","name":"中華電","price":158.0,"chg_1d":0.96,"chg_5d":2.6,"chg_20d":9.72},{"code":"4904","name":"遠傳","price":113.0,"chg_1d":0.89,"chg_5d":0.89,"chg_20d":8.13}],"keywords":[{"word":"外資","count":2},{"word":"併購","count":2},{"word":"中國","count":1},{"word":"財報","count":1},{"word":"聯準會","count":1}],"news":[{"title":"10／30盤前｜台股跌！外資錢進金融、電信 買超10強金融包辦6檔","publisher":"工商時報","published":"2026-10-30 08:20","url":"https://news.google.com/rss/articles/CBMiX0FVX3lxTE5TVGU3ZHNVNUtlZ3hHejg2RExlaUc5Y1UyR19MeDRPX3JYTkUtWFI0ZXoxWGZOWXhpYm9KY3hPMHptZEt4b0gtcTdkdk1YV1I1VjlFUlpaQjU5SXRDZTIw?oc=5"},{"title":"金融、電信股 躍升資金避風港","publisher":"中時新聞網","published":"2026-10-30 04:10","url":"https://news.google.com/rss/articles/CBMia0FVX3lxTFBCeUluVjNwcTFOdXFtMHloU1NJX29Ydzd5VDFFa2pwVTEzUjRFaVg1ZjhTNTBETVpMdEgteW1WVXFTbGJwZUtGX1Y4VEFobFJtS2JQNndJci1WOUFSUHA4MzIyT2pkMVdSYzFN?oc=5"},{"title":"金融、電信股躍升資金避風港- 日報","publisher":"工商時報","published":"2026-10-30 03:00","url":"https://news.google.com/rss/articles/CBMiX0FVX3lxTE5JT21WVUJpbGdrT01FVGhQQldMSHJCZXlnak1HemVFNG5xZVdnTXVDcWRIVF9xcEJFV2hfMGxSWF9OcWg2MnJzUVNwaU1xRW9Rd0VIUjkzVGpMUndWaURj?oc=5"},{"title":"台股昨天鬆口氣,今天又開始喘氣","publisher":"聚財網","published":"2026-10-30 00:00","url":"https://news.google.com/rss/articles/CBMiTEFVX3lxTE1vWGgyNEZ6OVFxNEhNMUV5M0xudHpxalBmQ1B2SmlyX3YxbUpEbjBKY18zNjQzQ19SM1FtSWg2MmROcGpsMG45bEl3WUE?oc=5"},{"title":"中國電信(601728.SH)大宗交易成交500萬股 成交金額3385萬元","publisher":"TradingView","published":"2026-10-29 23:03","url":"https://news.google.com/rss/articles/CBMia0FVX3lxTE1MelE0Tjd6anBsYm4wbjdTTGR3OWNnV3B0RlNBM2pST2IzbG00OEdzb0pBRk83MWtIQTVNcGhPZnN2TWpwRHBtSnNWa003RW0wUkhyV21JczQ2M25DMG9aazdLblRUWjk0RVRv?oc=5"},{"title":"台灣大(3045) 個股概覽 | 個股 - 股市","publisher":"CMoney","published":"2026-10-29 20:29","url":"https://news.google.com/rss/articles/CBMiU0FVX3lxTE1jalVKS1llMTExRnFaT083SEo4SlFwSnFzUVNKM05WTzluSUdnaGpSRGFlZmlSMERCZUhOZzFLSWdKaFp0SWtocllKSkM4dGVpbkhF?oc=5"}]},{"sector":"高股息 ETF","chg_1d":0.9,"chg_5d":2.08,"chg_20d":2.72,"up_count":4,"stocks":[{"code":"0056","name":"元大高股息","price":57.25,"chg_1d":1.24,"chg_5d":2.66,"chg_20d":4.11},{"code":"00919","name":"群益台灣精選高息","price":32.9,"chg_1d":0.46,"chg_5d":2.52,"chg_20d":3.36},{"code":"00878","name":"國泰永續高股息","price":35.65,"chg_1d":0.71,"chg_5d":2.21,"chg_20d":2.21},{"code":"00929","name":"復華台灣科技優息","price":29.15,"chg_1d":1.18,"chg_5d":0.93,"chg_20d":1.21}],"keywords":[{"word":"除息","count":2},{"word":"配息","count":2},{"word":"法人","count":1}],"news":[{"title":"00878新一季能配1.1元？除息日、發息日出爐！今年配息增幅152％，遠超0056、00919...月領1萬2萬本金多少？","publisher":"今周刊","published":"2026-10-30 06:18","url":"https://news.google.com/rss/articles/CBMigAFBVV95cUxOQ19UY01GMWVVOVRkNE9jbXcwZ204STg3ekxGeUJjWVdfNDZfU0xMOTVoLVF4NVpqeGVFRXpRSmFnRDZNZkVibEJvLVdwUWhieU5BeS1VQkRia1luakJ3cXR1bFlNWnZQaTAtcUxkbmFFSzhZTHhnNll1Uy1LWlpkbQ?oc=5"},{"title":"比今年台股還會噴！「8檔高股息ETF」績效完勝大盤 資金避風港在這裡","publisher":"Yahoo股市","published":"2026-10-29 22:15","url":"https://news.google.com/rss/articles/CBMinANBVV95cUxQRm96Y0RwN29iZFVtR3VISEM5V1dUYVBhWVBLdktwenRRYWx4MkRscFVKY2ZzaF9GaExlMWZqZ0c0eXRmUnMtbmZYMzhUUlRGQlhvd3JCQUFyYkR0MHVVNE5tdGhtb0FYb2NIVVNLb2xNLTVEVTlOZDM3dHpITGMwMldVT2pEUkVsV1VNODlWVFF2QTU5d2RpOTdkNFNjdE1uU3B2ZzkzVS1PdGl4RVduM1ROb05MNkJZQUktRmdQc1VpM2RNVl9yeWJObzRLazFUSktjVVlrT2NBRTJkc1BRM3l5VVRpMFV5S1NYVndpS2thOFk1VEIzRW1HYTFDejRnVjV5Ums0R2w4Uk9Hb2YwUW9vSTFhc0did00zOXpHRVZmRjgxTU5iSzVnYzRmTmZXSjhjYVk2eWNfZGN5akpUU2RVYktPMV9WMkJxRndoQ3dLWXh1dnRoOWFtbURxVTJVNTRiNUpteGRTb1hyeHpmclVNUnAwYUNNQi00MHNsYVU4NXFrZzB0akJDTnJwYWZkTWRkOTB4UHJScDFy?oc=5"},{"title":"今年台股漲6成　一文看跑贏8檔台股高股息ETF","publisher":"ETtoday財經雲","published":"2026-10-29 12:28","url":"https://news.google.com/rss/articles/CBMiUkFVX3lxTFBqTEs4M2hFOU9KcFpycjV0OFNGMkp4YXNJdlk5UTFXaTdVeWIyMWdYcE9HTEFjVW16dG11SW9VRGRzY2xHTnhueVlseDVGYm9ZcGfSAVBBVV95cUxPQVkxT3FvZzRQOGpIRks4VlRCQTV2VmRHVm41czJuczM3dFJVUnU3Z2lhNmt4RzQ5bTNaTUZGMFZQWWlwakF6S1R3ZEQwNnRJeA?oc=5"},{"title":"00929兩年只賺9％！0050同期大漲103％ 綠角揭高股息代價","publisher":"UDN","published":"2026-10-29 09:06","url":"https://news.google.com/rss/articles/CBMiU0FVX3lxTE9uQld1UTM3aUZ1QVkwVG9nMkdKaE9IM2pwLVRheElUV1B2cnVsVndsRnd5TmFYOG50Xy1HeGs2Ykw5RkRnY2stRFE2c0Z3S2FCUzJV0gFYQVVfeXFMTmpYdUU3bC1BcUk5a2EzWTBoa0dYNGszc1RhbnRNNWhnTG5WMUR4WG1BQUJXNkVpWHlFYjFST0t4SnFzMkc5b2hjY3lPTG5PS2FRT2FMNk1LSQ?oc=5"},{"title":"高股息ETF逆勢翻身！00918、00939、00878、績效逾7成…股添樂：跑贏同期大盤| 存股族愛ETF | 股市","publisher":"UDN","published":"2026-10-29 08:49","url":"https://news.google.com/rss/articles/CBMiU0FVX3lxTE1CUlpMMXV3aUZfM2RXdGVLR09YWWROblNfSnByWmhka3ZzRmhPNF9RREFKVnE5U2JkT21iLVVWX1EzVWpfSGhTWDlYd3VfYVZhZnhJ?oc=5"},{"title":"價量揚TOP10 高股息ETF霸榜- 財經要聞- 工商時報","publisher":"中時新聞網","published":"2026-10-29 04:10","url":"https://news.google.com/rss/articles/CBMia0FVX3lxTFBudW1JaXVQRHNLZDB5M28xR3FaOTlMUGhmODYtcnQ1aDQ1NWxDVGxqcEQ0cjd6S0xpWlZVS1dKUEZvWHFxelRTcUN6aWFYaHhsc0NyeXJpU0ZHMkwzaUN0NzFvU3FkbVRTSUxZ?oc=5"}]},{"sector":"金融","chg_1d":1.26,"chg_5d":1.68,"chg_20d":8.78,"up_count":5,"stocks":[{"code":"5880","name":"合庫金","price":28.9,"chg_1d":1.58,"chg_5d":3.21,"chg_20d":10.94},{"code":"2886","name":"兆豐金","price":54.8,"chg_1d":1.67,"chg_5d":2.24,"chg_20d":11.61},{"code":"2881","name":"富邦金","price":162.0,"chg_1d":0.62,"chg_5d":2.21,"chg_20d":6.93},{"code":"2882","name":"國泰金","price":116.5,"chg_1d":0.87,"chg_5d":2.19,"chg_20d":4.48},{"code":"2891","name":"中信金","price":75.3,"chg_1d":1.48,"chg_5d":0.67,"chg_20d":9.61},{"code":"2884","name":"玉山金","price":49.0,"chg_1d":1.34,"chg_5d":-0.41,"chg_20d":9.13}],"keywords":[{"word":"AI","count":3},{"word":"財報","count":2},{"word":"美國","count":1},{"word":"外資","count":1},{"word":"營收","count":1}],"news":[{"title":"10月30日盤前／美國 GDP 優於預期 然美科技股賣壓未歇 台股高檔震盪","publisher":"經濟日報","published":"2026-10-30 08:29","url":"https://news.google.com/rss/articles/CBMie0FVX3lxTE95M2gtZDNSTFJLMDhDRXE3ZHRpWjQ0eThkTmVKQldnVzIySW5BQ0MyNVNsZm44cS1iMTYtcWJyQ1FkWDlZYlYtbkJYem1BbFZEd29PWTRkSTdTV1UtNjBscG9vSWNEY1RkZ1g3d1pObHFibGpadmM3ZzlXWdIBX0FVX3lxTE5ld1JJVFV3UmExYVpjZXI1OVA2amMzYUllMjd5VXZEc0JTb3VRTXZOSDJKa0pBc3c4c05YZUZELXlDY0hNenRjLXl4Y0c4YzJ1cVlBWWU5c1VGZzJmd1Zv?oc=5"},{"title":"10／30盤前｜台股跌！外資錢進金融、電信 買超10強金融包辦6檔","publisher":"工商時報","published":"2026-10-30 08:20","url":"https://news.google.com/rss/articles/CBMiX0FVX3lxTE5TVGU3ZHNVNUtlZ3hHejg2RExlaUc5Y1UyR19MeDRPX3JYTkUtWFI0ZXoxWGZOWXhpYm9KY3hPMHptZEt4b0gtcTdkdk1YV1I1VjlFUlpaQjU5SXRDZTIw?oc=5"},{"title":"《台北股市》公股銀：台股Q4先蹲後跳","publisher":"富聯網","published":"2026-10-30 08:03","url":"https://news.google.com/rss/articles/CBMiiAFBVV95cUxNTVh1Snl0VzNMd2lwaFBmQ2VSVGkzckptS3pnNXpVZEV4U1hqREtmRGt6LWtlQl9QdGljX0dNNi1pS2JqTU1tQURtOF9uaF9EUHpPRWt1dlBtcnhHa0tSMEZDRnVCU3JpOXNKTEpGVVBwcU5uQnBCNDdMd1drMGpsWlZDQWhHQ3JB?oc=5"},{"title":"亞東晨盤：科技巨頭財報失色，台股恐續測支撐","publisher":"富聯網","published":"2026-10-30 08:00","url":"https://news.google.com/rss/articles/CBMiiAFBVV95cUxPdWhzanVobzI2TXB3OEtFU0ZJRGRGMy12aHVhVTItXzdKTGllS25jeHZFX3E1N3A2WWdpc3dmVGo2VXFOMGxVV2hNc2FVaWdqU1NPNm5wX29YOEU2MUhuUUFRMTlTeHBmY290RTRVUm5ZMWtEczVLQjh3V2pKYmg5bXhmdzRrTVlz?oc=5"},{"title":"AI需求未降溫、台股卻走弱！AWS營收年增39％引熱議 滿手正二盼利空出盡","publisher":"UDN","published":"2026-10-30 07:56","url":"https://news.google.com/rss/articles/CBMiUkFVX3lxTE5NWFZTRHBhREcybXh5Q2xxSDZDSUp5LXY0T2pNQjdkS2JYanBUejJEZDdPX0tsSjltbGZBcDZTSE1WNFFKMW1FMGNHWHREbktRTGfSAVdBVV95cUxQTExJNGN0UlNMcVhXcjJ6Qk9YbzVBb1hFNXktcEFDc0ktQnBqM085WEI1TUhfOUZKUTNJN1F4WS1zcDR5OWZoU0dlTnFkYWN1NUIzWksxZU0?oc=5"},{"title":"《台北股市》三大法人29日買超股：台新新光金、中信金、華邦電","publisher":"富聯網","published":"2026-10-30 07:44","url":"https://news.google.com/rss/articles/CBMiiAFBVV95cUxQbHU4bjN4dVk1QktVYW42LWVLVC1oZzdUUE1wTGpqWUdwOVBtcWRRX0FsWlZvUUFHNWVOVXlJUlQzUHhsQzN1eVNwR3diQ3pBVHRFbm5MX2VnemR4UVVBelJxRW9LTjBuTmdPTzhkazlZR09ibEJYZnBBU0FicjNRQkpSUFhzUVR3?oc=5"}]},{"sector":"航運","chg_1d":-0.86,"chg_5d":0.22,"chg_20d":4.64,"up_count":2,"stocks":[{"code":"2618","name":"長榮航","price":42.75,"chg_1d":0.83,"chg_5d":1.66,"chg_20d":3.01},{"code":"2603","name":"長榮","price":261.0,"chg_1d":-0.76,"chg_5d":1.36,"chg_20d":9.66},{"code":"2609","name":"陽明","price":62.0,"chg_1d":-1.43,"chg_5d":-0.16,"chg_20d":6.16},{"code":"2610","name":"華航","price":20.25,"chg_1d":0.0,"chg_5d":-0.49,"chg_20d":0.75},{"code":"2615","name":"萬海","price":115.0,"chg_1d":-2.95,"chg_5d":-1.29,"chg_20d":3.6}],"keywords":[{"word":"獲利","count":2},{"word":"法人","count":2},{"word":"運價","count":1},{"word":"AI","count":1},{"word":"旺季","count":1}],"news":[{"title":"《航運股》星宇航空、阿提哈德航空擴大哩程合作","publisher":"富聯網","published":"2026-10-30 08:00","url":"https://news.google.com/rss/articles/CBMiiAFBVV95cUxQTDFJV2FvTE9nVFB2SW90am9ITlJXQmYxNUFOcjFUei0zbzRmcVRoTlI5SWd5d2JXeW90VFZ0dGJqTmI5Y21WbldBaU55czNQMkp4S2RCWDg1R1FfQV9jeXBCUTFiSjZmS21OM3ZfWTg3RDlTNHJfSGg0aXJfN2ZheGgxZEJEVmNo?oc=5"},{"title":"萬海(2615) 個股概覽 | 個股 - 股市","publisher":"CMoney","published":"2026-10-30 02:52","url":"https://news.google.com/rss/articles/CBMiU0FVX3lxTE9CbVJoX0FHYmVUT2VtdzNibTdLU1lMUTV2MjYzYnMtV3gtS1gyakMzWmpaT25jTDFhTnkzSU5vNnhvYUcwOGFEam9UZnZTNmQwbk9R?oc=5"},{"title":"貨櫃業兩變數牽動運價 恐影響三雄船舶調度","publisher":"UDN","published":"2026-10-30 02:26","url":"https://news.google.com/rss/articles/CBMiVkFVX3lxTE01NVpHbWlVcldMdk1Xd0t2enpNV3R4cnZ6SmsyS3BPRFlVZTJlVWlmTkxSbEMzaDVPV1ZOdWc4S3pyb2t5cmw3QlNaZzRVLWNaaFh1c1lB0gFWQVVfeXFMTTU1WkdtaVVyV0x2TVd3S3Z6ek1XdHhydnpKazJLcE9EWVVlMmVVaWZOTFJsQzNoNU9XVk51ZzhLenJva3lybDdCU1pnNFUtY1poWHVzWUE?oc=5"},{"title":"全球航運面臨多重挑戰 官方擬砸24 億助航運產業升級","publisher":"UDN","published":"2026-10-30 02:20","url":"https://news.google.com/rss/articles/CBMiUEFVX3lxTE1RSmtGZVY4MV9yeDN2dmJkNGFUZUhXZ3UzM2ZvQ05LV2lLVVB0VmNhRWxfVDg5OGRmODM3cDIzRzc0UHhlZUkyUG9Kd3hqSGk00gFWQVVfeXFMT0JuTi1aREQ5Njh0M25ieFRPWlp3SVFmQXZoMHJwNEhteXowUllVZHNXblIzakZEWGhLLUlGVWxPUVNZbnBhVnd2b1BRaHJPMmZqeExfWVE?oc=5"},{"title":"陽明董座蔡豐明：航運市場持續受到中東局勢挑戰","publisher":"自由時報","published":"2026-10-29 17:34","url":"https://news.google.com/rss/articles/CBMiWEFVX3lxTE5wOUpSX1lpUTNvRmlYWUM3bXZBaDByblYzYllfMWowelZTX19vZV9pVjRBc2N4TllzRVB3a2NBREppQUE2RjhJN042cFJzTlQwMUZlcmUzaW0?oc=5"},{"title":"《航運股》華航迎接787新機暖身 2027年月曆搶先揭開客艙新風貌","publisher":"富聯網","published":"2026-10-29 16:55","url":"https://news.google.com/rss/articles/CBMiiAFBVV95cUxOSHoyRVVaalhCQjFmTE1NRkhaam5ZaUNnUUFsdnZlbjB0dVc2bW5tdGZWaEdkMHlmMkxyV1dRWHJ4TVpGVE5KaFlFNWtETG1PNDFJaVRrM1BVaFZGOWx5dlNsbmpUVmRESmp1SW1kNnppek1rSTlNb2phN2U3WG45TkwwX3BRSkh6?oc=5"}]},{"sector":"鋼鐵","chg_1d":-1.36,"chg_5d":-0.28,"chg_20d":6.14,"up_count":1,"stocks":[{"code":"2027","name":"大成鋼","price":50.4,"chg_1d":-1.18,"chg_5d":1.0,"chg_20d":6.89},{"code":"2002","name":"中鋼","price":19.45,"chg_1d":-1.52,"chg_5d":-0.77,"chg_20d":3.46},{"code":"2006","name":"東和鋼鐵","price":92.3,"chg_1d":-1.39,"chg_5d":-1.07,"chg_20d":8.08}],"keywords":[{"word":"EPS","count":2},{"word":"外資","count":1},{"word":"投信","count":1},{"word":"獲利","count":1},{"word":"關稅","count":1}],"news":[{"title":"11月盤價燁聯小漲、華新持平- 財經要聞- 工商時報","publisher":"中時新聞網","published":"2026-10-30 04:10","url":"https://news.google.com/rss/articles/CBMia0FVX3lxTE1naGtQNnA3LXd4VmdaZXpiLVNJcnZCWUZXWEdmNnR6cllHTUkydkVyemlBMGk5Nk5mTmhPRF9oMjdnemFfdm9RbnJramM0cXdLNjBDbzFJTmQ2NVEwaU8wc3p0LVc0clZRVVZB?oc=5"},{"title":"鉅亨速報- Factset 最新調查：克里夫蘭克里夫(CLF-US)EPS預估上修至0.05元，預估目標價為13.75元","publisher":"TradingView","published":"2026-10-30 00:16","url":"https://news.google.com/rss/articles/CBMiZEFVX3lxTE5CRDlVc3FUeTNaNjlERzFfR0dqN3AzQzFDOFQyVTIyVm9nT0w2cDh2TUZ5eFpEOG5EekFkWWZRSUQ5VGlNTFVmbnUxcVoxR1dMSnFvSjZUcE1GTVJGbnM5T1BVOXo?oc=5"},{"title":"《鋼鐵股》榮剛前三季EPS 1.51元","publisher":"富聯網","published":"2026-10-29 17:28","url":"https://news.google.com/rss/articles/CBMiiAFBVV95cUxNOUJxQ0tmalBoTVNFM1dpRk5pYTZFY2Y0TWFuZTVOTUs1RENvWUpVaklBUkhyRmpDUEMtLVE3VHNsWGdaQmdJRGlhY2syTFJXcmpCaVdIcnVmQW91QzFsaXItNlBHR0VjV3dMaENHa0JTLUU3aFZVeGFzamstcmVKdHFFUjRfbDBv?oc=5"},{"title":"【13:19 即時新聞】佳大(2033)盤中震盪小漲，鋼鐵資金關注續溫","publisher":"CMoney投資網誌","published":"2026-10-29 13:20","url":"https://news.google.com/rss/articles/CBMijgFBVV95cUxObnUwRmpna3lIbnIwMkxUU3YtU2JIanAtVXEzMnJiSDd0TkJSSFRRaUk2b0ctMFZESDF5M3pkckg5VnZEc2V0ZkFwci13QnB6TlplRnZJZmNJOWp2TnIyTkJoTXhVbTN5Ml83TnZMRjIydlh1Tko3UTdfOFo1NnhCTGpjSmZUcDV6c3dFR0RB?oc=5"},{"title":"《鋼鐵股》豐興前9月每股盈餘3.28元","publisher":"富聯網","published":"2026-10-28 16:31","url":"https://news.google.com/rss/articles/CBMiiAFBVV95cUxNb1AxN1VzemtBR0c5TTBWUnVCYUtOMXJmRjBPM0ZkVG1xRVI3bjY1SWtuLUxOUjI2d0dCNjZiYi14UUNReEdWUml1d0tSU3NyVDJ0QlpLaFp6QzNqNG9hb2hocTdGb241eGMzQ3B5SnF4aDJnd0N1SzMzbUl3aDZ2SW13WTBEbDFD?oc=5"},{"title":"俄烏11月和談點火重建行情 外資狂掃中鋼、投信卡位台泥 長榮鋼噴漲6.52%","publisher":"理財周刊","published":"2026-10-27 17:45","url":"https://news.google.com/rss/articles/CBMib0FVX3lxTFBXcW5sTGFDNVdZZEdKUnNVM3NxdXpBY0ZIdEVFcmNPZERwbzl4b1UzV1NSMEJKeE8xaVRwcXJZTHVMeUFBckpWaXNCODNHcGc1UFFtbXQwUEV0V3lzUU5OYXpQNFgwRjdUZHRQN0d5RQ?oc=5"}]},{"sector":"營建","chg_1d":-0.29,"chg_5d":-0.5,"chg_20d":0.11,"up_count":1,"stocks":[{"code":"5522","name":"遠雄","price":61.1,"chg_1d":-3.17,"chg_5d":0.43,"chg_20d":2.25},{"code":"2501","name":"國建","price":20.35,"chg_1d":0.25,"chg_5d":-0.25,"chg_20d":-3.78},{"code":"2548","name":"華固","price":92.0,"chg_1d":0.22,"chg_5d":-0.54,"chg_20d":-0.22},{"code":"2542","name":"興富發","price":39.45,"chg_1d":1.54,"chg_5d":-1.62,"chg_20d":2.2}],"keywords":[{"word":"法人","count":2},{"word":"外資","count":2},{"word":"法說","count":1},{"word":"配息","count":1}],"news":[{"title":"《營建股》欣陸11月9日召開線上法說會","publisher":"富聯網","published":"2026-10-29 17:01","url":"https://news.google.com/rss/articles/CBMiiAFBVV95cUxORVhyTDBNQTBDbU91YllNRkdqQXN0cUxVXzV0SG5pemd5NGZBY2tVTUJ0NWtZa2hzRGo5V0R4a2E3b0xWR2I5SlZBYlFXTC1OeVNhSTFncmRuUVJja1l5eXc1bG1SeEJyMWtpTXoxcFpsdS1XbE1BTXJiY0p6bUFaSDlLbllSVlh4?oc=5"},{"title":"台股跌667.25點","publisher":"經濟日報","published":"2026-10-29 14:12","url":"https://news.google.com/rss/articles/CBMiX0FVX3lxTE9kT1hWMDBOYmMwZ3d3d19xMkVQM0Z2QWhWR3pXVHhoYU1mYkVZTUE1aFdadklGTl9WSkxnMkF6T3NxQXZTYkhBT1FtOG5CNzZQMWt4OTFLeEdURTE1UmdZ0gFfQVVfeXFMT2RPWFYwME5iYzBnd3d3X3EyRVAzRnZBaFZHeldUeGhhTWZiRVlNQTVoV1p2SUZOX1ZKTGcyQXpPc3FBdlNiSEFPUW04bkI3NlAxa3g5MUt4R1RFMTVSZ1k?oc=5"},{"title":"《營建股》疫後標案助攻 營造廠毛利率攀高","publisher":"富聯網","published":"2026-10-29 07:55","url":"https://news.google.com/rss/articles/CBMiiAFBVV95cUxNU2hXSXVrbWRCcl9UQ3VYWjNZamZnUEYwZ3lOcmFNcnlvVTRyZ3dHQVRSTng2cWRPRmhQNVE3NENnalpsRUFFaF9oYzhPYXY3QnI0Y1VIUS0tZUhpNzZ1bmlPMExhNThZWUtlS3ljNEdYZi1wOXpjZzZ6Tm12dVN1TXRwSXVnbFNN?oc=5"},{"title":"三大法人砍逾1萬張！國家隊5242萬救鞋王","publisher":"鏡週刊Mirror Media","published":"2026-10-29 05:10","url":"https://news.google.com/rss/articles/CBMiXEFVX3lxTE9RYjBobmNkbUZMN1I2azlVdTFydmVmV2NpZFZMV2xJZnFxd0FoVjY5Yk81VENNMHhIVE94YkhkZkR6a0VMbmdKYUJUUEk5WXZxdlJxZ3dPa0ZBNEtB?oc=5"},{"title":"外資連13買後翻臉！國家隊砸2668萬救援 「這檔營建股」仍挫逾3%","publisher":"三立新聞網SETN.com","published":"2026-10-28 19:11","url":"https://news.google.com/rss/articles/CBMiS0FVX3lxTE41UEFOTXdvSjRZaXpRVkdRU2xJcTFVUkJoSkNQenNpaGRVd3A5SUx2VF84WkxXc0Q4ZmFyNl9PZFV3a1N1RGl5Y0tiUQ?oc=5"},{"title":"外資連13買後翻臉！國家隊救不回「這檔」","publisher":"鏡週刊Mirror Media","published":"2026-10-28 19:08","url":"https://news.google.com/rss/articles/CBMiXEFVX3lxTFBJdjdzbHZYY1o5bHptRjhIX1hwazJqODh6Y1Q4MEx3MFYxVEIxUWNPR05NVnpIVE4zdTI3MVF2NTJPU3Nfd3BQVEtwZW1scFVnd1plY2hDNkt5eFhE0gFiQVVfeXFMUEg0YmFXZkpiSV9HX3NtN092OElZVE1GMW5lSzBISTRPX2EzWlB4ekd6TjFVeXZiaHJCVjhKdThTdWIwZ3VCbVNTeFdTTFdrSGV4YjNDMGpRTjVuMlFoOEtoYlE?oc=5"}]},{"sector":"生技醫療","chg_1d":0.57,"chg_5d":-0.97,"chg_20d":-1.13,"up_count":1,"stocks":[{"code":"6446","name":"藥華藥","price":1240.0,"chg_1d":3.33,"chg_5d":5.53,"chg_20d":3.77},{"code":"1760","name":"寶齡富錦","price":51.8,"chg_1d":-0.38,"chg_5d":-1.33,"chg_20d":-3.9},{"code":"4743","name":"合一","price":47.0,"chg_1d":0.32,"chg_5d":-2.89,"chg_20d":2.84},{"code":"6472","name":"保瑞","price":392.0,"chg_1d":-1.01,"chg_5d":-5.2,"chg_20d":-7.22}],"keywords":[{"word":"法人","count":3},{"word":"外資","count":2}],"news":[{"title":"康霈*(6919) 個股概覽 | 個股 - 股市","publisher":"CMoney","published":"2026-10-30 06:26","url":"https://news.google.com/rss/articles/CBMiU0FVX3lxTE1iQXdkVVhCdkxjOG5XVTduekZUZzkyRE84ZVotXzUyRmdlV1RXTG82bUdEZlo3UEJINEJQR0lSWU9WQ09RTlNlems0NlU4U2NWYmJJ?oc=5"},{"title":"《10/29日法人買超》外資買超前三名：康霈*(2258張)、台肥(577張)、保瑞(390張)","publisher":"生技投資第一站-Genet觀點","published":"2026-10-29 23:19","url":"https://news.google.com/rss/articles/CBMibkFVX3lxTE5yenVPN2YzcG5QRU1WbV9sX0JWeDIzdWtBWnlTTFhEMzRfT1BDeWFzWExqSjhNX0pXNnpFYzU0d1lzQXQzT00tbHpQY3BrWDdKZnJOaTlMelVOd0FyUHUwUFR3Y0ttWWdzWDFoZFVR?oc=5"},{"title":"《10/29日法人賣超》外資賣超前三名：漢達(-196張)、泰合(-165張)、中天(-94張)","publisher":"生技投資第一站-Genet觀點","published":"2026-10-29 21:26","url":"https://news.google.com/rss/articles/CBMibkFVX3lxTE1XVHBJYzZkLTZIbGpHUTY5Mlo2N3ViOWdmVE1aM0xYRTBkT1VFY3Q2NEpyd1VIT1hFYTJfUDJ4QmkzVm9SMUlHSUxpZ1ExbUsxeVRURUVtc3RiWVI1SnFIakpSVkg1ZFZqNHVuTGdR?oc=5"},{"title":"台康生技(6589) 歐盟藥品管理局(EMA)已正式接受本公司生物相似藥EG1206A(Pertuzumab Biosimilar)液體注射劑420毫克產品之上市許可申請","publisher":"GeneOnline","published":"2026-10-29 20:57","url":"https://news.google.com/rss/articles/CBMirgJBVV95cUxNVWxTbFJ4VEVOekFpSjlxSTE2ZThFSlZmU2RDNkpDbktKb0Z3WU5HU1lEMkYyUER6YzNNbHQxQlFTb244SThWUThrQWd4YWo1emF0bGtrX1JyYWN4RklpMzByTlNiQU53WTZHUnIzUnZtV3d3WW04MFNOT21lZXdoYkZORDNHQTBFRnR6bWROZUpsamlPMzN1aHJRRGdNRmJxS09Sd2ZrQzFrLTNMampmXzAwMnR2SjJBV2FZSTNLdktPZzNyakl5WlZWc2xUOEx1Z3lUY3h3aGFJUEVFWGsxS1lubGtuQjR2WTZXUXhGRGliNXpYYVZjVWcza3ozV0ZHYzY3QV9JTjVIYm0zS1M3ZG92dTJnbWRzQno0RjVYNzduUXVOaFBaWlpTalBjdw?oc=5"},{"title":"馬光 (4139) 公告本公司永續發展委員會之委員異動","publisher":"GeneOnline","published":"2026-10-29 20:19","url":"https://news.google.com/rss/articles/CBMiqgJBVV95cUxNOXJFOVktSzloV0V5SEFzRk4xdXFGRUppWjktRXZJeUlUWVpXRl9vWjF3aVM1Y0hKMDNpS2Z3bkpUS21qVVFKMjBYUERSTlVVcGxONHlvcEVqMmNWdlJMS0cwR0RGZHE5VklDLUNGMUFoTW1iZEtncVI3V052d3JhYzFCZlViX1NhNzZQbFBVNDdjWm54SlQ1M1NQMXp3SDF6SUNwX1hRbXZFc0o4S2tXYnJqZFlwMmFzam9sZlFpQnFOMUpYMVNpMVpOSDBSOUlRZkhGQ1dVU0dwSExjcHJPZkNBcXprNXZlcUtra21OQ0pNbElYaUZ3emZpN1hubmhYWEtGUkNtODd0TFlHeVNtTGZBWS1DUjZkSXVnaEMxMnhJelB2OHAwemx3?oc=5"},{"title":"握力研究登國際期刊！Hi-Q中華健康生技研發新原料布局大健康市場- 生活新聞","publisher":"PChome Online 新聞","published":"2026-10-29 19:58","url":"https://news.google.com/rss/articles/CBMihgFBVV95cUxNajY5clo5WUdLZE15emRoNjVtMGszZmVxVzVsTXBFMTVaUWc0VmNTeWV4Um93N3BZYVZFS3RST3J2ZTc4OFpCZmg2Sy13alk2d1FRZjVpZUJjUFcwOE5Oam1mYmZfa2QtX2VwNkNyM25OTVdPMVp3UWVjRVVLQXpGLU91M3pVZw?oc=5"}]},{"sector":"紡織","chg_1d":-0.4,"chg_5d":-1.49,"chg_20d":4.95,"up_count":0,"stocks":[{"code":"1440","name":"南紡","price":13.7,"chg_1d":-1.44,"chg_5d":-0.36,"chg_20d":3.01},{"code":"1402","name":"遠東新","price":28.35,"chg_1d":0.71,"chg_5d":-0.87,"chg_20d":2.16},{"code":"1476","name":"儒鴻","price":322.0,"chg_1d":1.42,"chg_5d":-0.92,"chg_20d":17.95},{"code":"1477","name":"聚陽","price":206.5,"chg_1d":-0.72,"chg_5d":-1.2,"chg_20d":8.68},{"code":"1409","name":"新纖","price":24.75,"chg_1d":-1.79,"chg_5d":-1.98,"chg_20d":1.64},{"code":"1434","name":"福懋","price":19.05,"chg_1d":-0.52,"chg_5d":-2.31,"chg_20d":5.83},{"code":"1447","name":"力鵬","price":6.2,"chg_1d":-0.48,"chg_5d":-2.82,"chg_20d":-4.62}],"keywords":[{"word":"法說","count":2},{"word":"旺季","count":2},{"word":"營收","count":1},{"word":"AI","count":1},{"word":"越南","count":1}],"news":[{"title":"台股跌667.25點","publisher":"經濟日報","published":"2026-10-29 14:12","url":"https://news.google.com/rss/articles/CBMikAFBVV95cUxNekxfeGxaS0xSZGFEZUFuNFJPY295VFhGRzliMXB2RXFxX1pvLTYtUWJIWkxVOVpCUmpyUUVKVFVhUE5xakRmVm00LUc2dnRQeWdmVDJIMWYxS1JzdnZxOTIwZVdia21iVlhOV3FsRXk1emVrR1J2U0JvWU1SZk9WdzQ2TGJMa1gyZU9uX0lYWGnSAV9BVV95cUxPZE9YVjAwTmJjMGd3d3dfcTJFUDNGdkFoVkd6V1R4aGFNZmJFWU1BNWhXWnZJRk5fVkpMZzJBek9zcUF2U2JIQU9RbThuQjc2UDFreDkxS3hHVEUxNVJnWQ?oc=5"},{"title":"耐特半導體材料占比逼近兩成 IC Tray、BBU 添成長動能","publisher":"UDN","published":"2026-10-29 10:35","url":"https://news.google.com/rss/articles/CBMiVkFVX3lxTE1NRFl3aENoTThIR3BYd0ZRZTh5c3NsaG40LWhvTFhsaXFrY2piQUk1amVFajh4bFVGSTRuUC0zLUMwSVBIVnZleEdvRUxrQzZlV0dRR0FR0gFWQVVfeXFMTU1EWXdoQ2hNOEhHcFh3RlFlOHlzc2xobjQtaG9MWGxpcWtjamJBSTVqZUVqOHhsVUZJNG5QLTMtQzBJUEhWdmV4R29FTGtDNmVXR1FHQVE?oc=5"},{"title":"半導體營收占比逼近兩成 耐特轉型高科技材料解決方案商","publisher":"UDN","published":"2026-10-29 10:29","url":"https://news.google.com/rss/articles/CBMiUEFVX3lxTE1jRndSelFKZGQ5b2tSNElJeno3bTdDS3RYdGx0NmJUN0dFeXc1SkhnOFFaMkRlWlNWeUdGbkNydVpfbE40SFRPVTNuRE93aUZw0gFWQVVfeXFMTmRHclJVem9hY0Z3TWh0Yk96T0tNNmF6M2tkSVRNZWMwdlkyNGk5Y0xuRkRIYVloUFJJT3FPU0ZHVVlUVEZ1eFdyNzdaY2V0cXB1ektxRlE?oc=5"},{"title":"台股大漲反而賣股票！股海40年老手每年一動作守資產","publisher":"三立新聞網SETN.com","published":"2026-10-29 09:18","url":"https://news.google.com/rss/articles/CBMiS0FVX3lxTE1UM1U0cVJmUDhYajRjeDRzb2VmdjVfdnpBWUxmeXg4N3dkTHJuenBEeXVfNTBvQy1pclp3cEZuaGJyMWtQclJKOFJtdw?oc=5"},{"title":"南緯法說會／雲南新廠稼動率達八成 金鼎科新增半導體客戶搶新商機","publisher":"經濟日報","published":"2026-10-29 01:00","url":"https://news.google.com/rss/articles/CBMiWkFVX3lxTE1ycWxCVXM3NTJoY1AweVRxV0VJdXViV2JBY29EQ2N2OHBrcl85Z1FSWER2X0VlbENkNDZIRWtPZ1BEM0lBR3dsSEVXTGVSdHUtNUJPOTNoTVg5QdIBX0FVX3lxTFBuRFpOVTVYbkg3U3NxSC15Q2NkTWNTSGQ5Z05RZmNOWUxCQ0JMX3lzQ2M3dGpnamZhMWZaUld1V2IyYnJOcnBwRTVETWQwLVJCVWVacmZqd3lEVS1ydzlR?oc=5"},{"title":"特化鏈強攻封裝材料","publisher":"經濟日報","published":"2026-10-28 23:37","url":"https://news.google.com/rss/articles/CBMiWkFVX3lxTFBpRDQycWNwZFJYeGJhN3B3VkpQcjhab2xsOWYwTUI1enRWREE3TldhUUNCdXgtdnZSdHZvam9EbkZ1RXRrN0dBZGk4d2dQcW5JZHVYMGthWGxQZ9IBX0FVX3lxTE9qbE5TbHR5M2JqYWxTZWtUakNyV2xHQmZCSjN4a05jYVRyNnYyanZPb0daNW1Fa3RsZjQ0Y1BZcXFfMUNITTd4YVIydi1KSXFGMWxGNmhXNDVKN1lMdUNB?oc=5"}]},{"sector":"半導體","chg_1d":-2.73,"chg_5d":-1.86,"chg_20d":-5.09,"up_count":2,"stocks":[{"code":"3034","name":"聯詠","price":596.0,"chg_1d":-0.33,"chg_5d":1.02,"chg_20d":10.37},{"code":"2379","name":"瑞昱","price":794.0,"chg_1d":0.38,"chg_5d":0.25,"chg_20d":4.47},{"code":"3711","name":"日月光投控","price":683.0,"chg_1d":-1.73,"chg_5d":-0.15,"chg_20d":-0.58},{"code":"2330","name":"台積電","price":2415.0,"chg_1d":-0.41,"chg_5d":-0.21,"chg_20d":-2.42},{"code":"2454","name":"聯發科","price":4045.0,"chg_1d":-4.49,"chg_5d":-2.29,"chg_20d":-17.62},{"code":"2303","name":"聯電","price":115.5,"chg_1d":-9.77,"chg_5d":-9.77,"chg_20d":-24.76}],"keywords":[{"word":"AI","count":6},{"word":"美元","count":2},{"word":"中國","count":2},{"word":"Fed","count":2},{"word":"法人","count":2}],"news":[{"title":"《專家之言－黃德几》半導體股波動背後的資本開支與現金流考驗","publisher":"etnet 經濟通","published":"2026-10-29 18:46","url":"https://news.google.com/rss/articles/CBMikAFBVV95cUxPY0I0RURfUDFBcFl2ZTAzSmdhMEhXUlBUNDV4dklSMWJEOUhNbXYwcEZVd1NrSGU3Y3lIU1JaYW9MMkZ0N29VeHVxZHdHa3pOcHpDZmNINmVrTEU4TTVFLVFsb1c3eHpuMjhzRzdvc2dnaDZtamtzWkRuNmg1Z2dfUWk2ZzQ3ZjBnbzNfX0NDWHg?oc=5"},{"title":"討論牆 | 半導體股撐日股！鎧俠今年飆3.5倍、愛德萬測試漲近9成 9檔ETF全賺雙位數","publisher":"LINE TODAY","published":"2026-10-29 16:50","url":"https://news.google.com/rss/articles/CBMiZEFVX3lxTE1XLUNXSFowQXJHVzRpaEk1eFhOdHpOLVd4UThPME0zM2M0RUZoZy1ueXNidV8xdEYwSHg0V2k4dmlwMDNsbHV0ODVxTHVqSUxQMlliN3hFLWxLc3pkdlc2QzFxR1E?oc=5"},{"title":"日經指數上漲1.10% 半導體股領漲大盤","publisher":"共同網","published":"2026-10-29 16:20","url":"https://news.google.com/rss/articles/CBMiWEFVX3lxTE13SGZkYmVhT0d3NTY5X05uX1dwc1A5VmQ0S2luaXVJTVFnd2J0WnQ0MXJwZ2hEaTRlTzFhX1p4Vm1uazV2LWhKMWRKZ0RxSkZpQTdFblNSNXI?oc=5"},{"title":"半導體股撐日股！鎧俠今年飆3.5倍、愛德萬測試漲近9成 9檔ETF全賺雙位數| 財經","publisher":"Newtalk新聞","published":"2026-10-29 14:31","url":"https://news.google.com/rss/articles/CBMiW0FVX3lxTE1fa05UZ2ZkUlJRTWw2QmhoWWNBeDhVV1RQMmRWdzNNZFBFWnd3OHZzRGxXdlY4M0cwcnNzWXRTYXJpNEo2bDZtX2Q0VzVzcTYtalVpanBoSVdlWE0?oc=5"},{"title":"討論牆 | 中國 AI 與半導體股泡泡吹破市值蒸發 4,800 億美元，小股民被當韭菜割","publisher":"LINE TODAY","published":"2026-10-29 12:45","url":"https://news.google.com/rss/articles/CBMiZEFVX3lxTE4yZ1FpZU1aUm1hanNpQjkydktGeXJnYVhKcTNTYTRuTy1aRzNtX2xFMHlJX3lNRG95cFVTdURaeEhveE1zZzYyZ0pzcEVwSldsUEhzTFZTM2M0NEZtVTZySVZzVG0?oc=5"},{"title":"討論牆 | Fed利率不變 半導體股走強、美股多收漲","publisher":"LINE TODAY","published":"2026-10-29 07:53","url":"https://news.google.com/rss/articles/CBMiZEFVX3lxTE5SUlo4cXJ4VklIcDRiTDMzQTlOeDRwdDI1Vm0xMXE0QzZ0cXE3LWlFNS1uc2VWMGZFV3BwTXJvc3ZkNzFnTXZMNDRHc091VkhfWmNmbzB0Q2JKQ280NHJuRjd0M0o?oc=5"}]},{"sector":"AI 伺服器","chg_1d":-3.43,"chg_5d":-1.87,"chg_20d":-2.77,"up_count":2,"stocks":[{"code":"6669","name":"緯穎","price":1885.0,"chg_1d":-3.33,"chg_5d":0.27,"chg_20d":-10.24},{"code":"2356","name":"英業達","price":61.4,"chg_1d":-3.76,"chg_5d":0.16,"chg_20d":3.72},{"code":"2317","name":"鴻海","price":248.0,"chg_1d":-1.39,"chg_5d":-0.8,"chg_20d":-1.0},{"code":"2382","name":"廣達","price":318.0,"chg_1d":-3.64,"chg_5d":-3.2,"chg_20d":-5.5},{"code":"3231","name":"緯創","price":188.5,"chg_1d":-3.08,"chg_5d":-3.33,"chg_20d":1.62},{"code":"2376","name":"技嘉","price":343.0,"chg_1d":-5.38,"chg_5d":-4.32,"chg_20d":-5.25}],"keywords":[{"word":"AI","count":14},{"word":"財報","count":3},{"word":"擴產","count":2},{"word":"獲利","count":2},{"word":"美元","count":2}],"news":[{"title":"台達電攻略1／蔡明翰也受波及！主力股台達電跌近45％ 續抱不加碼原因曝","publisher":"鏡週刊Mirror Media","published":"2026-10-30 07:00","url":"https://news.google.com/rss/articles/CBMiZkFVX3lxTE5PQWdpZlhuZUtXU0xteEFPaFdLdkFMb002R21iRmhuVWZmUWZma3R4ZWV5VzVEaXJhTmJCYUU2ZmVvc2VvTGx0S05lcXVGeFZ2OXJqZHIzeVp5WEluLTVOSFZfZXd0dw?oc=5"},{"title":"快逃？華爾街點名2檔AI股恐腰斬 台灣人掌舵的公司也中槍","publisher":"自由財經","published":"2026-10-29 22:58","url":"https://news.google.com/rss/articles/CBMiX0FVX3lxTE9RRFdsZE5RTWdab25aSTlhVjRoZHZnTWlVMnhxUVN0ODJTYkc4b2Myb0Y5RmdJUU5fNDdCTmlGVkIxSzNJeV9DNDlkZHpsb083U05NVzZ6VlllMDk3NDVN0gFkQVVfeXFMTzZ2M0VUYlB4dE05dERONUxsZFZnQWstUWhaSnFwb3drUlJDamdrX1p3NlUwb0dNMWRtZzZxcTY2cjZobEZ3ZG1rYnFSVXdWLXJPbjlsU3l6SkZkTkxOOTZXeGkwMw?oc=5"},{"title":"AI伺服器供應鏈近日加速擴產！台廠掀逾百億資金潮，技嘉等概念股受惠-財經焦點情報站","publisher":"CMoney投資網誌","published":"2026-10-29 20:09","url":"https://news.google.com/rss/articles/CBMiggFBVV95cUxQQ3NrVVphX0FwSW5JYTM5Ym5mbnI5Ml82LWVwYlRMTVRtRzRuOHRMZVptRWptSllkZGhuMFo0cHN5ei0zZG5mOG9OUDJ1WnJXUEhOZmRWdFpTYkhkcnM1MWo2WjVpVkhaTmFBNXd0OVRWSXNoN1B3ek1OUHp6UEtMYmtR?oc=5"},{"title":"研調估全球AI伺服器將突破250萬台 廣達、鴻海、緯穎擠進供應商前五名","publisher":"鉅亨網","published":"2026-10-29 17:40","url":"https://news.google.com/rss/articles/CBMiT0FVX3lxTE13SWtWOWtPY1ZacVByZEdwajZQMGNvb1Q1SHgwSTFyMXA5RlYzY25UejVqcDFDME1GTmhvWUljWl9NY2NacC1oUzAzTVUtR1k?oc=5"},{"title":"廣達收購友達桃園廠房喊卡 AI伺服器產能不受影響","publisher":"鉅亨網","published":"2026-10-29 16:45","url":"https://news.google.com/rss/articles/CBMiT0FVX3lxTE5lVHFWWjNUQXNoRWdRaW1KWEszbW5mamFjMF9ELVZiZ29xZTZXUlpSZHg1NTVhZl9kOFIzMXJON1VaYkRlcjd2MktVR3FITkk?oc=5"},{"title":"台股賣慘還是賣剷子 鏟子的鏟子是AI材料。從全新、聯亞到金居國精化","publisher":"台灣好新聞","published":"2026-10-29 12:31","url":"https://news.google.com/rss/articles/CBMivgNBVV95cUxOQU9meGhLamVCOXZmeXJOblp1ZFB0Z1pSUllDNzBNb0xudHoyYlA1QjRqdDVjZWl6Rm9EdkdGODlfNEVVNVUzSkpJLXdoVlNTRnhGMi1EWi1GQ0lZR0E3QUUxTkprODM4SVJ3R0RaakhSaHd1a1VsaTFzNUt0RkpvZ3ZEY2tVVGk0N3BpeVZKa19sb0EzTVRJRUNPNlRoUUdlSDJlUjRrY2NubHhaMEJpX3g3aDk5eHpWTWdYNVpRTGFTWTRvSUF1ZHB6MWNIWFFHc1ZNNEh5c2xPUlMwcDlCZFJORk5GQ1Q4TGJ1bU1sNWhmODVwY2JMamIyRzdfSlFMOGV1RzI4UjNVNDlweWlnNzBkcEwwVVFtNWVMNFpuOEsxZUJIMFJmM0MxX1BLR3ZndTZmWU1GYTduRVhaRE5fR3ZnVHFJazdBZk8yYWk4YnZidUljeGNPbFpXUnJTUVdMdnp1cGtBektyaWZ6UnFHenBMbnJFd1FCZDExemRVeVNNVlNudl9NMU9DaG9YY0NtRDhldUZyODJmZWN3bzZ3OVBvVUdfR0YyNnluajZGNC1JcXdVU1ZuR29tY1Y3QQ?oc=5"}]},{"sector":"重電","chg_1d":-2.18,"chg_5d":-4.2,"chg_20d":-6.45,"up_count":0,"stocks":[{"code":"1504","name":"東元","price":69.5,"chg_1d":-1.0,"chg_5d":-1.56,"chg_20d":1.46},{"code":"1503","name":"士電","price":188.0,"chg_1d":-1.57,"chg_5d":-2.08,"chg_20d":-3.09},{"code":"1513","name":"中興電","price":157.0,"chg_1d":-1.26,"chg_5d":-3.09,"chg_20d":-5.99},{"code":"1519","name":"華城","price":563.0,"chg_1d":-4.9,"chg_5d":-10.06,"chg_20d":-18.17}],"keywords":[{"word":"訂單","count":2},{"word":"外資","count":1},{"word":"AI","count":1},{"word":"美元","count":1},{"word":"美國","count":1}],"news":[{"title":"華城、士電、中興電、亞力...重電4雄為何挑他？不只訂單看2031年官股投顧：小金雞明年掛牌- 上市櫃","publisher":"旺得富理財網","published":"2026-10-30 07:41","url":"https://news.google.com/rss/articles/CBMiakFVX3lxTFBaZFpxSmVmclpaM25OWktMNEJHQzE0dV9KTVMybWQ3TUVaaVMzV3V3TG5iT0NqbDV4d2JxZXRlTldNUTdjeTV3UnVBMEV4YjdUWEstcVItVERyeDRqSVZsY01Gb3hKMW9XMmc?oc=5"},{"title":"別在天亮前被洗出場！量縮破八千億的洗盤真相，大戶鎖定「兩大錯殺剛需」悄悄撿便宜","publisher":"鉅亨網","published":"2026-10-29 17:19","url":"https://news.google.com/rss/articles/CBMiT0FVX3lxTE5GS0k0ZHJhMG9vb1dWaDNtVXBDaGFXLW5QN3pnQm11YWxwYkQ2Qm9ORzZaZTNzTG9IWGx2dXpoaWQtRS14bzAzWTc2bUxmdVk?oc=5"},{"title":"外資提款688億　逾1600家倒地！「被動元件二哥」逆勢大漲6%","publisher":"三立新聞網SETN.com","published":"2026-10-29 15:38","url":"https://news.google.com/rss/articles/CBMiSEFVX3lxTE1Jc1FKMjB3X1Y0MHBvMnlzUHdGUTZ3VDFlQ0pvYjVQMkxaUVdUU0NiQUZtbjI3NTZhQTQta0hNcUhfRmpyTVBEZNIBTEFVX3lxTE14NmNENXlzZlhLclMwYmMwS1Jra2VpczZqMFdkbW5ib053dF8xTkpMc1B3QVl1YzNwSkZXVkloR3BILVFMU0J2R3ItYVY?oc=5"},{"title":"玉晶光股價上演雲霄飛車！昨日創高、今日跌停鎖死 股民傻眼","publisher":"自由財經","published":"2026-10-29 12:26","url":"https://news.google.com/rss/articles/CBMiX0FVX3lxTE5qdEFuUGNOcXZJbGE0MHJEUHVNY283U2FOSzJkMmxnd01vWkpjek5yLXZhRWZkVjN5VjB3UmhuQVRDX3VTLVgtTlRjdnFiMkpMTzh1cTNmbS00VHBTN29v0gFkQVVfeXFMUEpqZk9OZHFsZWExdEdGR0Q1MEI2YXZOTUpDR2w2WFJBUlYza3Btdzh5STQwUkhZa3pDVmhDb0JldENZb0xGMS0xdEdEVnNoLU51dEFEQVNEano0bklDYlQ4X3lBNw?oc=5"},{"title":"焦點股》味全：股價快成水餃價 今反彈逾5％","publisher":"自由財經","published":"2026-10-29 12:06","url":"https://news.google.com/rss/articles/CBMiX0FVX3lxTFBhQU81TENZZ0ZZT3kwS0VxMjlmRFFaRDVBUmlmNS1EdFlyZ1ZtcFBHYnFtUWRBRWFpUUxGOWMyc1c4WE9GTW5lNUNxTUtXMTVlUFQ5dUNnM281dE9TN3hz0gFkQVVfeXFMT0NXYm8xRTZHZUNYSnFJTFJwZ05vTnNIZmNGamhVYWJscnpWSTZwb1dySWk2UVFxcHhyaVZ5dkRqWXB4VzFheXphYldHSW8yWVNkcXNzTFJMYTBPdHgwc29QOE5uTQ?oc=5"},{"title":"009831補足0050、006208海外布局！阿格力解析40％電力股配置策略","publisher":"UDN","published":"2026-10-29 11:31","url":"https://news.google.com/rss/articles/CBMiWEFVX3lxTE1zNFR0QkR6VlZWRXViNlBZOVV3TVF1MHVST09CQW5aME5yWGtjUWt2Yk9KVDNXTl91VWxQQUFBaW44VmE2TlNKMHpZM3o3U1Blc1FoRnpzSkXSAVhBVV95cUxNczRUdEJEelZWVkV1YjZQWTlVd01RdTB1Uk9PQkFuWjBOclhrY1FrdmJPSlQzV05fdVVsUEFBQWluOFZhNk5TSjB6WTN6N1NQZXNRaEZ6c0pF?oc=5"}]},{"sector":"塑化","chg_1d":-2.48,"chg_5d":-4.75,"chg_20d":13.88,"up_count":0,"stocks":[{"code":"1326","name":"台化","price":74.4,"chg_1d":-1.46,"chg_5d":-2.36,"chg_20d":10.22},{"code":"1303","name":"南亞","price":312.0,"chg_1d":-2.19,"chg_5d":-2.65,"chg_20d":26.32},{"code":"1301","name":"台塑","price":73.9,"chg_1d":-1.99,"chg_5d":-4.03,"chg_20d":14.4},{"code":"6505","name":"台塑化","price":98.6,"chg_1d":-4.27,"chg_5d":-9.95,"chg_20d":4.56}],"keywords":[{"word":"投信","count":2},{"word":"EPS","count":2},{"word":"法人","count":2},{"word":"AI","count":2},{"word":"地緣","count":1}],"news":[{"title":"《台北股市》投信29日賣超股：聯電、兆豐金、台塑化","publisher":"富聯網","published":"2026-10-30 07:44","url":"https://news.google.com/rss/articles/CBMiiAFBVV95cUxPdFpQYjVlNlc2Q2pYd2hCRnp5UFNMY2Y2NFFxa0ktamN3aWhQT1NpSXk2TXQ1cVQwNU42YlQtU1lwTUprY2tMX2gxdldMcnNOUVFIREI4Mk9VMGxTVXJXT01xRmpYcjRrMk1UWGprZ2hkSWhVem82NEZJWDBCa25zczVtSG5sQTg2?oc=5"},{"title":"台股大逃殺傳產也沒料！市場點「台塑四寶這1寶」是中東地緣直接受惠者 股價卻連崩登弱勢股王","publisher":"Yahoo股市","published":"2026-10-29 22:00","url":"https://news.google.com/rss/articles/CBMitgRBVV95cUxPWDQyemhObnhpbC13V3NTbGIxcEZLUlpQVUNFTTRoay1ndy1oX0szS1F0ZzE4OGpmUURRWmxkdHF3MWJrU24wdXYta1h0aWlkNkN4S1VPTDRPR1B1VTZUTTZQU3ZTSG1KS243TnM5endRdk9JQWtZcy1sbWJNamFocGpQNjRjRTdqc1VGVUt0ZVBXZ2d3RmJjcFgzUk9qUkQ2U2dxUGczdm1uTFYtMnhSZGs4Zl9CLW4wc2tJV1lrM0x0Nkl6ekVRLWNEU0cwUnlNZl9jRy1BQnFVMGtfNzh2X0MwZGRaWTZYLVNrSzBUVFpfMEtvX2V4V3VnZ3VHSWxXeTBOSjFiMEJQOWZoNkJzNXk0QXk5Q3E2bk1wS1RCZ2RRX2ZyTFFTSnRFRlRIUHJqM0tWd3MwVlFhdG9tczNDamFBUFNvcnB2bGl1b3g5VE40dWhsN0hBdXllN3NIRUJUeFlBT3Y4RE41VVR1Qll2cGhHUDczMXJzOUJTT0FBRmdiMUJVRWRQU1lHVkpISzhsbmx1UFQ0ZjRoVVZKQWZ1Y3c1R2dDWnp1MlRNaWNTdTN0WU5GVURGMXZfZWs0XzNxRXZlYy1OT0xzYXBuRU51YlpnRm5mejdsUXFzX2EwRjFUbWdZZVViV2tkUExYNjh2UGRtNFBLNTltckpmOWNUbmowbmRFNDJvWVdrNnlwaEhaOGlBZ2ZlN2VOaHFXM2NudUVpY0J4a0hQVTY3OHhQM3kzQXR6QQ?oc=5"},{"title":"台塑化(6505) 個股概覽 | 個股 - 股市","publisher":"CMoney","published":"2026-10-29 20:15","url":"https://news.google.com/rss/articles/CBMiU0FVX3lxTE4yRDlxdlJ5dDVwRk1MZlJnRXlKeXpYRUVsYlNDOVBLMVZ3V2FkX0t4NmNwRjhzNlpFbUpPZ1ZIWEJWbl95X1J0ODNPOUlRRXJkLWVN?oc=5"},{"title":"南亞（1303）Q3自結財報：EPS 4.9元創新高、電子材料占比衝上58%｜股市話題｜豐雲學堂2026 年 10 月","publisher":"永豐金證券","published":"2026-10-29 18:56","url":"https://news.google.com/rss/articles/CBMioANBVV95cUxObG9Fd2tOdHJ0LUpkTDZKdnc2dUphbjlPUFhkYVZpa3pvVzl6bGx4MDdUTjdXZU5mNXFXTVVISFhhSW1VeHZ5T0lIeEFhNFFCV1Y1a211cWpVaWlUVWNxWS0zVFdiM2RrYlh2dzlqdmdWc3F1VFhIR01XUDdDSlpteW12eU1senBZRHNmSlZMM2ppZkRXTUdRa0NMQ0x0bWg1NWwzWG9GbGNpNlFubXJoNDVLaTdWUlMzcUo3MWxqVzJFMng3N3lObmU0bTQxMHczRDVvMFU4QjdDNGZqc1E0RVVJUE85cnFSVmRkQk1oSmNlWlRxOVNqUFJaQlBHcFJvSUNxRmQzdDF6S2ZQQS1YQWRfdHUwX2w2Y1lvaVFqQXZXOGNGa09lVWNpa0pLMXpaNHpkcjNyYi1lOGw2STRpWXFnN3V6MXZ3bUhJUWdnTzFPN3ZIRV8xbUFBSkxzbTU0ZTNFVmtKa2tuakhXSnUtQVVaSUNGbUhRdkFpRWRYWUxvNmtzbFp6ZHVrWmpCZ0M2djBfN3prdG9CM3VXNWp4Uw?oc=5"},{"title":"台股最狂竟是傳產！台塑、台化雙漲停 南亞創天價、塑化族群狂飆9%","publisher":"聚財網","published":"2026-10-29 18:16","url":"https://news.google.com/rss/articles/CBMiTEFVX3lxTE9OZkducS0xdFBLaWw4SC1RWnlyRG9NRnc5STEyeDZUMEtvZXItR1FLSnpIQkJ3SU5pcWZpeU1QT1E3OHVNbEtXREd2OUU?oc=5"},{"title":"台塑爆量24萬張！塑化三寶逆勢撐紅 南亞掉隊","publisher":"聚財網","published":"2026-10-29 14:28","url":"https://news.google.com/rss/articles/CBMiTEFVX3lxTE1IS0dzOGNOQjA3bHhEcVdxcVdZaG5ZSThpd3h2TDYxZWFaNjBaY0VCM1Qtdm1QLVhBLWZOZFFtZWJWa2JEek1xS2w5VUY?oc=5"}]}]}</script>
+<script>
+(function () {
+  const D = JSON.parse(document.getElementById('data').textContent);
+  const BY = Object.fromEntries(D.stocks.map((s) => [s.code, s]));
+  const $ = (s) => document.querySelector(s);
+  const $$ = (s) => document.querySelectorAll(s);
+  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+  const dir = (v) => (v > 0 ? 'up' : v < 0 ? 'down' : 'flat');
+  const sign = (v) => (v == null ? '－' : (v > 0 ? '+' : '') + Number(v).toFixed(2) + '%');
+  const fmt = (v) => Number(v).toLocaleString('zh-TW', { maximumFractionDigits: 2 });
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+  };
+  const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  const genTime = new Date(D.generated.replace(' ', 'T') + ':00+08:00');
+  const ago = (s) => {
+    const h = Math.round((genTime - new Date(s.replace(' ', 'T') + ':00+08:00')) / 36e5);
+    if (isNaN(h)) return s;
+    return h < 1 ? '剛剛' : h < 24 ? h + ' 小時前' : Math.round(h / 24) + ' 天前';
+  };
+  const scoreColor = (s) => (s >= 75 ? 'var(--accent)' : s >= 60 ? 'var(--gold)' : s >= 45 ? 'var(--muted)' : 'var(--warn)');
+  const ring = (score) => { const r = el('div', 'ring'); r.style.setProperty('--p', score); r.style.setProperty('--c', scoreColor(score)); r.append(el('span', null, String(score))); return r; };
+
+  $('#updated').textContent = '更新 ' + D.generated.slice(5);
+
+  // ---------- 自選清單（存在這支手機） ----------
+  let mine = store.get('mine', null);
+  if (!Array.isArray(mine)) mine = D.stocks.filter((s) => s.default).map((s) => s.code);
+  mine = mine.filter((c) => BY[c]);
+  const saveMine = () => store.set('mine', mine);
+
+  // ---------- 共用：股票列 ----------
+  const NS = 'http://www.w3.org/2000/svg';
+  const svgEl = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
+  function spark(vals) {
+    const W = 100, H = 28, P = 2;
+    const svg = svgEl('svg', { class: 'spark', viewBox: `0 0 ${W} ${H}`, preserveAspectRatio: 'none', 'aria-hidden': 'true' });
+    if (!vals || vals.length < 2) return svg;
+    const lo = Math.min(...vals), hi = Math.max(...vals);
+    const x = (i) => P + i / (vals.length - 1) * (W - 2 * P);
+    const y = (v) => H - P - (hi === lo ? .5 : (v - lo) / (hi - lo)) * (H - 2 * P);
+    const color = vals[vals.length - 1] >= vals[0] ? css('--up') : css('--down');
+    svg.append(svgEl('polyline', { points: vals.map((v, i) => x(i) + ',' + y(v)).join(' '), fill: 'none', stroke: color, 'stroke-width': 1.6, 'stroke-linejoin': 'round', 'vector-effect': 'non-scaling-stroke' }));
+    return svg;
+  }
+  function stockRow(s) {
+    const b = el('button', 'srow'); b.type = 'button';
+    b.addEventListener('click', () => openStock(s.code));
+    const nm = el('div', 'sname');
+    nm.append(el('b', null, s.name), el('small', null, s.code + (s.sector ? '・' + s.sector : '')));
+    const pr = el('div', 'sprice');
+    pr.append(el('b', dir(s.chg_1d), fmt(s.price)), el('span', 'pill ' + dir(s.chg_1d), sign(s.chg_1d)));
+    b.append(ring(s.score), nm, spark(s.spark), pr);
+    return b;
+  }
+  function fillRows(box, list, emptyText) {
+    box.replaceChildren(...(list.length ? list.map(stockRow) : [el('div', 'empty', emptyText)]));
+  }
+
+  // ---------- 分頁 ----------
+  let tab = store.get('tab', 'mine');
+  function showTab(t) {
+    tab = t; store.set('tab', t);
+    $$('.tabs button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === t)));
+    ['mine', 'rank', 'sector', 'news'].forEach((k) => { $('#tab-' + k).hidden = k !== t; });
+    if (t === 'news') drawNews();
+  }
+  $$('.tabs button').forEach((b) => b.addEventListener('click', () => showTab(b.dataset.tab)));
+  const chipGroup = (sel, key, def, onChange) => {
+    let v = store.get(key, def);
+    const paint = () => $$(sel + ' button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.k === v)));
+    $$(sel + ' button').forEach((b) => b.addEventListener('click', () => { v = b.dataset.k; store.set(key, v); paint(); onChange(v); }));
+    paint();
+    return () => v;
+  };
+
+  // 自選
+  const mineSort = chipGroup('#mine-sort', 'mineSort', 'score', () => drawMine());
+  function drawMine() {
+    const list = mine.map((c) => BY[c]).filter(Boolean);
+    const up = list.filter((s) => s.chg_1d > 0).length, down = list.filter((s) => s.chg_1d < 0).length;
+    const avg = list.length ? list.reduce((a, s) => a + s.chg_1d, 0) / list.length : 0;
+    const stat = (label, val, cls) => { const d = el('div', 'stat'); d.append(el('span', null, label), el('b', cls, val)); return d; };
+    $('#mine-summary').replaceChildren(stat('今日上漲', up + ' 檔', 'up'), stat('今日下跌', down + ' 檔', 'down'), stat('平均漲跌', sign(avg), dir(avg)));
+    const k = mineSort();
+    list.sort((a, b) => (b[k] ?? -999) - (a[k] ?? -999));
+    fillRows($('#mine-list'), list, '自選清單是空的，用上方搜尋加入股票。');
+  }
+
+  // 排行
+  $('#rank-count').textContent = D.stocks.length;
+  const rankSort = chipGroup('#rank-sort', 'rankSort', 'score', () => drawRank());
+  function drawRank() {
+    const k = rankSort();
+    const list = D.stocks.slice();
+    if (k === 'up') list.sort((a, b) => b.chg_1d - a.chg_1d);
+    else if (k === 'down') list.sort((a, b) => a.chg_1d - b.chg_1d);
+    else list.sort((a, b) => (b[k] ?? -999) - (a[k] ?? -999));
+    fillRows($('#rank-list'), list, '沒有資料');
+  }
+
+  // 類股
+  const PERIOD = { chg_1d: '今日', chg_5d: '近 5 日', chg_20d: '近 20 日' };
+  const openSec = new Set();
+  const secSort = chipGroup('#sec-sort', 'secSort', 'chg_5d', () => drawSectors());
+  function drawSectors() {
+    const k = secSort();
+    const rows = D.sectors.slice().sort((a, b) => b[k] - a[k]);
+    const max = Math.max(1, ...rows.map((r) => Math.abs(r[k] || 0)));
+    $('#sector-list').replaceChildren(...rows.map((s) => {
+      const d = el('details', 'sector');
+      d.open = openSec.has(s.sector);
+      d.addEventListener('toggle', () => { d.open ? openSec.add(s.sector) : openSec.delete(s.sector); });
+      const sum = el('summary'), nm = el('b', null, s.sector);
+      nm.append(el('span', 's-sub', s.up_count + '/' + s.stocks.length + ' 檔 5 日上漲'));
+      const bar = el('div', 'hbar'), i = el('i');
+      const v = s[k] || 0, w = Math.abs(v) / max * 50;
+      i.style.width = w + '%'; i.style.left = v >= 0 ? '50%' : (50 - w) + '%';
+      i.style.background = v >= 0 ? 'var(--up)' : 'var(--down)';
+      bar.append(i);
+      sum.append(nm, bar, el('span', 'pill ' + dir(v), sign(v)));
+      d.append(sum);
+      const body = el('div', 's-body'), why = el('div', 'why');
+      why.append(el('b', null, s.sector + ' ' + PERIOD[k] + (v >= 0 ? '上漲' : '下跌') + '，最近新聞在談：'));
+      if (s.keywords.length) {
+        const kw = el('div', 'kw');
+        s.keywords.forEach((x) => kw.append(el('span', null, x.word + ' ×' + x.count)));
+        why.append(kw);
+      } else why.append(el('span', 'muted', '近 3 天相關新聞不多，漲跌可能只是跟著大盤。'));
+      body.append(why);
+      const wrap = el('div', 'tbl-wrap'), t = el('table'), hr = el('tr');
+      ['個股', '價格', '今日', '5 日', '20 日'].forEach((h) => hr.append(el('th', null, h)));
+      t.append(hr);
+      s.stocks.forEach((x) => {
+        const tr = el('tr'), td = el('td');
+        if (BY[x.code]) { const a = el('button', 'linkish', x.name + ' ' + x.code); a.type = 'button'; a.addEventListener('click', () => openStock(x.code)); td.append(a); }
+        else td.textContent = x.name + ' ' + x.code;
+        tr.append(td, el('td', null, fmt(x.price)), el('td', dir(x.chg_1d), sign(x.chg_1d)), el('td', dir(x.chg_5d), sign(x.chg_5d)), el('td', dir(x.chg_20d), sign(x.chg_20d)));
+        t.append(tr);
+      });
+      wrap.append(t);
+      body.append(wrap);
+      if (s.news.length) {
+        const ul = el('ul', 'news');
+        s.news.forEach((n) => ul.append(newsItem(n, false)));
+        body.append(el('b', 'small', s.sector + '相關新聞'), ul);
+      }
+      d.append(body);
+      return d;
+    }));
+  }
+
+  // 新聞
+  function newsItem(n, withTag) {
+    const li = el('li'), title = el('div', 'n-title');
+    if (withTag && n.name) title.append(el('span', 'tag', n.name));
+    title.append(document.createTextNode(n.title));
+    const meta = el('div', 'n-meta'), src = el('span', null, '來源：');
+    src.append(el('span', 'n-src', n.publisher || '未知'));
+    meta.append(src, el('span', null, ago(n.published) + '（' + n.published.slice(5) + '）'));
+    if (String(n.url).startsWith('https://')) {
+      const a = el('a', 'n-read', '閱讀原文 ↗'); a.href = n.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; meta.append(a);
+    }
+    li.append(title, meta);
+    return li;
+  }
+  let NEWS = null;
+  const newsScope = chipGroup('#news-scope', 'newsScope', 'mine', () => drawNews());
+  async function drawNews() {
+    const box = $('#news-list');
+    if (!NEWS) {
+      try { NEWS = await (await fetch('news.json?v=' + encodeURIComponent(D.generated))).json(); }
+      catch (e) { box.replaceChildren(el('li', 'muted', '新聞載入失敗，請重新整理再試一次。')); return; }
+    }
+    const set = new Set(mine);
+    const list = NEWS.filter((n) => newsScope() === 'all' || set.has(n.code)).slice(0, 60);
+    box.replaceChildren(...(list.length ? list.map((n) => newsItem(n, true)) : [el('li', 'muted', '近 3 天沒有相關新聞。')]));
+  }
+
+  // ---------- 搜尋 ----------
+  const q = $('#q'), results = $('#results');
+  let hits = [], hi = 0;
+  function search() {
+    const t = q.value.trim().toLowerCase();
+    if (!t) { results.hidden = true; return; }
+    hits = D.stocks.filter((s) => s.code.startsWith(t) || s.name.toLowerCase().includes(t) || (s.sector || '').includes(t)).slice(0, 10);
+    hi = 0;
+    results.replaceChildren(...(hits.length ? hits.map((s, i) => {
+      const b = el('button', i === 0 ? 'on' : null); b.type = 'button';
+      const l = el('span'); l.append(el('b', null, s.name + ' '), el('span', 'muted', s.code + (s.sector ? '・' + s.sector : '')));
+      b.append(l, el('span', 'pill ' + dir(s.chg_1d), sign(s.chg_1d)));
+      b.addEventListener('click', () => { q.value = ''; results.hidden = true; openStock(s.code); });
+      return b;
+    }) : [el('div', 'empty', '找不到「' + q.value + '」。目前可選 ' + D.stocks.length + ' 檔常見股票。')]));
+    results.hidden = false;
+  }
+  q.addEventListener('input', search);
+  q.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && hits[hi]) { const c = hits[hi].code; q.value = ''; results.hidden = true; q.blur(); openStock(c); }
+    if (e.key === 'Escape') { q.value = ''; results.hidden = true; }
+  });
+  document.addEventListener('click', (e) => { if (!e.target.closest('.search')) results.hidden = true; });
+
+  // ---------- 個股頁 ----------
+  let current = null, chart = null, page = null;
+  let kN = store.get('kN', 66);
+  const kRange = () => $$('#k-range button').forEach((b) => b.setAttribute('aria-pressed', String(Number(b.dataset.n) === kN)));
+  $$('#k-range button').forEach((b) => b.addEventListener('click', () => { kN = Number(b.dataset.n); store.set('kN', kN); kRange(); setRange(); }));
+
+  function openStock(code) { location.hash = code; }
+  function paintStar() {
+    const on = mine.includes(current);
+    const s = $('#star');
+    s.textContent = on ? '★ 已在自選' : '☆ 加入自選';
+    s.classList.toggle('on', on);
+  }
+  $('#star').addEventListener('click', () => {
+    if (mine.includes(current)) mine = mine.filter((c) => c !== current); else mine.push(current);
+    saveMine(); paintStar(); drawMine();
+  });
+
+  function legend(bar, prev) {
+    const box = $('#k-legend');
+    if (!bar) { box.replaceChildren(); return; }
+    const chg = prev ? (bar[4] / prev[4] - 1) * 100 : null;
+    const item = (k, v, cls) => { const s = el('span'); s.append(el('span', 'k', k), el('b', cls || null, v)); return s; };
+    box.replaceChildren(el('b', null, bar[0]), item('開', fmt(bar[1])), item('高', fmt(bar[2]), 'up'), item('低', fmt(bar[3]), 'down'),
+      item('收', fmt(bar[4]), dir(chg)), item('漲跌', sign(chg), dir(chg)), item('量', fmt(bar[5]) + ' 張'));
+  }
+  const maLine = (bars, n) => {
+    const out = [];
+    let s = 0;
+    bars.forEach((b, i) => { s += b[4]; if (i >= n) s -= bars[i - n][4]; if (i >= n - 1) out.push({ time: b[0], value: +(s / n).toFixed(2) }); });
+    return out;
+  };
+  function setRange() {
+    if (!chart || !page) return;
+    const n = page.ohlc.length;
+    chart.timeScale().setVisibleLogicalRange({ from: Math.max(0, n - kN) - .5, to: n - .5 });
+  }
+  function drawChart() {
+    const box = $('#k-chart');
+    if (chart) { chart.remove(); chart = null; }
+    box.replaceChildren();
+    const bars = page.ohlc;
+    if (typeof LightweightCharts === 'undefined') { box.replaceChildren(el('div', 'empty', '圖表元件沒有載入成功，請重新整理。')); return; }
+    const up = css('--up'), down = css('--down');
+    chart = LightweightCharts.createChart(box, {
+      autoSize: true,
+      layout: { background: { color: 'transparent' }, textColor: css('--muted'), fontFamily: css('--sans') },
+      grid: { vertLines: { visible: false }, horzLines: { color: css('--line') } },
+      rightPriceScale: { borderVisible: false, scaleMargins: { top: .06, bottom: .26 } },
+      timeScale: { borderVisible: false, rightOffset: 1, fixLeftEdge: true, fixRightEdge: true },
+      crosshair: { mode: 0 },
+      localization: { locale: 'zh-TW', dateFormat: 'yyyy/MM/dd', priceFormatter: (p) => fmt(+p.toFixed(2)) },
+      handleScroll: { vertTouchDrag: false },
+    });
+    const candle = chart.addCandlestickSeries({ upColor: up, downColor: down, borderUpColor: up, borderDownColor: down, wickUpColor: up, wickDownColor: down, priceLineVisible: false });
+    candle.setData(bars.map((b) => ({ time: b[0], open: b[1], high: b[2], low: b[3], close: b[4] })));
+    const vol = chart.addHistogramSeries({ priceScaleId: 'vol', priceFormat: { type: 'volume' }, lastValueVisible: false, priceLineVisible: false });
+    chart.priceScale('vol').applyOptions({ scaleMargins: { top: .8, bottom: 0 } });
+    vol.setData(bars.map((b) => ({ time: b[0], value: b[5], color: b[4] >= b[1] ? up + '80' : down + '80' })));
+    for (const [n, color] of [[20, css('--ma20')], [60, css('--ma60')]]) {
+      chart.addLineSeries({ color, lineWidth: 1.5, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false }).setData(maLine(bars, n));
+    }
+    const idx = Object.fromEntries(bars.map((b, i) => [b[0], i]));
+    chart.subscribeCrosshairMove((p) => {
+      const key = p && p.time ? (typeof p.time === 'string' ? p.time : `${p.time.year}-${String(p.time.month).padStart(2, '0')}-${String(p.time.day).padStart(2, '0')}`) : null;
+      const i = key != null ? idx[key] : bars.length - 1;
+      legend(bars[i ?? bars.length - 1], bars[(i ?? bars.length - 1) - 1]);
+    });
+    legend(bars[bars.length - 1], bars[bars.length - 2]);
+    setRange();
+  }
+
+  async function showDetail(code) {
+    const s = BY[code];
+    current = code; page = null;
+    $('#d-title').textContent = s.name + ' ' + s.code;
+    $('#d-sub').textContent = s.code + (s.sector ? '・' + s.sector : '');
+    $('#d-price').textContent = fmt(s.price);
+    $('#d-price').className = 'd-price ' + dir(s.chg_1d);
+    $('#d-chg').replaceChildren(el('span', dir(s.chg_1d), '今日 ' + sign(s.chg_1d)), el('span', 'muted', '　'), el('span', dir(s.chg_5d), '5 日 ' + sign(s.chg_5d)), el('span', 'muted', '　'), el('span', dir(s.chg_1y), '1 年 ' + sign(s.chg_1y)));
+    const meta = el('div');
+    meta.style.textAlign = 'right';
+    meta.append(el('b', null, s.grade), el('div', 'muted', s.score_change == null ? '健檢分數' : s.score_change === 0 ? '分數和昨天一樣' : '比昨天 ' + (s.score_change > 0 ? '+' : '') + s.score_change + ' 分'));
+    $('#d-score').replaceChildren(meta, ring(s.score));
+    paintStar(); kRange();
+    ['#d-ohlc', '#d-range', '#d-years', '#d-detail', '#d-news', '#k-legend'].forEach((sel) => $(sel).replaceChildren());
+    $('#d-warn').textContent = ''; $('#d-stop').textContent = '';
+    $('#k-chart').replaceChildren(el('div', 'loading'));
+
+    let data;
+    try { data = await (await fetch('data/' + code + '.json?v=' + encodeURIComponent(D.generated))).json(); }
+    catch (e) { $('#k-chart').replaceChildren(el('div', 'empty', '資料載入失敗，請重新整理再試一次。')); return; }
+    if (current !== code) return;
+    page = data;
+    const bars = data.ohlc, last = bars[bars.length - 1], prev = bars[bars.length - 2];
+
+    if (last) {
+      $('#d-day-title').textContent = '最新一天（' + last[0] + '）';
+      const amp = prev ? (last[2] - last[3]) / prev[4] * 100 : null;
+      const cell = (label, v, cls) => { const d = el('div'); d.append(el('span', null, label), el('b', cls || null, v)); return d; };
+      $('#d-ohlc').replaceChildren(cell('開盤', fmt(last[1])), cell('最高', fmt(last[2]), 'up'), cell('最低', fmt(last[3]), 'down'),
+        cell('收盤', fmt(last[4]), dir(s.chg_1d)), cell('成交量', fmt(last[5]) + ' 張'), cell('振幅', amp == null ? '－' : amp.toFixed(2) + '%'));
+    }
+    drawChart();
+
+    if (bars.length) {
+      let hiB = bars[0], loB = bars[0];
+      bars.forEach((b) => { if (b[2] > hiB[2]) hiB = b; if (b[3] < loB[3]) loB = b; });
+      const pos = hiB[2] > loB[3] ? (s.price - loB[3]) / (hiB[2] - loB[3]) * 100 : 50;
+      const bar = el('div', 'range'), mark = el('i');
+      mark.style.left = Math.max(0, Math.min(100, pos)) + '%';
+      bar.append(mark);
+      const lbl = el('div', 'range-lbl');
+      lbl.append(el('span', null, '最低 ' + fmt(loB[3]) + '（' + loB[0].slice(5) + '）'), el('span', null, '最高 ' + fmt(hiB[2]) + '（' + hiB[0].slice(5) + '）'));
+      $('#d-range').replaceChildren(bar, lbl, el('p', 'small', '目前 ' + fmt(s.price) + '，在一年區間的 ' + Math.round(pos) + '% 位置。' +
+        (pos > 85 ? '接近一年高點，追高要小心。' : pos < 15 ? '接近一年低點，先確認公司是不是出了問題。' : '')));
+    }
+
+    const thisYear = genTime.getFullYear();
+    const hr = el('tr');
+    ['年度', '最高', '最低', '全年漲跌'].forEach((h) => hr.append(el('th', null, h)));
+    $('#d-years').replaceChildren(hr, ...data.yearly.map((y) => {
+      const tr = el('tr'), chg = (y.close / y.open - 1) * 100;
+      const hiTd = el('td', 'up', fmt(y.high)); hiTd.append(el('small', null, y.high_date));
+      const loTd = el('td', 'down', fmt(y.low)); loTd.append(el('small', null, y.low_date));
+      tr.append(el('td', null, y.year + (y.year === thisYear ? ' 至今' : y.days < 200 ? '（部分）' : '')), hiTd, loTd, el('td', dir(chg), sign(chg)));
+      return tr;
+    }));
+
+    $('#d-detail').replaceChildren(...data.details.map((sec) => {
+      const box = el('div', 'sc-sec'), head = el('div', 'row');
+      head.append(el('b', null, sec.section), el('span', 'muted', sec.full ? sec.got + ' / ' + sec.full : '資料不足，不計分'));
+      const ul = el('ul');
+      sec.notes.forEach((n) => ul.append(el('li', n.startsWith('✔') ? null : n.startsWith('✘') ? 'bad' : 'flat', n)));
+      box.append(head, ul);
+      return box;
+    }));
+    $('#d-warn').textContent = data.warning ? '⚠ ' + data.warning : '';
+    $('#d-stop').textContent = data.advice + ' 停損參考價 ' + fmt(data.stop_price) + '：如果買了，跌破這個價位代表看錯了，認賠出場避免越賠越多。';
+    $('#d-news').replaceChildren(...(data.news.length ? data.news.map((n) => newsItem(n, false)) : [el('li', 'muted', '近 3 天沒有找到相關新聞。')]));
+  }
+
+  // ---------- 切換總覽 / 個股頁 ----------
+  let homeScroll = 0, cameFromHome = false;
+  function route() {
+    const code = decodeURIComponent(location.hash.slice(1));
+    if (code && BY[code]) {
+      if (!$('#home').hidden) homeScroll = window.scrollY;
+      $('#home').hidden = true; $('#detail').hidden = false;
+      window.scrollTo(0, 0);
+      showDetail(code);
+    } else {
+      $('#detail').hidden = true; $('#home').hidden = false;
+      if (chart) { chart.remove(); chart = null; }
+      window.scrollTo(0, homeScroll);
+    }
+  }
+  $('#back').addEventListener('click', () => { if (cameFromHome) history.back(); else location.hash = ''; });
+  window.addEventListener('hashchange', () => { cameFromHome = !$('#home').hidden; route(); });
+
+  drawMine(); drawRank(); drawSectors(); showTab(tab);
+  route();
+})();
+</script>
+</body>
+</html>
