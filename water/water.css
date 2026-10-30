@@ -143,6 +143,10 @@ details.log summary { cursor: pointer; font-weight: 700; }
 .paper .key .g span { border-radius: 3px; }
 .paper .key .g .me { background: #1f4e78; color: #fff; }
 .paper .udef { margin-top: 6px; font-size: 7.6px; line-height: 1.5; }
+.paper .ud-list { display: flex; flex-direction: column; gap: 1px; margin-top: 2px; } .paper .ud { padding: 1px 4px; border-left: 2px solid #c9c9c9; }
+.paper.ud-page .ud-list { gap: 4px; margin-top: 8px; }
+.paper.ud-page .ud { font-size: 10px; line-height: 1.6; padding: 3px 8px; }
+.paper .ud b { margin-right: 6px; }
 .paper table.area tbody td { height: 24px; }
 .paper .notes { margin-top: 6px; font-size: 7.6px; color: #595959; line-height: 1.6; }
 
