@@ -3,347 +3,453 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#f6f5f1">
+<meta name="theme-color" content="#16233a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="台股健檢">
 <title>台股每日健檢</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600&display=swap">
 <style>
-  /* 版面：手機單欄；總覽頁 = 重點 → 類股 → 觀察清單 → 新聞，點股票進個股頁（K 線、歷年高低、新聞） */
+  /* 版面：像看盤 App —— 深藍頂欄＋搜尋＋四個分頁（自選／排行／類股／新聞），點股票進個股頁 */
   :root {
-    --bg: #f6f5f1; --panel: #ffffff; --fg: #1d2420; --muted: #66706a; --line: #e2e0d8;
-    --up: #d1342b; --down: #1f8a4c; --accent: #2b5d8a; --chip: #eef1f4; --warn: #a86400;
-    --ma20: #d48a12; --ma60: #3b6fb0; --grid: #ecebe5;
+    --bg: #f3f4f1; --panel: #ffffff; --fg: #1a2230; --muted: #6b7380; --line: #e4e5e1;
+    --ink: #16233a; --ink-fg: #f2f4f8; --ink-muted: #a9b3c4;
+    --up: #d6322a; --down: #179150; --up-soft: #fbe9e7; --down-soft: #e3f4ea;
+    --accent: #2f6db5; --chip: #eceee9; --warn: #b26a00; --gold: #c9971c;
+    --ma20: #e09a1d; --ma60: #3a74c4;
     --sans: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
     --serif: "Noto Serif TC", "PMingLiU", Georgia, serif;
     color-scheme: light;
   }
   @media (prefers-color-scheme: dark) {
-    :root { --bg: #141816; --panel: #1d2220; --fg: #e8ebe7; --muted: #9aa49e; --line: #2e3532;
-      --up: #ff6b5e; --down: #4fc37f; --accent: #7fb2e0; --chip: #26302d; --warn: #e0a040;
-      --ma20: #f0b24a; --ma60: #7fb2e0; --grid: #252b29; color-scheme: dark; }
+    :root { --bg: #0f1420; --panel: #182030; --fg: #e8ecf2; --muted: #8f99a8; --line: #273143;
+      --ink: #0b101a; --ink-fg: #e8ecf2; --ink-muted: #8f99a8;
+      --up: #ff5f55; --down: #3ccf7f; --up-soft: #3a1f22; --down-soft: #16301f;
+      --accent: #78aef0; --chip: #222c3d; --warn: #e8a43c; --gold: #e2b84a;
+      --ma20: #f2b24a; --ma60: #78aef0; color-scheme: dark; }
   }
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
-  body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.6 var(--sans);
-    font-variant-numeric: tabular-nums; -webkit-text-size-adjust: 100%; }
-  .wrap { max-width: 72rem; margin: 0 auto; padding-block: max(20px, env(safe-area-inset-top)) 40px;
-    padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right));
-    display: grid; gap: 28px; }
-  h1 { font-family: var(--serif); font-weight: 600; font-size: 1.7rem; margin: 0; text-wrap: balance; }
-  h2 { font-size: 1.1rem; margin: 0; }
-  h3 { font-size: .95rem; margin: 0; }
-  .muted { color: var(--muted); font-size: .82rem; margin: 0; }
+  html, body { margin: 0; }
+  body { background: var(--bg); color: var(--fg); font: 15px/1.55 var(--sans); font-variant-numeric: tabular-nums; -webkit-text-size-adjust: 100%; }
+  button { font: inherit; color: inherit; }
+  button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .gutter { padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+  .inner { max-width: 46rem; margin: 0 auto; }
+  .muted { color: var(--muted); font-size: .8rem; margin: 0; }
   .up { color: var(--up); } .down { color: var(--down); } .flat { color: var(--muted); } .bad { color: var(--warn); }
-  .head { display: grid; gap: 6px; }
-  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: grid; gap: 10px; min-width: 0; }
-  .hl { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); }
-  .hl-label { font-size: .78rem; color: var(--muted); letter-spacing: .04em; }
-  .hl-main { font-family: var(--serif); font-size: 1.35rem; }
-  .cols { display: grid; gap: 28px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 30rem), 1fr)); align-items: start; }
-  section { display: grid; gap: 10px; min-width: 0; }
-  .sec-bar { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
-  .tabs { display: flex; gap: 4px; background: var(--chip); padding: 3px; border-radius: 999px; }
-  .tabs button { font: inherit; font-size: .8rem; border: 0; background: transparent; color: var(--muted); padding: 4px 11px; border-radius: 999px; cursor: pointer; }
-  .tabs button[aria-pressed="true"] { background: var(--panel); color: var(--fg); font-weight: 500; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
-  button:focus-visible, summary:focus-visible, a:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .list { display: grid; gap: 8px; }
-  details.sector { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; }
-  details.sector > summary { list-style: none; cursor: pointer; padding: 12px 14px; display: grid; grid-template-columns: 6.5rem 1fr 4.2rem; gap: 10px; align-items: center; }
+
+  /* 頂欄 */
+  .appbar { background: var(--ink); color: var(--ink-fg); position: sticky; top: 0; z-index: 20; padding-top: env(safe-area-inset-top, 0px); }
+  .appbar .inner { padding-block: 12px 10px; display: grid; gap: 10px; }
+  .brand { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+  .brand h1 { margin: 0; font-family: var(--serif); font-weight: 600; font-size: 1.3rem; letter-spacing: .02em; }
+  .brand span { font-size: .74rem; color: var(--ink-muted); }
+  .search { position: relative; }
+  .search input { width: 100%; font: inherit; font-size: 16px; border: 0; border-radius: 10px; padding: 9px 12px 9px 36px; background: rgba(255,255,255,.12); color: var(--ink-fg); }
+  .search input::placeholder { color: var(--ink-muted); }
+  .search svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; stroke: var(--ink-muted); fill: none; stroke-width: 2; }
+  .results { position: absolute; left: 0; right: 0; top: calc(100% + 6px); background: var(--panel); color: var(--fg); border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,.25); overflow: hidden; max-height: 60vh; overflow-y: auto; }
+  .results button { display: flex; width: 100%; justify-content: space-between; gap: 8px; padding: 11px 14px; border: 0; border-bottom: 1px solid var(--line); background: none; text-align: left; cursor: pointer; }
+  .results button:hover, .results button.on { background: var(--chip); }
+  .tabs { display: flex; gap: 2px; }
+  .tabs button { flex: 1; border: 0; background: none; color: var(--ink-muted); padding: 6px 0 8px; font-size: .92rem; cursor: pointer; border-bottom: 2px solid transparent; }
+  .tabs button[aria-selected="true"] { color: var(--ink-fg); font-weight: 700; border-bottom-color: var(--gold); }
+
+  main .inner { padding-block: 14px 40px; display: grid; gap: 14px; }
+  .summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .stat { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; display: grid; }
+  .stat span { font-size: .74rem; color: var(--muted); }
+  .stat b { font-family: var(--serif); font-size: 1.25rem; font-weight: 600; }
+  .bar-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .bar-row h2 { margin: 0; font-size: 1.02rem; }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .chips button { border: 1px solid var(--line); background: var(--panel); border-radius: 999px; padding: 3px 12px; font-size: .8rem; cursor: pointer; color: var(--muted); }
+  .chips button[aria-pressed="true"] { background: var(--ink); color: var(--ink-fg); border-color: var(--ink); }
+
+  /* 股票列 */
+  .rows { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .srow { display: grid; grid-template-columns: 2.4rem minmax(0, 1fr) 4.5rem 5.4rem; gap: 10px; align-items: center; width: 100%; padding: 11px 14px; border: 0; border-bottom: 1px solid var(--line); background: none; text-align: left; cursor: pointer; }
+  .srow:last-child { border-bottom: 0; }
+  .srow:hover { background: var(--chip); }
+  .ring { width: 2.3rem; height: 2.3rem; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: .9rem;
+    background: conic-gradient(var(--c) calc(var(--p) * 1%), var(--line) 0); position: relative; }
+  .ring::before { content: ""; position: absolute; inset: 3px; border-radius: 50%; background: var(--panel); }
+  .ring span { position: relative; }
+  .sname { min-width: 0; }
+  .sname b { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sname small { color: var(--muted); font-size: .74rem; }
+  .spark { width: 100%; height: 28px; display: block; }
+  .sprice { text-align: right; display: grid; justify-items: end; gap: 2px; }
+  .sprice b { font-size: .98rem; }
+  .pill { display: inline-block; min-width: 4.6rem; text-align: center; border-radius: 6px; padding: 1px 6px; font-size: .8rem; font-weight: 700; color: #fff; }
+  .pill.up { background: var(--up); color: #fff; } .pill.down { background: var(--down); color: #fff; } .pill.flat { background: var(--muted); color: #fff; }
+  .empty { padding: 20px; text-align: center; color: var(--muted); font-size: .88rem; }
+
+  /* 類股 */
+  details.sector { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; }
+  details.sector > summary { list-style: none; cursor: pointer; padding: 12px 14px; display: grid; grid-template-columns: 6rem 1fr 4.6rem; gap: 10px; align-items: center; }
   details.sector > summary::-webkit-details-marker { display: none; }
-  .s-name { font-weight: 700; }
-  .s-sub { display: block; font-size: .74rem; color: var(--muted); font-weight: 400; }
-  .bar { position: relative; height: 10px; }
-  .bar::before { content: ""; position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: var(--line); }
-  .bar span { position: absolute; top: 0; height: 100%; border-radius: 3px; }
-  .s-pct { text-align: right; font-weight: 700; }
+  .s-sub { display: block; font-size: .72rem; color: var(--muted); font-weight: 400; }
+  .hbar { position: relative; height: 10px; }
+  .hbar::before { content: ""; position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: var(--line); }
+  .hbar i { position: absolute; top: 0; height: 100%; border-radius: 3px; }
   .s-body { padding: 0 14px 14px; display: grid; gap: 12px; }
-  .why { background: var(--chip); border-radius: 10px; padding: 10px 12px; font-size: .88rem; display: grid; gap: 6px; }
-  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
-  .chip { background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 1px 10px; font-size: .8rem; }
+  .why { background: var(--chip); border-radius: 10px; padding: 10px 12px; font-size: .86rem; display: grid; gap: 6px; }
+  .kw { display: flex; flex-wrap: wrap; gap: 6px; }
+  .kw span { background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 0 10px; font-size: .78rem; }
+  .linkish { border: 0; background: none; padding: 0; color: var(--accent); cursor: pointer; text-align: left; }
+
+  /* 表格 */
   .tbl-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: .86rem; }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; }
   th, td { padding: 7px 4px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
   th:first-child, td:first-child { text-align: left; }
-  th { color: var(--muted); font-weight: 500; font-size: .76rem; }
-  td small { color: var(--muted); font-size: .72rem; margin-left: 3px; }
+  th { color: var(--muted); font-weight: 500; font-size: .74rem; }
+  td small { color: var(--muted); font-size: .7rem; margin-left: 3px; }
+
   /* 新聞 */
-  .news { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
-  .news li { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; display: grid; gap: 4px; min-width: 0; }
-  .s-body .news li { background: transparent; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; padding: 0 0 8px; }
-  .n-title { font-weight: 500; overflow-wrap: anywhere; line-height: 1.5; }
-  .n-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-size: .78rem; color: var(--muted); }
+  .news { list-style: none; margin: 0; padding: 0; display: grid; }
+  .news li { padding: 11px 0; border-bottom: 1px solid var(--line); display: grid; gap: 4px; min-width: 0; }
+  .news li:last-child { border-bottom: 0; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; display: grid; gap: 10px; min-width: 0; }
+  .card h3 { margin: 0; font-size: .96rem; }
+  .n-title { font-weight: 500; overflow-wrap: anywhere; }
+  .n-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 10px; font-size: .76rem; color: var(--muted); }
   .n-src { font-weight: 700; color: var(--fg); }
   .n-read { color: var(--accent); text-decoration: none; font-weight: 500; margin-left: auto; white-space: nowrap; }
-  .tag { display: inline-block; font-size: .72rem; padding: 0 6px; margin-right: 6px; border-radius: 4px; background: var(--chip); color: var(--muted); vertical-align: 1px; }
-  /* 觀察清單卡片 */
-  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: grid; gap: 8px; min-width: 0; cursor: pointer; text-align: left; font: inherit; color: inherit; width: 100%; }
-  .card:hover { border-color: var(--muted); }
-  .row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
-  .price { font-family: var(--serif); font-size: 1.35rem; }
-  .score { display: flex; align-items: center; gap: 8px; }
-  .score-num { font-family: var(--serif); font-size: 1.6rem; line-height: 1; }
-  .score-meta { display: grid; text-align: right; font-size: .78rem; }
-  .spark { width: 100%; height: 38px; display: block; }
-  .parts { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; font-size: .72rem; color: var(--muted); }
-  .track { height: 5px; border-radius: 3px; background: var(--line); overflow: hidden; margin-top: 2px; }
-  .track i { display: block; height: 100%; border-radius: 3px; }
-  .warn { color: var(--warn); font-size: .8rem; margin: 0; }
-  .small { font-size: .8rem; margin: 0; }
-  .more { color: var(--accent); font-size: .8rem; font-weight: 500; }
-  select { font: inherit; font-size: .82rem; padding: 4px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--fg); max-width: 100%; }
-  .tips { font-size: .84rem; }
-  .tips ul { margin: 0; padding-left: 1.2em; }
+  .tag { display: inline-block; font-size: .7rem; padding: 0 6px; margin-right: 6px; border-radius: 4px; background: var(--chip); color: var(--muted); vertical-align: 1px; }
+
   /* 個股頁 */
-  .topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); margin: -8px 0 0; padding: 8px 0; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--line); }
-  body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
-  .back { font: inherit; font-size: .9rem; border: 1px solid var(--line); background: var(--panel); color: var(--fg); border-radius: 999px; padding: 4px 14px; cursor: pointer; }
-  .d-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
-  .d-price { font-family: var(--serif); font-size: 2.2rem; line-height: 1.1; }
-  .ohlc { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px 12px; }
+  .d-top { display: flex; align-items: center; gap: 10px; }
+  .iconbtn { border: 0; background: rgba(255,255,255,.12); color: var(--ink-fg); border-radius: 999px; padding: 5px 14px; cursor: pointer; font-size: .88rem; white-space: nowrap; }
+  .iconbtn.on { background: var(--gold); color: #1a1a1a; font-weight: 700; }
+  .d-top b { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hero { background: var(--ink); color: var(--ink-fg); }
+  .hero .inner { padding-block: 4px 18px; display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+  .d-price { font-family: var(--serif); font-size: 2.4rem; line-height: 1.1; }
+  .hero .up { color: #ff8a80; } .hero .down { color: #5fe39a; }
+  .hero .muted { color: var(--ink-muted); }
+  .hero .ring::before { background: var(--ink); }
+  .hero .ring { width: 3rem; height: 3rem; font-size: 1.05rem; }
+  .score-line { display: flex; align-items: center; gap: 10px; }
+  .ohlc { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px 12px; }
   .ohlc div { display: grid; }
-  .ohlc span { font-size: .74rem; color: var(--muted); }
-  .ohlc b { font-weight: 500; font-size: 1rem; }
-  .legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: .76rem; color: var(--muted); align-items: center; }
-  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
-  .legend i.ln { height: 2px; width: 14px; vertical-align: 3px; }
-  .k-info { font-size: .8rem; min-height: 2.6em; display: flex; flex-wrap: wrap; gap: 2px 12px; align-items: baseline; }
-  .k-info b { font-weight: 700; }
-  .kchart { width: 100%; display: block; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
-  .kchart text { font-size: 10px; fill: var(--muted); font-family: var(--sans); }
+  .ohlc span { font-size: .72rem; color: var(--muted); }
+  .ohlc b { font-weight: 500; }
+  .legend { display: flex; flex-wrap: wrap; gap: 2px 12px; font-size: .78rem; min-height: 2.6em; align-items: baseline; }
+  .legend .k { color: var(--muted); margin-right: 2px; }
+  .chart { height: 340px; width: 100%; }
+  .keys { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: .74rem; color: var(--muted); }
+  .keys i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: 3px; margin-right: 4px; }
   .range { position: relative; height: 8px; border-radius: 4px; background: linear-gradient(90deg, var(--down), var(--line) 50%, var(--up)); margin: 6px 0 2px; }
   .range i { position: absolute; top: -4px; width: 4px; height: 16px; border-radius: 2px; background: var(--fg); transform: translateX(-2px); }
-  .range-lbl { display: flex; justify-content: space-between; font-size: .78rem; color: var(--muted); }
+  .range-lbl { display: flex; justify-content: space-between; font-size: .76rem; color: var(--muted); }
   .sc-sec { display: grid; gap: 2px; padding-block: 6px; border-bottom: 1px solid var(--line); }
   .sc-sec:last-child { border-bottom: 0; }
   .sc-sec ul { margin: 0; padding: 0; list-style: none; font-size: .84rem; }
-  .sc-sec li { padding-left: .2em; }
-  .grid2 { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); align-items: start; }
-  @media (max-width: 420px) { details.sector > summary { grid-template-columns: 5.4rem 1fr 3.8rem; } }
+  .row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .small { font-size: .82rem; margin: 0; }
+  .loading { height: 120px; border-radius: 12px; background: linear-gradient(90deg, var(--chip), var(--panel), var(--chip)); background-size: 200% 100%; }
+  @media (prefers-reduced-motion: no-preference) { .loading { animation: shimmer 1.2s linear infinite; } @keyframes shimmer { to { background-position: -200% 0; } } }
+  .foot { font-size: .78rem; color: var(--muted); display: grid; gap: 4px; }
+  .foot a { color: var(--muted); }
+  @media (max-width: 380px) { .srow { grid-template-columns: 2.2rem minmax(0, 1fr) 3.2rem 5rem; gap: 8px; padding-inline: 10px; } }
+  @media (max-width: 330px) { .srow { grid-template-columns: 2.2rem minmax(0, 1fr) 5rem; } .srow .spark { display: none; } .summary { grid-template-columns: 1fr 1fr; } .summary .stat:last-child { grid-column: span 2; } }
 </style>
 </head>
 <body>
-<div class="wrap" id="home">
-  <header class="head">
-    <h1>台股每日健檢</h1>
-    <p class="muted" id="updated"></p>
-    <p class="muted">紅色是漲、綠色是跌（台股習慣）。每個交易日下午自動更新。</p>
+
+<!-- 總覽 -->
+<div id="home">
+  <header class="appbar gutter">
+    <div class="inner">
+      <div class="brand"><h1>台股每日健檢</h1><span id="updated"></span></div>
+      <div class="search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="search" placeholder="搜尋股票代號或名稱，例如 2330、聯發科" autocomplete="off" aria-label="搜尋股票">
+        <div class="results" id="results" hidden></div>
+      </div>
+      <nav class="tabs" role="tablist">
+        <button role="tab" data-tab="mine" aria-selected="true">自選</button>
+        <button role="tab" data-tab="rank" aria-selected="false">排行</button>
+        <button role="tab" data-tab="sector" aria-selected="false">類股</button>
+        <button role="tab" data-tab="news" aria-selected="false">新聞</button>
+      </nav>
+    </div>
   </header>
 
-  <div class="hl" id="highlights"></div>
+  <main class="gutter">
+    <div class="inner">
+      <section id="tab-mine">
+        <div class="summary" id="mine-summary"></div>
+        <div class="bar-row" style="margin-top:14px">
+          <h2>我的自選股</h2>
+          <div class="chips" id="mine-sort">
+            <button data-k="score" aria-pressed="true">分數</button>
+            <button data-k="chg_1d" aria-pressed="false">漲跌</button>
+          </div>
+        </div>
+        <p class="muted" style="margin:4px 0 8px">用上方搜尋找任何一檔，進去後按「☆ 加入自選」。自選清單存在這支手機上。</p>
+        <div class="rows" id="mine-list"></div>
+      </section>
 
-  <div class="cols">
-    <section id="watchlist">
-      <div class="sec-bar">
-        <h2>觀察清單</h2>
-        <select id="sort" aria-label="排序">
-          <option value="score">依健檢分數</option>
-          <option value="chg_1d">依今日漲跌</option>
-          <option value="chg_5d">依 5 日漲跌</option>
-          <option value="score_change">依分數變化</option>
-        </select>
+      <section id="tab-rank" hidden>
+        <div class="bar-row">
+          <h2>全部 <span id="rank-count"></span> 檔排行</h2>
+        </div>
+        <div class="chips" id="rank-sort" style="margin:8px 0">
+          <button data-k="score" aria-pressed="true">健檢分數</button>
+          <button data-k="up" aria-pressed="false">今日漲幅</button>
+          <button data-k="down" aria-pressed="false">今日跌幅</button>
+          <button data-k="chg_5d" aria-pressed="false">5 日漲幅</button>
+          <button data-k="score_change" aria-pressed="false">分數變化</button>
+        </div>
+        <div class="rows" id="rank-list"></div>
+      </section>
+
+      <section id="tab-sector" hidden>
+        <div class="bar-row">
+          <h2>類股熱度</h2>
+          <div class="chips" id="sec-sort">
+            <button data-k="chg_1d" aria-pressed="false">今日</button>
+            <button data-k="chg_5d" aria-pressed="true">5 日</button>
+            <button data-k="chg_20d" aria-pressed="false">20 日</button>
+          </div>
+        </div>
+        <p class="muted" style="margin:4px 0 8px">每個類股取幾檔代表股的平均漲跌。點類股看成分股，以及最近新聞在談的原因。</p>
+        <div style="display:grid;gap:8px" id="sector-list"></div>
+      </section>
+
+      <section id="tab-news" hidden>
+        <div class="bar-row">
+          <h2>最新新聞</h2>
+          <div class="chips" id="news-scope">
+            <button data-k="mine" aria-pressed="true">我的自選</button>
+            <button data-k="all" aria-pressed="false">全部</button>
+          </div>
+        </div>
+        <p class="muted" style="margin:4px 0 8px">新聞由 Google 新聞從各大新聞網站整理而來，每則都標出原始來源。點「閱讀原文」會開啟那家新聞網站。</p>
+        <div class="card"><ul class="news" id="news-list"><li class="loading"></li></ul></div>
+      </section>
+
+      <footer class="foot">
+        <span>K 線圖：紅棒上漲、綠棒下跌，上下細線是當天最高、最低價。分數高代表條件比較好，不代表一定會漲。</span>
+        <span>資料來自 Yahoo Finance 與 Google 新聞，可能延遲或有誤，僅供學習參考，不構成投資建議。圖表使用 <a href="https://www.tradingview.com/lightweight-charts/" target="_blank" rel="noopener">TradingView Lightweight Charts</a>。</span>
+      </footer>
+    </div>
+  </main>
+</div>
+
+<!-- 個股頁 -->
+<div id="detail" hidden>
+  <header class="appbar gutter">
+    <div class="inner" style="padding-bottom:6px">
+      <div class="d-top">
+        <button class="iconbtn" id="back" type="button">‹ 返回</button>
+        <b id="d-title"></b>
+        <button class="iconbtn" id="star" type="button">☆ 加入自選</button>
       </div>
-      <p class="muted">點任一檔股票，看 K 線圖、每天最高最低、歷年高低點和相關新聞。</p>
-      <div class="list" id="cards"></div>
-    </section>
-
-    <section id="sectors">
-      <div class="sec-bar">
-        <h2>類股熱度</h2>
-        <div class="tabs" role="group" aria-label="比較期間" id="sec-tabs">
-          <button type="button" data-k="chg_1d" aria-pressed="false">今日</button>
-          <button type="button" data-k="chg_5d" aria-pressed="true">5 日</button>
-          <button type="button" data-k="chg_20d" aria-pressed="false">20 日</button>
+    </div>
+  </header>
+  <div class="hero gutter">
+    <div class="inner">
+      <div>
+        <div class="muted" id="d-sub"></div>
+        <div class="d-price" id="d-price"></div>
+        <div id="d-chg"></div>
+      </div>
+      <div class="score-line" id="d-score"></div>
+    </div>
+  </div>
+  <main class="gutter">
+    <div class="inner" id="d-body">
+      <div class="card">
+        <h3 id="d-day-title">最新一天</h3>
+        <div class="ohlc" id="d-ohlc"></div>
+      </div>
+      <div class="card">
+        <div class="bar-row">
+          <h3>K 線圖</h3>
+          <div class="chips" id="k-range">
+            <button data-n="22" aria-pressed="false">1月</button>
+            <button data-n="66" aria-pressed="true">3月</button>
+            <button data-n="132" aria-pressed="false">6月</button>
+            <button data-n="250" aria-pressed="false">1年</button>
+          </div>
+        </div>
+        <div class="legend" id="k-legend"></div>
+        <div class="chart" id="k-chart"></div>
+        <div class="keys">
+          <span><i style="background:var(--ma20)"></i>20 日均線（月線）</span>
+          <span><i style="background:var(--ma60)"></i>60 日均線（季線）</span>
+          <span>下方柱狀是成交量（張）。手指按住圖左右滑看每一天，兩指可縮放。</span>
         </div>
       </div>
-      <p class="muted">每個類股取幾檔代表股的平均漲跌。點類股看成分股、新聞，以及最近新聞在談的原因。</p>
-      <div class="list" id="sector-list"></div>
-    </section>
-  </div>
-
-  <section id="stock-news">
-    <div class="sec-bar">
-      <h2>觀察清單新聞</h2>
-      <select id="news-filter" aria-label="只看某一檔"></select>
-    </div>
-    <p class="muted">新聞由 Google 新聞從各大新聞網站整理而來，每則都標出原始來源（例如經濟日報、鉅亨網）。點「閱讀原文」會開啟該新聞網站。</p>
-    <ul class="news" id="news-list"></ul>
-  </section>
-
-  <aside class="panel tips">
-    <b>看這頁的方法</b>
-    <ul>
-      <li>K 線圖：紅色棒子是當天收盤比開盤高（上漲），綠色是下跌。棒子上下的細線是當天最高價和最低價。</li>
-      <li>類股「新聞在談」是從新聞標題統計的關鍵字，代表最近市場在討論什麼，不一定就是漲跌的真正原因。</li>
-      <li>分數高代表條件比較好，不代表一定會漲。只用閒錢、分批買，買之前先想好停損價。</li>
-    </ul>
-    <p class="muted">資料來自 Yahoo Finance 與 Google 新聞，可能延遲或有誤，僅供學習參考，不構成投資建議。</p>
-  </aside>
-</div>
-
-<div class="wrap" id="detail" hidden>
-  <div class="topbar">
-    <button type="button" class="back" id="back">‹ 返回</button>
-    <b id="d-title"></b>
-  </div>
-
-  <div class="d-head">
-    <div>
-      <div class="muted" id="d-code"></div>
-      <div class="d-price" id="d-price"></div>
-      <div id="d-chg"></div>
-    </div>
-    <div class="score" id="d-score"></div>
-  </div>
-
-  <div class="panel">
-    <h3 id="d-day-title">最新一天</h3>
-    <div class="ohlc" id="d-ohlc"></div>
-  </div>
-
-  <div class="panel">
-    <div class="sec-bar">
-      <h3>K 線圖</h3>
-      <div class="tabs" role="group" aria-label="圖表期間" id="k-tabs">
-        <button type="button" data-n="22" aria-pressed="false">1 月</button>
-        <button type="button" data-n="66" aria-pressed="true">3 月</button>
-        <button type="button" data-n="132" aria-pressed="false">6 月</button>
-        <button type="button" data-n="250" aria-pressed="false">1 年</button>
+      <div class="card">
+        <h3>近一年價格區間</h3>
+        <div id="d-range"></div>
+      </div>
+      <div class="card">
+        <h3>歷年最高、最低</h3>
+        <div class="tbl-wrap"><table id="d-years"></table></div>
+        <p class="muted">今年是到最新交易日為止；股價是實際成交價，沒有扣除配息。</p>
+      </div>
+      <div class="card">
+        <h3>健檢分數怎麼來的</h3>
+        <div id="d-detail"></div>
+        <p class="small bad" id="d-warn"></p>
+        <p class="small" id="d-stop"></p>
+      </div>
+      <div class="card">
+        <h3>相關新聞</h3>
+        <ul class="news" id="d-news"></ul>
       </div>
     </div>
-    <div class="legend">
-      <span><i style="background:var(--up)"></i>上漲</span>
-      <span><i style="background:var(--down)"></i>下跌</span>
-      <span><i class="ln" style="background:var(--ma20)"></i>20 日均線（月線）</span>
-      <span><i class="ln" style="background:var(--ma60)"></i>60 日均線（季線）</span>
-    </div>
-    <div class="k-info" id="k-info"></div>
-    <div id="k-chart"></div>
-    <p class="muted">手指在圖上滑動，可以看每一天的開盤、最高、最低、收盤和成交量。下方灰色區是成交量（張）。</p>
-  </div>
-
-  <div class="grid2">
-    <div class="panel">
-      <h3>近一年價格區間</h3>
-      <div id="d-range"></div>
-    </div>
-    <div class="panel">
-      <h3>歷年最高、最低</h3>
-      <div class="tbl-wrap"><table id="d-years"></table></div>
-      <p class="muted">今年是到最新交易日為止。股價是實際成交價，沒有扣除配息。</p>
-    </div>
-  </div>
-
-  <div class="grid2">
-    <div class="panel">
-      <h3>健檢分數怎麼來的</h3>
-      <div id="d-detail"></div>
-      <p class="warn" id="d-warn"></p>
-      <p class="small" id="d-stop"></p>
-    </div>
-    <div class="panel">
-      <h3>相關新聞</h3>
-      <ul class="news" id="d-news"></ul>
-    </div>
-  </div>
+  </main>
 </div>
 
+<script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
 <script id="data" type="application/json">/*DATA*/</script>
 <script>
 (function () {
   const D = JSON.parse(document.getElementById('data').textContent);
+  const BY = Object.fromEntries(D.stocks.map((s) => [s.code, s]));
   const $ = (s) => document.querySelector(s);
+  const $$ = (s) => document.querySelectorAll(s);
   const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
   const dir = (v) => (v > 0 ? 'up' : v < 0 ? 'down' : 'flat');
   const sign = (v) => (v == null ? '－' : (v > 0 ? '+' : '') + Number(v).toFixed(2) + '%');
   const fmt = (v) => Number(v).toLocaleString('zh-TW', { maximumFractionDigits: 2 });
-  const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+  };
+  const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
   const genTime = new Date(D.generated.replace(' ', 'T') + ':00+08:00');
   const ago = (s) => {
-    const t = new Date(s.replace(' ', 'T') + ':00+08:00');
-    const h = Math.round((genTime - t) / 36e5);
+    const h = Math.round((genTime - new Date(s.replace(' ', 'T') + ':00+08:00')) / 36e5);
     if (isNaN(h)) return s;
-    if (h < 1) return '剛剛';
-    if (h < 24) return h + ' 小時前';
-    return Math.round(h / 24) + ' 天前';
+    return h < 1 ? '剛剛' : h < 24 ? h + ' 小時前' : Math.round(h / 24) + ' 天前';
   };
-  const newsItem = (n, withTag) => {
-    const li = el('li');
-    const title = el('div', 'n-title');
-    if (withTag) title.append(el('span', 'tag', n.name));
-    title.append(document.createTextNode(n.title));
-    const meta = el('div', 'n-meta');
-    meta.append(el('span', null, '來源：'));
-    meta.lastChild.append(el('span', 'n-src', n.publisher || '未知'));
-    meta.append(el('span', null, ago(n.published) + '（' + n.published.slice(5) + '）'));
-    if (String(n.url).startsWith('https://')) {
-      const a = el('a', 'n-read', '閱讀原文 ↗');
-      a.href = n.url; a.target = '_blank'; a.rel = 'noopener noreferrer';
-      meta.append(a);
-    }
-    li.append(title, meta);
-    return li;
+  const scoreColor = (s) => (s >= 75 ? 'var(--accent)' : s >= 60 ? 'var(--gold)' : s >= 45 ? 'var(--muted)' : 'var(--warn)');
+  const ring = (score) => { const r = el('div', 'ring'); r.style.setProperty('--p', score); r.style.setProperty('--c', scoreColor(score)); r.append(el('span', null, String(score))); return r; };
+
+  $('#updated').textContent = '更新 ' + D.generated.slice(5);
+
+  // ---------- 自選清單（存在這支手機） ----------
+  let mine = store.get('mine', null);
+  if (!Array.isArray(mine)) mine = D.stocks.filter((s) => s.default).map((s) => s.code);
+  mine = mine.filter((c) => BY[c]);
+  const saveMine = () => store.set('mine', mine);
+
+  // ---------- 共用：股票列 ----------
+  const NS = 'http://www.w3.org/2000/svg';
+  const svgEl = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
+  function spark(vals) {
+    const W = 100, H = 28, P = 2;
+    const svg = svgEl('svg', { class: 'spark', viewBox: `0 0 ${W} ${H}`, preserveAspectRatio: 'none', 'aria-hidden': 'true' });
+    if (!vals || vals.length < 2) return svg;
+    const lo = Math.min(...vals), hi = Math.max(...vals);
+    const x = (i) => P + i / (vals.length - 1) * (W - 2 * P);
+    const y = (v) => H - P - (hi === lo ? .5 : (v - lo) / (hi - lo)) * (H - 2 * P);
+    const color = vals[vals.length - 1] >= vals[0] ? css('--up') : css('--down');
+    svg.append(svgEl('polyline', { points: vals.map((v, i) => x(i) + ',' + y(v)).join(' '), fill: 'none', stroke: color, 'stroke-width': 1.6, 'stroke-linejoin': 'round', 'vector-effect': 'non-scaling-stroke' }));
+    return svg;
+  }
+  function stockRow(s) {
+    const b = el('button', 'srow'); b.type = 'button';
+    b.addEventListener('click', () => openStock(s.code));
+    const nm = el('div', 'sname');
+    nm.append(el('b', null, s.name), el('small', null, s.code + (s.sector ? '・' + s.sector : '')));
+    const pr = el('div', 'sprice');
+    pr.append(el('b', dir(s.chg_1d), fmt(s.price)), el('span', 'pill ' + dir(s.chg_1d), sign(s.chg_1d)));
+    b.append(ring(s.score), nm, spark(s.spark), pr);
+    return b;
+  }
+  function fillRows(box, list, emptyText) {
+    box.replaceChildren(...(list.length ? list.map(stockRow) : [el('div', 'empty', emptyText)]));
+  }
+
+  // ---------- 分頁 ----------
+  let tab = store.get('tab', 'mine');
+  function showTab(t) {
+    tab = t; store.set('tab', t);
+    $$('.tabs button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === t)));
+    ['mine', 'rank', 'sector', 'news'].forEach((k) => { $('#tab-' + k).hidden = k !== t; });
+    if (t === 'news') drawNews();
+  }
+  $$('.tabs button').forEach((b) => b.addEventListener('click', () => showTab(b.dataset.tab)));
+  const chipGroup = (sel, key, def, onChange) => {
+    let v = store.get(key, def);
+    const paint = () => $$(sel + ' button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.k === v)));
+    $$(sel + ' button').forEach((b) => b.addEventListener('click', () => { v = b.dataset.k; store.set(key, v); paint(); onChange(v); }));
+    paint();
+    return () => v;
   };
 
-  $('#updated').textContent = '資料更新：' + D.generated + '（最後交易日 ' + (D.stocks[0] ? D.stocks[0].last_trade : '－') + '）';
+  // 自選
+  const mineSort = chipGroup('#mine-sort', 'mineSort', 'score', () => drawMine());
+  function drawMine() {
+    const list = mine.map((c) => BY[c]).filter(Boolean);
+    const up = list.filter((s) => s.chg_1d > 0).length, down = list.filter((s) => s.chg_1d < 0).length;
+    const avg = list.length ? list.reduce((a, s) => a + s.chg_1d, 0) / list.length : 0;
+    const stat = (label, val, cls) => { const d = el('div', 'stat'); d.append(el('span', null, label), el('b', cls, val)); return d; };
+    $('#mine-summary').replaceChildren(stat('今日上漲', up + ' 檔', 'up'), stat('今日下跌', down + ' 檔', 'down'), stat('平均漲跌', sign(avg), dir(avg)));
+    const k = mineSort();
+    list.sort((a, b) => (b[k] ?? -999) - (a[k] ?? -999));
+    fillRows($('#mine-list'), list, '自選清單是空的，用上方搜尋加入股票。');
+  }
 
-  // ---------- 重點摘要 ----------
-  const bySec5 = D.sectors.slice().sort((a, b) => b.chg_5d - a.chg_5d);
-  const hot = bySec5[0], cold = bySec5[bySec5.length - 1];
-  const topStock = D.stocks.slice().sort((a, b) => b.score - a.score)[0];
-  const kw = (s) => (s.keywords.length ? '新聞在談：' + s.keywords.map((k) => k.word).join('、') : '近 3 天新聞不多');
-  const hlCard = (label, main, mainCls, note) => {
-    const c = el('div', 'panel');
-    c.style.gap = '2px';
-    c.append(el('span', 'hl-label', label), el('span', 'hl-main ' + (mainCls || ''), main));
-    if (note) c.append(el('span', 'muted', note));
-    $('#highlights').append(c);
-  };
-  if (hot) hlCard('近 5 日最強類股', hot.sector + ' ' + sign(hot.chg_5d), dir(hot.chg_5d), kw(hot));
-  if (cold) hlCard('近 5 日最弱類股', cold.sector + ' ' + sign(cold.chg_5d), dir(cold.chg_5d), kw(cold));
-  if (topStock) hlCard('觀察清單最高分', topStock.name + ' ' + topStock.score + ' 分', '', topStock.grade);
+  // 排行
+  $('#rank-count').textContent = D.stocks.length;
+  const rankSort = chipGroup('#rank-sort', 'rankSort', 'score', () => drawRank());
+  function drawRank() {
+    const k = rankSort();
+    const list = D.stocks.slice();
+    if (k === 'up') list.sort((a, b) => b.chg_1d - a.chg_1d);
+    else if (k === 'down') list.sort((a, b) => a.chg_1d - b.chg_1d);
+    else list.sort((a, b) => (b[k] ?? -999) - (a[k] ?? -999));
+    fillRows($('#rank-list'), list, '沒有資料');
+  }
 
-  // ---------- 類股熱度 ----------
-  let secKey = store.get('secKey') || 'chg_5d';
+  // 類股
   const PERIOD = { chg_1d: '今日', chg_5d: '近 5 日', chg_20d: '近 20 日' };
-  const open = new Set();
+  const openSec = new Set();
+  const secSort = chipGroup('#sec-sort', 'secSort', 'chg_5d', () => drawSectors());
   function drawSectors() {
-    document.querySelectorAll('#sec-tabs button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.k === secKey)));
-    const rows = D.sectors.slice().sort((a, b) => b[secKey] - a[secKey]);
-    const max = Math.max(1, ...rows.map((r) => Math.abs(r[secKey] || 0)));
+    const k = secSort();
+    const rows = D.sectors.slice().sort((a, b) => b[k] - a[k]);
+    const max = Math.max(1, ...rows.map((r) => Math.abs(r[k] || 0)));
     $('#sector-list').replaceChildren(...rows.map((s) => {
       const d = el('details', 'sector');
-      d.open = open.has(s.sector);
-      d.addEventListener('toggle', () => { d.open ? open.add(s.sector) : open.delete(s.sector); });
-      const sum = el('summary');
-      const nm = el('span', 's-name', s.sector);
+      d.open = openSec.has(s.sector);
+      d.addEventListener('toggle', () => { d.open ? openSec.add(s.sector) : openSec.delete(s.sector); });
+      const sum = el('summary'), nm = el('b', null, s.sector);
       nm.append(el('span', 's-sub', s.up_count + '/' + s.stocks.length + ' 檔 5 日上漲'));
-      const bar = el('div', 'bar'), span = el('span');
-      const v = s[secKey] || 0, w = Math.abs(v) / max * 50;
-      span.style.width = w + '%';
-      span.style.left = v >= 0 ? '50%' : (50 - w) + '%';
-      span.style.background = v >= 0 ? 'var(--up)' : 'var(--down)';
-      bar.append(span);
-      sum.append(nm, bar, el('span', 's-pct ' + dir(v), sign(v)));
+      const bar = el('div', 'hbar'), i = el('i');
+      const v = s[k] || 0, w = Math.abs(v) / max * 50;
+      i.style.width = w + '%'; i.style.left = v >= 0 ? '50%' : (50 - w) + '%';
+      i.style.background = v >= 0 ? 'var(--up)' : 'var(--down)';
+      bar.append(i);
+      sum.append(nm, bar, el('span', 'pill ' + dir(v), sign(v)));
       d.append(sum);
-
-      const body = el('div', 's-body');
-      const why = el('div', 'why');
-      why.append(el('b', null, s.sector + ' ' + PERIOD[secKey] + (v >= 0 ? '上漲' : '下跌') + '，最近新聞在談：'));
+      const body = el('div', 's-body'), why = el('div', 'why');
+      why.append(el('b', null, s.sector + ' ' + PERIOD[k] + (v >= 0 ? '上漲' : '下跌') + '，最近新聞在談：'));
       if (s.keywords.length) {
-        const chips = el('div', 'chips');
-        s.keywords.forEach((k) => chips.append(el('span', 'chip', k.word + ' ×' + k.count)));
-        why.append(chips);
-      } else {
-        why.append(el('span', 'muted', '近 3 天相關新聞不多，漲跌可能只是跟著大盤。'));
-      }
+        const kw = el('div', 'kw');
+        s.keywords.forEach((x) => kw.append(el('span', null, x.word + ' ×' + x.count)));
+        why.append(kw);
+      } else why.append(el('span', 'muted', '近 3 天相關新聞不多，漲跌可能只是跟著大盤。'));
       body.append(why);
       const wrap = el('div', 'tbl-wrap'), t = el('table'), hr = el('tr');
       ['個股', '價格', '今日', '5 日', '20 日'].forEach((h) => hr.append(el('th', null, h)));
       t.append(hr);
       s.stocks.forEach((x) => {
-        const tr = el('tr');
-        tr.append(el('td', null, x.name + ' ' + x.code), el('td', null, fmt(x.price)),
-          el('td', dir(x.chg_1d), sign(x.chg_1d)), el('td', dir(x.chg_5d), sign(x.chg_5d)), el('td', dir(x.chg_20d), sign(x.chg_20d)));
+        const tr = el('tr'), td = el('td');
+        if (BY[x.code]) { const a = el('button', 'linkish', x.name + ' ' + x.code); a.type = 'button'; a.addEventListener('click', () => openStock(x.code)); td.append(a); }
+        else td.textContent = x.name + ' ' + x.code;
+        tr.append(td, el('td', null, fmt(x.price)), el('td', dir(x.chg_1d), sign(x.chg_1d)), el('td', dir(x.chg_5d), sign(x.chg_5d)), el('td', dir(x.chg_20d), sign(x.chg_20d)));
         t.append(tr);
       });
       wrap.append(t);
@@ -357,251 +463,219 @@
       return d;
     }));
   }
-  document.querySelectorAll('#sec-tabs button').forEach((b) => b.addEventListener('click', () => { secKey = b.dataset.k; store.set('secKey', secKey); drawSectors(); }));
-  drawSectors();
 
-  // ---------- 觀察清單卡片 ----------
-  const PARTS = [['trend', '趨勢'], ['momentum', '動能'], ['valuation', '估值'], ['quality', '體質'], ['risk', '風險']];
-  const NS = 'http://www.w3.org/2000/svg';
-  const svgEl = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
-  function spark(bars) {
-    const W = 300, H = 38, P = 3;
-    const svg = svgEl('svg', { class: 'spark', viewBox: `0 0 ${W} ${H}`, preserveAspectRatio: 'none', 'aria-hidden': 'true' });
-    const vals = (bars || []).slice(-60).map((b) => b[4]);
-    if (vals.length < 2) return svg;
-    const lo = Math.min(...vals), hi = Math.max(...vals);
-    const x = (i) => P + i / (vals.length - 1) * (W - 2 * P);
-    const y = (v) => H - P - (hi === lo ? .5 : (v - lo) / (hi - lo)) * (H - 2 * P);
-    const color = vals[vals.length - 1] >= vals[0] ? 'var(--up)' : 'var(--down)';
-    svg.append(svgEl('polyline', { points: vals.map((v, i) => x(i) + ',' + y(v)).join(' '), fill: 'none', stroke: color, 'stroke-width': 2, 'stroke-linejoin': 'round', 'vector-effect': 'non-scaling-stroke' }));
-    return svg;
+  // 新聞
+  function newsItem(n, withTag) {
+    const li = el('li'), title = el('div', 'n-title');
+    if (withTag && n.name) title.append(el('span', 'tag', n.name));
+    title.append(document.createTextNode(n.title));
+    const meta = el('div', 'n-meta'), src = el('span', null, '來源：');
+    src.append(el('span', 'n-src', n.publisher || '未知'));
+    meta.append(src, el('span', null, ago(n.published) + '（' + n.published.slice(5) + '）'));
+    if (String(n.url).startsWith('https://')) {
+      const a = el('a', 'n-read', '閱讀原文 ↗'); a.href = n.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; meta.append(a);
+    }
+    li.append(title, meta);
+    return li;
   }
-  function partsBars(r) {
-    const parts = el('div', 'parts');
-    PARTS.forEach(([key, label]) => {
-      const v = r[key], p = el('div', null, label + ' ' + (v == null ? '－' : v));
-      const tr = el('div', 'track'), i = el('i');
-      i.style.width = (v || 0) + '%'; i.style.background = v >= 60 ? 'var(--accent)' : 'var(--muted)';
-      tr.append(i); p.append(tr); parts.append(p);
-    });
-    return parts;
+  let NEWS = null;
+  const newsScope = chipGroup('#news-scope', 'newsScope', 'mine', () => drawNews());
+  async function drawNews() {
+    const box = $('#news-list');
+    if (!NEWS) {
+      try { NEWS = await (await fetch('news.json?v=' + encodeURIComponent(D.generated))).json(); }
+      catch (e) { box.replaceChildren(el('li', 'muted', '新聞載入失敗，請重新整理再試一次。')); return; }
+    }
+    const set = new Set(mine);
+    const list = NEWS.filter((n) => newsScope() === 'all' || set.has(n.code)).slice(0, 60);
+    box.replaceChildren(...(list.length ? list.map((n) => newsItem(n, true)) : [el('li', 'muted', '近 3 天沒有相關新聞。')]));
   }
-  function scoreBox(r) {
-    const sc = el('div', 'score'), meta = el('div', 'score-meta');
-    meta.append(el('b', null, r.grade), el('span', 'muted', r.score_change == null ? '昨天沒有資料' : r.score_change === 0 ? '和昨天一樣' : '比昨天 ' + (r.score_change > 0 ? '+' : '') + r.score_change + ' 分'));
-    sc.append(meta, el('span', 'score-num', String(r.score)));
-    return sc;
-  }
-  const sortSel = $('#sort');
-  sortSel.value = store.get('sort') || 'score';
-  function drawCards() {
-    const k = sortSel.value;
-    const rows = D.stocks.slice().sort((a, b) => (b[k] ?? -999) - (a[k] ?? -999));
-    $('#cards').replaceChildren(...rows.map((r) => {
-      const c = el('button', 'card');
-      c.type = 'button';
-      c.addEventListener('click', () => { location.hash = r.code; });
-      const top = el('div', 'row');
-      const nm = el('div'); nm.append(el('b', null, r.name), el('span', 'muted', '  ' + r.code));
-      const ch = el('div', 'small'); ch.append(el('span', dir(r.chg_1d), '今日 ' + sign(r.chg_1d)), el('span', 'muted', '　'), el('span', dir(r.chg_5d), '5 日 ' + sign(r.chg_5d)));
-      top.append(nm, ch);
-      const mid = el('div', 'row');
-      mid.append(el('span', 'price ' + dir(r.chg_1d), fmt(r.price)), scoreBox(r));
-      c.append(top, mid, spark(D.ohlc[r.code]), partsBars(r));
-      if (r.warning) c.append(el('p', 'warn', '⚠ ' + r.warning));
-      const foot = el('div', 'row');
-      foot.append(el('span', 'muted', '停損參考價 ' + fmt(r.stop_price)), el('span', 'more', '看 K 線與新聞 ›'));
-      c.append(foot);
-      return c;
-    }));
-  }
-  sortSel.addEventListener('change', () => { store.set('sort', sortSel.value); drawCards(); });
-  drawCards();
 
-  // ---------- 觀察清單新聞 ----------
-  const nf = $('#news-filter');
-  nf.append(new Option('全部股票', ''), ...D.stocks.map((s) => new Option(s.name + ' ' + s.code, s.code)));
-  function drawNews() {
-    const rows = D.news.filter((n) => !nf.value || n.code === nf.value).slice(0, nf.value ? 10 : 24);
-    $('#news-list').replaceChildren(...rows.map((n) => newsItem(n, true)));
+  // ---------- 搜尋 ----------
+  const q = $('#q'), results = $('#results');
+  let hits = [], hi = 0;
+  function search() {
+    const t = q.value.trim().toLowerCase();
+    if (!t) { results.hidden = true; return; }
+    hits = D.stocks.filter((s) => s.code.startsWith(t) || s.name.toLowerCase().includes(t) || (s.sector || '').includes(t)).slice(0, 10);
+    hi = 0;
+    results.replaceChildren(...(hits.length ? hits.map((s, i) => {
+      const b = el('button', i === 0 ? 'on' : null); b.type = 'button';
+      const l = el('span'); l.append(el('b', null, s.name + ' '), el('span', 'muted', s.code + (s.sector ? '・' + s.sector : '')));
+      b.append(l, el('span', 'pill ' + dir(s.chg_1d), sign(s.chg_1d)));
+      b.addEventListener('click', () => { q.value = ''; results.hidden = true; openStock(s.code); });
+      return b;
+    }) : [el('div', 'empty', '找不到「' + q.value + '」。目前可選 ' + D.stocks.length + ' 檔常見股票。')]));
+    results.hidden = false;
   }
-  nf.addEventListener('change', drawNews);
-  drawNews();
-
-  // ---------- 個股頁：K 線圖 ----------
-  let kN = Number(store.get('kN')) || 66;
-  let current = null;
-  const ma = (bars, n) => bars.map((_, i) => {
-    if (i < n - 1) return null;
-    let s = 0;
-    for (let j = i - n + 1; j <= i; j++) s += bars[j][4];
-    return s / n;
+  q.addEventListener('input', search);
+  q.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && hits[hi]) { const c = hits[hi].code; q.value = ''; results.hidden = true; q.blur(); openStock(c); }
+    if (e.key === 'Escape') { q.value = ''; results.hidden = true; }
   });
-  const niceStep = (range, count) => {
-    const raw = range / count, mag = Math.pow(10, Math.floor(Math.log10(raw)));
-    const f = raw / mag;
-    return (f < 1.5 ? 1 : f < 3 ? 2 : f < 7 ? 5 : 10) * mag;
+  document.addEventListener('click', (e) => { if (!e.target.closest('.search')) results.hidden = true; });
+
+  // ---------- 個股頁 ----------
+  let current = null, chart = null, page = null;
+  let kN = store.get('kN', 66);
+  const kRange = () => $$('#k-range button').forEach((b) => b.setAttribute('aria-pressed', String(Number(b.dataset.n) === kN)));
+  $$('#k-range button').forEach((b) => b.addEventListener('click', () => { kN = Number(b.dataset.n); store.set('kN', kN); kRange(); setRange(); }));
+
+  function openStock(code) { location.hash = code; }
+  function paintStar() {
+    const on = mine.includes(current);
+    const s = $('#star');
+    s.textContent = on ? '★ 已在自選' : '☆ 加入自選';
+    s.classList.toggle('on', on);
+  }
+  $('#star').addEventListener('click', () => {
+    if (mine.includes(current)) mine = mine.filter((c) => c !== current); else mine.push(current);
+    saveMine(); paintStar(); drawMine();
+  });
+
+  function legend(bar, prev) {
+    const box = $('#k-legend');
+    if (!bar) { box.replaceChildren(); return; }
+    const chg = prev ? (bar[4] / prev[4] - 1) * 100 : null;
+    const item = (k, v, cls) => { const s = el('span'); s.append(el('span', 'k', k), el('b', cls || null, v)); return s; };
+    box.replaceChildren(el('b', null, bar[0]), item('開', fmt(bar[1])), item('高', fmt(bar[2]), 'up'), item('低', fmt(bar[3]), 'down'),
+      item('收', fmt(bar[4]), dir(chg)), item('漲跌', sign(chg), dir(chg)), item('量', fmt(bar[5]) + ' 張'));
+  }
+  const maLine = (bars, n) => {
+    const out = [];
+    let s = 0;
+    bars.forEach((b, i) => { s += b[4]; if (i >= n) s -= bars[i - n][4]; if (i >= n - 1) out.push({ time: b[0], value: +(s / n).toFixed(2) }); });
+    return out;
   };
-  function showInfo(b, prev) {
-    const info = $('#k-info');
-    const chg = prev ? (b[4] / prev[4] - 1) * 100 : null;
-    const item = (label, v, cls) => { const s = el('span'); s.append(document.createTextNode(label + ' ')); s.append(el('b', cls || null, v)); return s; };
-    info.replaceChildren(el('b', null, b[0]), item('開', fmt(b[1])), item('高', fmt(b[2]), 'up'), item('低', fmt(b[3]), 'down'),
-      item('收', fmt(b[4]), dir(chg)), item('漲跌', sign(chg), dir(chg)), item('量', fmt(b[5]) + ' 張'));
+  function setRange() {
+    if (!chart || !page) return;
+    const n = page.ohlc.length;
+    chart.timeScale().setVisibleLogicalRange({ from: Math.max(0, n - kN) - .5, to: n - .5 });
   }
-  function drawK() {
+  function drawChart() {
     const box = $('#k-chart');
-    const all = D.ohlc[current] || [];
-    if (all.length < 2) { box.replaceChildren(el('p', 'muted', '沒有價格資料')); return; }
-    const m20 = ma(all, 20), m60 = ma(all, 60);
-    const start = Math.max(0, all.length - kN);
-    const bars = all.slice(start);
-    const W = Math.max(280, box.clientWidth), PH = 220, VH = 56, GAP = 10, XH = 18, R = 46;
-    const H = PH + GAP + VH + XH, plotW = W - R;
-    let lo = Math.min(...bars.map((b) => b[3])), hi = Math.max(...bars.map((b) => b[2]));
-    for (let i = start; i < all.length; i++) for (const m of [m20[i], m60[i]]) if (m != null) { lo = Math.min(lo, m); hi = Math.max(hi, m); }
-    const pad = (hi - lo) * .06 || 1; lo -= pad; hi += pad;
-    const step = plotW / bars.length, cw = Math.max(1, Math.min(10, step * .68));
-    const X = (i) => (i + .5) * step;
-    const Y = (v) => 4 + (hi - v) / (hi - lo) * (PH - 8);
-    const vmax = Math.max(...bars.map((b) => b[5])) || 1;
-    const VY = (v) => PH + GAP + VH - v / vmax * VH;
-    const svg = svgEl('svg', { class: 'kchart', viewBox: `0 0 ${W} ${H}`, width: '100%', height: H, role: 'img', 'aria-label': 'K 線圖' });
-
-    const ys = niceStep(hi - lo, 4);
-    for (let v = Math.ceil(lo / ys) * ys; v <= hi; v += ys) {
-      svg.append(svgEl('line', { x1: 0, x2: plotW, y1: Y(v), y2: Y(v), stroke: 'var(--grid)', 'stroke-width': 1 }));
-      const t = svgEl('text', { x: plotW + 6, y: Y(v) + 3.5 }); t.textContent = fmt(+v.toFixed(2)); svg.append(t);
-    }
-    svg.append(svgEl('line', { x1: 0, x2: plotW, y1: PH + GAP + VH, y2: PH + GAP + VH, stroke: 'var(--line)', 'stroke-width': 1 }));
-    const vt = svgEl('text', { x: plotW + 6, y: PH + GAP + 9 }); vt.textContent = fmt(vmax) + ' 張'; svg.append(vt);
-
-    const labelEvery = Math.ceil(bars.length / Math.max(2, Math.floor(plotW / 70)));
-    bars.forEach((b, i) => {
-      const up = b[4] >= b[1];
-      const color = up ? 'var(--up)' : 'var(--down)';
-      svg.append(svgEl('line', { x1: X(i), x2: X(i), y1: Y(b[2]), y2: Y(b[3]), stroke: color, 'stroke-width': 1 }));
-      const top = Y(Math.max(b[1], b[4])), h = Math.max(1, Math.abs(Y(b[1]) - Y(b[4])));
-      svg.append(svgEl('rect', { x: X(i) - cw / 2, y: top, width: cw, height: h, fill: color }));
-      svg.append(svgEl('rect', { x: X(i) - cw / 2, y: VY(b[5]), width: cw, height: PH + GAP + VH - VY(b[5]), fill: color, opacity: .45 }));
-      if (i % labelEvery === 0 && i > 0) {
-        const t = svgEl('text', { x: X(i), y: H - 4, 'text-anchor': 'middle' }); t.textContent = b[0].slice(5).replace('-', '/'); svg.append(t);
-      }
+    if (chart) { chart.remove(); chart = null; }
+    box.replaceChildren();
+    const bars = page.ohlc;
+    if (typeof LightweightCharts === 'undefined') { box.replaceChildren(el('div', 'empty', '圖表元件沒有載入成功，請重新整理。')); return; }
+    const up = css('--up'), down = css('--down');
+    chart = LightweightCharts.createChart(box, {
+      autoSize: true,
+      layout: { background: { color: 'transparent' }, textColor: css('--muted'), fontFamily: css('--sans') },
+      grid: { vertLines: { visible: false }, horzLines: { color: css('--line') } },
+      rightPriceScale: { borderVisible: false, scaleMargins: { top: .06, bottom: .26 } },
+      timeScale: { borderVisible: false, rightOffset: 1, fixLeftEdge: true, fixRightEdge: true },
+      crosshair: { mode: 0 },
+      localization: { locale: 'zh-TW', dateFormat: 'yyyy/MM/dd', priceFormatter: (p) => fmt(+p.toFixed(2)) },
+      handleScroll: { vertTouchDrag: false },
     });
-    for (const [series, color] of [[m20, 'var(--ma20)'], [m60, 'var(--ma60)']]) {
-      const pts = [];
-      for (let i = start; i < all.length; i++) if (series[i] != null) pts.push(X(i - start) + ',' + Y(series[i]));
-      if (pts.length > 1) svg.append(svgEl('polyline', { points: pts.join(' '), fill: 'none', stroke: color, 'stroke-width': 1.5, 'stroke-linejoin': 'round' }));
+    const candle = chart.addCandlestickSeries({ upColor: up, downColor: down, borderUpColor: up, borderDownColor: down, wickUpColor: up, wickDownColor: down, priceLineVisible: false });
+    candle.setData(bars.map((b) => ({ time: b[0], open: b[1], high: b[2], low: b[3], close: b[4] })));
+    const vol = chart.addHistogramSeries({ priceScaleId: 'vol', priceFormat: { type: 'volume' }, lastValueVisible: false, priceLineVisible: false });
+    chart.priceScale('vol').applyOptions({ scaleMargins: { top: .8, bottom: 0 } });
+    vol.setData(bars.map((b) => ({ time: b[0], value: b[5], color: b[4] >= b[1] ? up + '80' : down + '80' })));
+    for (const [n, color] of [[20, css('--ma20')], [60, css('--ma60')]]) {
+      chart.addLineSeries({ color, lineWidth: 1.5, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false }).setData(maLine(bars, n));
     }
-    const cross = svgEl('line', { y1: 0, y2: PH + GAP + VH, stroke: 'var(--muted)', 'stroke-width': 1, 'stroke-dasharray': '3 3', opacity: 0 });
-    svg.append(cross);
-    const pick = (ev) => {
-      const r = svg.getBoundingClientRect();
-      const i = Math.max(0, Math.min(bars.length - 1, Math.floor((ev.clientX - r.left) / r.width * W / step)));
-      cross.setAttribute('x1', X(i)); cross.setAttribute('x2', X(i)); cross.setAttribute('opacity', 1);
-      showInfo(bars[i], all[start + i - 1]);
-    };
-    svg.addEventListener('pointermove', pick);
-    svg.addEventListener('pointerdown', pick);
-    svg.addEventListener('pointerleave', () => { cross.setAttribute('opacity', 0); showInfo(all[all.length - 1], all[all.length - 2]); });
-    box.replaceChildren(svg);
-    showInfo(all[all.length - 1], all[all.length - 2]);
+    const idx = Object.fromEntries(bars.map((b, i) => [b[0], i]));
+    chart.subscribeCrosshairMove((p) => {
+      const key = p && p.time ? (typeof p.time === 'string' ? p.time : `${p.time.year}-${String(p.time.month).padStart(2, '0')}-${String(p.time.day).padStart(2, '0')}`) : null;
+      const i = key != null ? idx[key] : bars.length - 1;
+      legend(bars[i ?? bars.length - 1], bars[(i ?? bars.length - 1) - 1]);
+    });
+    legend(bars[bars.length - 1], bars[bars.length - 2]);
+    setRange();
   }
-  document.querySelectorAll('#k-tabs button').forEach((b) => b.addEventListener('click', () => {
-    kN = Number(b.dataset.n); store.set('kN', kN);
-    document.querySelectorAll('#k-tabs button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-    drawK();
-  }));
 
-  function drawDetail(code) {
-    const r = D.stocks.find((s) => s.code === code);
-    if (!r) return false;
-    current = code;
-    const bars = D.ohlc[code] || [];
-    const last = bars[bars.length - 1], prev = bars[bars.length - 2];
-    $('#d-title').textContent = r.name + ' ' + r.code;
-    $('#d-code').textContent = r.code + '・最後交易日 ' + r.last_trade;
-    $('#d-price').textContent = fmt(r.price);
-    $('#d-price').className = 'd-price ' + dir(r.chg_1d);
-    $('#d-chg').replaceChildren(el('span', dir(r.chg_1d), '今日 ' + sign(r.chg_1d)), el('span', 'muted', '　'), el('span', dir(r.chg_5d), '5 日 ' + sign(r.chg_5d)), el('span', 'muted', '　'), el('span', dir(r.chg_1y), '1 年 ' + sign(r.chg_1y)));
-    $('#d-score').replaceChildren(scoreBox(r));
+  async function showDetail(code) {
+    const s = BY[code];
+    current = code; page = null;
+    $('#d-title').textContent = s.name + ' ' + s.code;
+    $('#d-sub').textContent = s.code + (s.sector ? '・' + s.sector : '');
+    $('#d-price').textContent = fmt(s.price);
+    $('#d-price').className = 'd-price ' + dir(s.chg_1d);
+    $('#d-chg').replaceChildren(el('span', dir(s.chg_1d), '今日 ' + sign(s.chg_1d)), el('span', 'muted', '　'), el('span', dir(s.chg_5d), '5 日 ' + sign(s.chg_5d)), el('span', 'muted', '　'), el('span', dir(s.chg_1y), '1 年 ' + sign(s.chg_1y)));
+    const meta = el('div');
+    meta.style.textAlign = 'right';
+    meta.append(el('b', null, s.grade), el('div', 'muted', s.score_change == null ? '健檢分數' : s.score_change === 0 ? '分數和昨天一樣' : '比昨天 ' + (s.score_change > 0 ? '+' : '') + s.score_change + ' 分'));
+    $('#d-score').replaceChildren(meta, ring(s.score));
+    paintStar(); kRange();
+    ['#d-ohlc', '#d-range', '#d-years', '#d-detail', '#d-news', '#k-legend'].forEach((sel) => $(sel).replaceChildren());
+    $('#d-warn').textContent = ''; $('#d-stop').textContent = '';
+    $('#k-chart').replaceChildren(el('div', 'loading'));
+
+    let data;
+    try { data = await (await fetch('data/' + code + '.json?v=' + encodeURIComponent(D.generated))).json(); }
+    catch (e) { $('#k-chart').replaceChildren(el('div', 'empty', '資料載入失敗，請重新整理再試一次。')); return; }
+    if (current !== code) return;
+    page = data;
+    const bars = data.ohlc, last = bars[bars.length - 1], prev = bars[bars.length - 2];
 
     if (last) {
       $('#d-day-title').textContent = '最新一天（' + last[0] + '）';
       const amp = prev ? (last[2] - last[3]) / prev[4] * 100 : null;
       const cell = (label, v, cls) => { const d = el('div'); d.append(el('span', null, label), el('b', cls || null, v)); return d; };
       $('#d-ohlc').replaceChildren(cell('開盤', fmt(last[1])), cell('最高', fmt(last[2]), 'up'), cell('最低', fmt(last[3]), 'down'),
-        cell('收盤', fmt(last[4]), dir(r.chg_1d)), cell('成交量', fmt(last[5]) + ' 張'), cell('振幅', amp == null ? '－' : amp.toFixed(2) + '%'));
+        cell('收盤', fmt(last[4]), dir(s.chg_1d)), cell('成交量', fmt(last[5]) + ' 張'), cell('振幅', amp == null ? '－' : amp.toFixed(2) + '%'));
     }
-    document.querySelectorAll('#k-tabs button').forEach((x) => x.setAttribute('aria-pressed', String(Number(x.dataset.n) === kN)));
+    drawChart();
 
-    // 近一年區間
-    const yr = bars.slice(-250);
-    if (yr.length) {
-      let hiB = yr[0], loB = yr[0];
-      yr.forEach((b) => { if (b[2] > hiB[2]) hiB = b; if (b[3] < loB[3]) loB = b; });
-      const pos = hiB[2] > loB[3] ? (r.price - loB[3]) / (hiB[2] - loB[3]) * 100 : 50;
-      const rangeBox = el('div');
+    if (bars.length) {
+      let hiB = bars[0], loB = bars[0];
+      bars.forEach((b) => { if (b[2] > hiB[2]) hiB = b; if (b[3] < loB[3]) loB = b; });
+      const pos = hiB[2] > loB[3] ? (s.price - loB[3]) / (hiB[2] - loB[3]) * 100 : 50;
       const bar = el('div', 'range'), mark = el('i');
       mark.style.left = Math.max(0, Math.min(100, pos)) + '%';
       bar.append(mark);
       const lbl = el('div', 'range-lbl');
       lbl.append(el('span', null, '最低 ' + fmt(loB[3]) + '（' + loB[0].slice(5) + '）'), el('span', null, '最高 ' + fmt(hiB[2]) + '（' + hiB[0].slice(5) + '）'));
-      rangeBox.append(bar, lbl, el('p', 'small', '目前 ' + fmt(r.price) + '，在一年區間的 ' + Math.round(pos) + '% 位置。' +
-        (pos > 85 ? '接近一年高點，追高要小心。' : pos < 15 ? '接近一年低點，先確認是不是公司出了問題。' : '')));
-      $('#d-range').replaceChildren(rangeBox);
+      $('#d-range').replaceChildren(bar, lbl, el('p', 'small', '目前 ' + fmt(s.price) + '，在一年區間的 ' + Math.round(pos) + '% 位置。' +
+        (pos > 85 ? '接近一年高點，追高要小心。' : pos < 15 ? '接近一年低點，先確認公司是不是出了問題。' : '')));
     }
 
-    // 歷年高低
-    const t = $('#d-years');
+    const thisYear = genTime.getFullYear();
     const hr = el('tr');
     ['年度', '最高', '最低', '全年漲跌'].forEach((h) => hr.append(el('th', null, h)));
-    t.replaceChildren(hr, ...(D.yearly[code] || []).map((y) => {
+    $('#d-years').replaceChildren(hr, ...data.yearly.map((y) => {
       const tr = el('tr'), chg = (y.close / y.open - 1) * 100;
       const hiTd = el('td', 'up', fmt(y.high)); hiTd.append(el('small', null, y.high_date));
       const loTd = el('td', 'down', fmt(y.low)); loTd.append(el('small', null, y.low_date));
-      tr.append(el('td', null, y.year + (y.year === new Date(genTime).getFullYear() ? ' 至今' : '') + (y.days < 200 && y.year !== new Date(genTime).getFullYear() ? '（部分）' : '')),
-        hiTd, loTd, el('td', dir(chg), sign(chg)));
+      tr.append(el('td', null, y.year + (y.year === thisYear ? ' 至今' : y.days < 200 ? '（部分）' : '')), hiTd, loTd, el('td', dir(chg), sign(chg)));
       return tr;
     }));
 
-    // 分數說明
-    $('#d-detail').replaceChildren(...(r.details || []).map((s) => {
+    $('#d-detail').replaceChildren(...data.details.map((sec) => {
       const box = el('div', 'sc-sec'), head = el('div', 'row');
-      head.append(el('b', null, s.section), el('span', 'muted', s.full ? s.got + ' / ' + s.full : '資料不足，不計分'));
+      head.append(el('b', null, sec.section), el('span', 'muted', sec.full ? sec.got + ' / ' + sec.full : '資料不足，不計分'));
       const ul = el('ul');
-      s.notes.forEach((n) => ul.append(el('li', n.startsWith('✔') ? null : n.startsWith('✘') ? 'bad' : 'flat', n)));
+      sec.notes.forEach((n) => ul.append(el('li', n.startsWith('✔') ? null : n.startsWith('✘') ? 'bad' : 'flat', n)));
       box.append(head, ul);
       return box;
     }));
-    $('#d-warn').textContent = r.warning ? '⚠ ' + r.warning : '';
-    $('#d-stop').textContent = '停損參考價 ' + fmt(r.stop_price) + '：如果買了，跌破這個價位代表看錯了，認賠出場避免越賠越多。';
-
-    const ns = D.news.filter((n) => n.code === code);
-    $('#d-news').replaceChildren(...(ns.length ? ns.map((n) => newsItem(n, false)) : [el('li', 'muted', '近 3 天沒有找到相關新聞。')]));
-    return true;
+    $('#d-warn').textContent = data.warning ? '⚠ ' + data.warning : '';
+    $('#d-stop').textContent = data.advice + ' 停損參考價 ' + fmt(data.stop_price) + '：如果買了，跌破這個價位代表看錯了，認賠出場避免越賠越多。';
+    $('#d-news').replaceChildren(...(data.news.length ? data.news.map((n) => newsItem(n, false)) : [el('li', 'muted', '近 3 天沒有找到相關新聞。')]));
   }
 
   // ---------- 切換總覽 / 個股頁 ----------
-  let homeScroll = 0;
+  let homeScroll = 0, cameFromHome = false;
   function route() {
     const code = decodeURIComponent(location.hash.slice(1));
-    if (code && D.ohlc[code]) {
+    if (code && BY[code]) {
       if (!$('#home').hidden) homeScroll = window.scrollY;
       $('#home').hidden = true; $('#detail').hidden = false;
-      drawDetail(code);
       window.scrollTo(0, 0);
-      drawK();
+      showDetail(code);
     } else {
       $('#detail').hidden = true; $('#home').hidden = false;
+      if (chart) { chart.remove(); chart = null; }
       window.scrollTo(0, homeScroll);
     }
   }
-  let cameFromHome = false;  // 從總覽點進來的才用「上一頁」，直接開個股網址的就回總覽
   $('#back').addEventListener('click', () => { if (cameFromHome) history.back(); else location.hash = ''; });
   window.addEventListener('hashchange', () => { cameFromHome = !$('#home').hidden; route(); });
-  let rt;
-  window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { if (!$('#detail').hidden) drawK(); }, 150); });
+
+  drawMine(); drawRank(); drawSectors(); showTab(tab);
   route();
 })();
 </script>

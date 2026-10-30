@@ -115,7 +115,7 @@ class Scorecard:
 
 
 def evaluate(symbol, hist, info):
-    close = hist["Adj Close"] if "Adj Close" in hist.columns else hist["Close"]
+    close = (hist["Adj Close"] if "Adj Close" in hist.columns else hist["Close"]).dropna()
     price = close.iloc[-1]
     ma20, ma60 = close.rolling(20).mean().iloc[-1], close.rolling(60).mean().iloc[-1]
     ma200 = close.rolling(200).mean().iloc[-1] if len(close) >= 200 else None

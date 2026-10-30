@@ -1,15 +1,17 @@
 """
 產生手機網頁
 ------------------------------------------------
-1. 跑 daily_report.py：觀察清單健檢分數、走勢、新聞
+1. 跑 daily_report.py：所有可選股票的健檢分數、走勢、新聞（個股資料寫到 data/）
 2. 跑 sectors.py：類股熱度與新聞關鍵字
-3. 把資料塞進 site_template.html，輸出成同資料夾的 index.html（GitHub Pages 網址 /stock/）
+3. 把清單和類股資料塞進 site_template.html，輸出成同資料夾的 index.html（GitHub Pages 網址 /stock/）
+   新聞另存 news.json，打開「新聞」分頁時才載入
 
 用法：python build_site.py
 """
 
 import json
 import os
+import shutil
 import sys
 from datetime import datetime
 
@@ -33,14 +35,12 @@ def main():
     daily_report.main()
     data = {
         "generated": datetime.now(daily_report.TW).strftime("%Y-%m-%d %H:%M"),
-        "stocks": load("stocks.json"),
-        "news": load("news.json"),
-        "ohlc": load("ohlc.json"),
-        "yearly": load("yearly.json"),
+        "stocks": load("list.json"),
         "sectors": analyze_sectors(),
     }
+    shutil.copy(os.path.join(daily_report.OUT, "news.json"), os.path.join(HERE, "news.json"))
     # 避免新聞標題裡的 </script> 之類文字提早結束 script 區塊
-    payload = json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
+    payload = json.dumps(daily_report.clean(data), ensure_ascii=False, separators=(",", ":"), allow_nan=False).replace("</", "<\\/")
     with open(os.path.join(HERE, "site_template.html"), encoding="utf-8") as f:
         html = f.read().replace("/*DATA*/", payload)
     with open(os.path.join(HERE, "index.html"), "w", encoding="utf-8") as f:

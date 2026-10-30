@@ -33,7 +33,7 @@ jobs:
         run: |
           git config user.name "stock-bot"
           git config user.email "stock-bot@users.noreply.github.com"
-          git add index.html output/score_history.csv
+          git add index.html news.json data output/score_history.csv
           git diff --cached --quiet || git commit -m "股票網頁每日更新 $(TZ=Asia/Taipei date +%Y-%m-%d)"
           git pull --rebase
           git push
