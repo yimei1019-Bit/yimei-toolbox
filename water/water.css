@@ -261,7 +261,6 @@ select { border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; 
 
 .copyrow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .copyrow select { flex: 1 1 140px; min-width: 0; }
-.grp.seal > h3 { background: #e9e6f3; }
 .miss-floor { display: flex; flex-direction: column; gap: 6px; padding: 6px 0; border-bottom: 1px solid var(--line); }
 .miss-floor .close-row { display: flex; align-items: center; gap: 8px; background: var(--na-bg); }
 .miss-floor .close-row a { flex: none; }
