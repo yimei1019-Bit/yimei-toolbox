@@ -250,9 +250,42 @@ select { border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; 
 .reasons.bad button.sp { background: var(--card); }
 .reasons button.on { background: var(--doing); border-color: var(--doing); color: #fff; }
 .reasons.bad button.on { background: var(--bad); border-color: var(--bad); color: #fff; }
-.insp { grid-column: 1 / -1; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; font-size: 12px; }
-.insp button { border: 1px solid var(--line); background: var(--card); color: var(--muted); border-radius: 999px; padding: 3px 10px; font-size: 12px; font-weight: 700; }
-.insp button.on { background: #2e7d4f; border-color: #2e7d4f; color: #fff; }
-.insp button.wait.on { background: #b26a00; border-color: #b26a00; }
-.insp .ic { flex: 1 1 100%; min-width: 0; font-size: 13px; padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px; }
-.iname .basis { display: block; font-size: 11px; line-height: 1.4; color: var(--muted); margin-top: 2px; }
+.item.dg { grid-template-columns: minmax(0,1fr); gap: 8px; padding: 12px 14px; }
+.item.dg .iname { font-size: 15.5px; font-weight: 700; line-height: 1.4; }
+.item.dg .seg { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.item.dg .st { width: auto; height: 46px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; font-size: 17px; line-height: 1.1; }
+.item.dg .st small { font-size: 11px; font-weight: 600; letter-spacing: .5px; }
+.item.dg .st[data-v="△"] { font-size: 20px; }
+.insp { display: flex; }
+.itag { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; border: 1px dashed var(--line); background: var(--card); color: var(--muted);
+  border-radius: 999px; padding: 4px 12px; font-size: 12.5px; font-weight: 700; }
+.itag span { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.itag i { font-style: normal; font-size: 10px; opacity: .7; }
+.itag.done { border: 1px solid #b9dcc6; background: #eef7f1; color: #2e7d4f; }
+.itag.wait { border: 1px solid #f0cf94; background: #fff4e0; color: #9a5b00; }
+.itag.na { border-style: solid; background: var(--na-bg); color: var(--na); }
+.iedit { display: flex; flex-direction: column; gap: 8px; padding: 10px; border-radius: 12px; background: var(--bg); }
+.iopts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.iopts button { border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 10px; padding: 8px 4px; font-size: 13px; font-weight: 700; }
+.iopts button.on { background: #2e7d4f; border-color: #2e7d4f; color: #fff; }
+.iopts button.wait.on { background: #b26a00; border-color: #b26a00; }
+.iopts button.na.on { background: var(--na); border-color: var(--na); }
+.iedit .ic { width: 100%; min-width: 0; font-size: 14px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
+.ibasis { font-size: 12px; line-height: 1.5; color: var(--muted); }
+.ibasis b { display: inline-block; margin-right: 6px; color: var(--ink); }
+.iname .basis { display: block; font-size: 11.5px; line-height: 1.45; color: var(--muted); margin-top: 3px; font-weight: 400; }
+.tabs { grid-template-columns: repeat(4, 1fr); gap: 4px; }
+.tabs a { padding: 9px 2px; font-size: 14px; white-space: nowrap; }
+.tabs .cnt { min-width: 0; padding: 0 5px; margin-left: 2px; font-size: 11px; }
+.areas { display: flex; flex-direction: column; gap: 8px; }
+.acard { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border-radius: var(--radius); background: var(--card); text-decoration: none; box-shadow: 0 2px 10px rgba(46,42,58,.06); }
+.ahead { display: flex; align-items: baseline; gap: 8px; }
+.ahead b { font-size: 20px; }
+.ahead .atitle { flex: 1; min-width: 0; color: var(--muted); font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ahead .apct { font-weight: 700; font-variant-numeric: tabular-nums; }
+.ahead .go { color: var(--muted); font-size: 18px; }
+.achips { display: flex; flex-wrap: wrap; gap: 6px; font-size: 12px; }
+.achips span { padding: 2px 9px; border-radius: 999px; background: var(--bg); color: var(--muted); font-weight: 600; }
+.achips .c-bad { background: var(--bad-bg); color: var(--bad); }
+.achips .c-wait { background: #fff4e0; color: #9a5b00; }
+.achips .c-ok { background: #eef7f1; color: #2e7d4f; }
